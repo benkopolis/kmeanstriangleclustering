@@ -14,24 +14,7 @@ public:
 		KMeans(nclusters, numIters, ps)
 //	    ,pointsToCenters__(nclusters, QVector<Distance>(ps.getNumPoints(), 1.0))
 	{
-		ClusterId i = 0;
-		Dimensions dim;
-		num_dimensions__ = ps.getNumDimensions();
-		num_points__ = ps.getNumPoints();
-		for (; i < nclusters; i++) {
-			Point point; // each centroid is a point
-			for (dim = 0; dim < num_dimensions__; dim++)
-				point.push_back(0.0);
-			SetPoints set_of_points;
 
-			// init centroids
-			centroids__.push_back(point);
-
-			// init clusterId -> set of points
-			clusters_to_points__.push_back(set_of_points);
-			// init point <- cluster
-
-		}
 	}
 
 	virtual void executeAlgorithm();
@@ -45,7 +28,7 @@ protected:
 	//
 	// Zero centroids
 	//
-	void compute_centroids(bool first);
+	void compute_centroids(bool first, QTextStream& log);
 
 	//
 	// Initial partition points among available clusters

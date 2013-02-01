@@ -106,40 +106,40 @@ void KMeans::zero_centroids() {
 //
 // Compute Centroids
 //
-void KMeans::compute_centroids() {
-
+void KMeans::compute_centroids()
+{
 	Dimensions i;
 	ClusterId cid = 0;
 	PointId num_points_in_cluster;
 	// For each centroid
-	foreach(Point centroid, centroids__){
-
+	QVector<Point> means(centroids__); // implicitly shared data - const time. Copied on write.
+	foreach(Point centroid, centroids__)
+	{
 		num_points_in_cluster = 0;
-
 		// For earch PointId in this set
-		foreach(PointId pid,
-				clusters_to_points__[cid]) {
-
+		foreach(PointId pid, clusters_to_points__[cid])
+		{
 			Point p = ps__.getPoint(pid);
 			//std::cout << "(" << p << ")";
 			for (i=0; i<num_dimensions__; i++)
-			centroid[i] += p[i];
+				means[cid][i] += p[i];
 			num_points_in_cluster++;
 		}
 		//
 		// if no point in the clusters, this goes to inf (correct!)
 		//
 		for (i=0; i<num_dimensions__; i++)
-		centroid[i] /= num_points_in_cluster;
+			means[cid][i] /= num_points_in_cluster;
 		cid++;
 	}
+	centroids__ = means;
 }
 
 //
 // Initial partition points among available clusters
 //
-void KMeans::initial_partition_points() {
-
+void KMeans::initial_partition_points()
+{
 	ClusterId cid;
 
 	for (PointId pid = 0; pid < ps__.getNumPoints(); pid++) {
@@ -151,7 +151,29 @@ void KMeans::initial_partition_points() {
 	}
 }
 
-void KMeans::executeAlgorithm() {
+
+
+void KMeans::printClusters(QTextStream& stream) const
+{
+	int i=0;
+	foreach(const SetPoints set, clusters_to_points__)
+	{
+		stream << i << ": ";
+		foreach(const PointId point, set)
+		{
+			stream << point << ", ";
+		}
+		stream << endl;
+	}
+}
+
+
+
+/**
+  *
+  */
+void KMeans::executeAlgorithm()
+{
 	bool move;
 	bool some_point_is_moving = true;
 	unsigned int num_iterations = 0;
@@ -167,15 +189,16 @@ void KMeans::executeAlgorithm() {
 	//
 	// Until not converge
 	//
-	while (some_point_is_moving && num_iterations <= iterationsCount__) {
-
-	//	std::cout << std::endl << "*** Num Iterations " << num_iterations
+	while (some_point_is_moving && num_iterations <= iterationsCount__)
+	{
+		//	std::cout << std::endl << "*** Num Iterations " << num_iterations
 		//		<< std::endl << std::endl;
 		some_point_is_moving = false;
 		compute_centroids();
 
 		// for each point
-		for (pid = 0; pid < num_points__; pid++) {
+		for (pid = 0; pid < num_points__; pid++)
+		{
 			// distance from current cluster
 			min = cosinDist(centroids__[points_to_clusters__[pid]],
 					ps__.getPoint(pid));
@@ -183,28 +206,30 @@ void KMeans::executeAlgorithm() {
 			// foreach centroid
 			cid = 0;
 			move = false;
-			foreach(Centroids::value_type c, centroids__){
+			foreach(Centroids::value_type c, centroids__)
+			{
+				d = cosinDist(c, ps__.getPoint(pid));
+				if (d < min)
+				{
+					min = d;
+					move = true;
+					to_cluster = cid;
 
-			d = cosinDist(c, ps__.getPoint(pid));
-			if (d < min) {
-				min = d;
-				move = true;
-				to_cluster = cid;
+					// remove from current cluster
+					clusters_to_points__[points_to_clusters__[pid]].remove(pid);
 
-				// remove from current cluster
-				clusters_to_points__[points_to_clusters__[pid]].remove(pid);
-
-				some_point_is_moving = true;
-				//std::cout << "\tcluster=" << cid
-			//	<< " closer, dist=" << d << std::endl;
+					some_point_is_moving = true;
+					//std::cout << "\tcluster=" << cid
+				//	<< " closer, dist=" << d << std::endl;
+				}
+				cid++;
 			}
-			cid++;
-		}
 
-		//
-		// move towards a closer centroid
-		//
-			if (move) {
+			//
+			// move towards a closer centroid
+			//
+			if (move)
+			{
 				// insert
 				points_to_clusters__[pid] = to_cluster;
 				clusters_to_points__[to_cluster].insert(pid);
@@ -214,5 +239,5 @@ void KMeans::executeAlgorithm() {
 
 		num_iterations++;
 	} // end while (some_point_is_moving)
-
+	used_iterations__ = num_iterations;
 }

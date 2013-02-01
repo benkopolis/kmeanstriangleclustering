@@ -60,7 +60,7 @@ private:
 		for (PointId i = 0; i < num_points__; i++) {
 			Point p;
 			for (Dimensions d = 0; d < num_dimensions__; d++) {
-				p.push_back(rand() % INT_MAX);
+				p.push_back((double)(rand() % 10)/10.0);
 			}
 			points__.push_back(p);
 
@@ -77,6 +77,7 @@ class KMeans {
 protected:
 
 	distanceFunc distance__;
+	unsigned used_iterations__;
 	unsigned distances_call_count__;
 	ClusterId num_clusters__; // number of clusters
 	PointsSpace ps__; // the point space
@@ -91,7 +92,7 @@ public:
 
 	KMeans(ClusterId nclusters, unsigned int numIters, PointsSpace ps) :
 			num_clusters__(nclusters), iterationsCount__(numIters), ps__(ps),
-		distances_call_count__(0)
+		distances_call_count__(0), used_iterations__(0)
 	{
 		ClusterId i = 0;
 		Dimensions dim;
@@ -127,6 +128,12 @@ public:
 		return distances_call_count__;
 	}
 
+	inline unsigned getUsedIterationsCount() const {
+		return used_iterations__;
+	}
+
+	void printClusters(QTextStream& stream) const;
+
 protected:
 	/*
 	 def dot_matrixes(a, b):
@@ -161,12 +168,12 @@ protected:
 	Distance cosinDist(Point p, Point q) {
 		++distances_call_count__;
 
-		double sigma = 0.0;
+		long double sigma = 0.0;
 		for(int i=0; i<p.size() && i<q.size(); ++i)
 		{
-			sigma = sigma + ((p[i] - q[i])*(p[i]-q[i]));
+			sigma = sigma + (long double)((p[i] - q[i])*(p[i] - q[i]));
 		}
-		return sqrt(sigma);
+		return sqrt((double)sigma);
 		// cosin distance
 //		return 1.0
 //				- (dotMatrixes(p, q) / sqrt(dotMatrixes(p, p))
