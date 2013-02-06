@@ -30,6 +30,11 @@ public:
 		return os;
 	}
 
+	PointsSpace()
+	{
+
+	}
+
 	PointsSpace(PointId num_points, Dimensions num_dimensions) :
 			num_points__(num_points), num_dimensions__(num_dimensions) {
 		init_points();
@@ -49,6 +54,13 @@ public:
 	}
 	inline const Point& getPoint(PointId pid) const {
 		return points__[pid];
+	}
+
+	void dumpToFile(QString fileName);
+
+	inline void pushBackPoint(Point p)
+	{
+		points__.push_back(p);
 	}
 
 private:

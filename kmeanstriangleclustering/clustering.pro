@@ -6,7 +6,7 @@
 
 QT       += core
 
-QT       -= gui
+QT       += gui
 
 TARGET = clustering
 CONFIG   += console
@@ -18,9 +18,18 @@ TEMPLATE = app
 SOURCES += main.cpp \
     KMeans_test.cpp \
     KMeans.cpp \
-    kmeanstriangle.cpp
+    kmeanstriangle.cpp \
+    ui/clusteringview.cpp \
+    readers/abstractdatareader.cpp \
+    readers/defaultnormalizedformatdatareader.cpp
 
 HEADERS += \
     models.hpp \
     KMeans.hpp \
-    kmeanstriangle.hpp
+    kmeanstriangle.hpp \
+    ui/clusteringview.h \
+    readers/abstractdatareader.h \
+    readers/defaultnormalizedformatdatareader.h
+
+FORMS += \
+    ui/clusteringview.ui
