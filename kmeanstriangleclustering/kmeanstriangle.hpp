@@ -10,8 +10,8 @@
 class KMeansTriangle : public KMeans
 {
 public:
-	KMeansTriangle(ClusterId nclusters, unsigned int numIters, PointsSpace ps) :
-		KMeans(nclusters, numIters, ps)
+	KMeansTriangle(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps) :
+		KMeans(nclusters, numIters, ps), conditions_use_counter__(0)
 //	    ,pointsToCenters__(nclusters, QVector<Distance>(ps.getNumPoints(), 1.0))
 	{
 
@@ -34,6 +34,8 @@ protected:
 	// Initial partition points among available clusters
 	//
 	virtual void initial_partition_points();
+
+	void initialLoop(QTextStream* log_stream__);
 
 private:
 

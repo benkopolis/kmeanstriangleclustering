@@ -2,14 +2,17 @@
 #define ABSTRACTDATAREADER_H
 
 
-#include "KMeans.hpp"
 #include <QString>
+
+#include "models.hpp"
+#include "spaces/abstractpointsspace.h"
+
 
 class AbstractDataReader
 {
 public:
 
-	virtual PointsSpace* readPointSpaceFromFile(QString fileName) = 0;
+	virtual AbstractPointsSpace* readPointSpaceFromFile(QString fileName, AbstractPointsSpace* container) = 0;
 
 	virtual ~AbstractDataReader() {}
 

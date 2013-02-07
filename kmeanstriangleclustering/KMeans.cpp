@@ -119,7 +119,7 @@ void KMeans::compute_centroids()
 		// For earch PointId in this set
 		foreach(PointId pid, clusters_to_points__[cid])
 		{
-			Point p = ps__.getPoint(pid);
+			Point p = ps__->getPoint(pid);
 			//std::cout << "(" << p << ")";
 			for (i=0; i<num_dimensions__; i++)
 				means[cid][i] += p[i];
@@ -142,7 +142,7 @@ void KMeans::initial_partition_points()
 {
 	ClusterId cid;
 
-	for (PointId pid = 0; pid < ps__.getNumPoints(); pid++) {
+	for (PointId pid = 0; pid < ps__->getNumPoints(); pid++) {
 
 		cid = pid % num_clusters__;
 //		std::cout << points_to_clusters__.size() << '\n';
@@ -164,10 +164,26 @@ void KMeans::printClusters(QTextStream& stream) const
 			stream << point << ", ";
 		}
 		stream << endl;
+		++i;
 	}
 }
 
-
+void KMeans::printDifferences(const KMeans* from, QTextStream& stream) const
+{
+	int i=0;
+	foreach(const SetPoints set, clusters_to_points__)
+	{
+		stream << i << ": ";
+		int diffs = 0;
+		foreach(const PointId point, set)
+		{
+			if(from->clusters_to_points__.at(i).find(point) == from->clusters_to_points__.at(i).end())
+				++diffs;
+		}
+		stream << diffs << "/" << from->clusters_to_points__.size() << endl;
+		++i;
+	}
+}
 
 /**
   *
@@ -201,14 +217,14 @@ void KMeans::executeAlgorithm()
 		{
 			// distance from current cluster
 			min = cosinDist(centroids__[points_to_clusters__[pid]],
-					ps__.getPoint(pid));
+					ps__->getPoint(pid));
 
 			// foreach centroid
 			cid = 0;
 			move = false;
 			foreach(Centroids::value_type c, centroids__)
 			{
-				d = cosinDist(c, ps__.getPoint(pid));
+				d = cosinDist(c, ps__->getPoint(pid));
 				if (d < min)
 				{
 					min = d;

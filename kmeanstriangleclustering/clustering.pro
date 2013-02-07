@@ -21,7 +21,10 @@ SOURCES += main.cpp \
     kmeanstriangle.cpp \
     ui/clusteringview.cpp \
     readers/abstractdatareader.cpp \
-    readers/defaultnormalizedformatdatareader.cpp
+    readers/defaultnormalizedformatdatareader.cpp \
+    spaces/abstractpointsspace.cpp \
+    spaces/pointsspace.cpp \
+    spaces/normalizedpointsspace.cpp
 
 HEADERS += \
     models.hpp \
@@ -29,7 +32,10 @@ HEADERS += \
     kmeanstriangle.hpp \
     ui/clusteringview.h \
     readers/abstractdatareader.h \
-    readers/defaultnormalizedformatdatareader.h
+    readers/defaultnormalizedformatdatareader.h \
+    spaces/abstractpointsspace.h \
+    spaces/pointsspace.h \
+    spaces/normalizedpointsspace.h
 
 FORMS += \
     ui/clusteringview.ui
