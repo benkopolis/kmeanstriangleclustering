@@ -109,7 +109,7 @@ void KMeansTriangle::executeAlgorithm()
 		log_stream__ = new QTextStream(stdout);
 	bool some_point_is_moving = true;
 	unsigned int num_iterations = 0;
-	bool firstLoop  = true, move=false;
+	bool firstLoop  = true;
 	PointId pid;
 	ClusterId cid, to_cluster;
 	Distance d, min;
@@ -118,8 +118,8 @@ void KMeansTriangle::executeAlgorithm()
 	// Initial partition of points
 	//
 	initial_partition_points();
-//	compute_centroids(firstLoop, *log_stream__);
-//	initialLoop(log_stream__);
+	compute_centroids(firstLoop, *log_stream__);
+	initialLoop(log_stream__);
 
 	num_iterations = 1;
 	while (some_point_is_moving && num_iterations <= iterationsCount__) {
@@ -129,58 +129,10 @@ void KMeansTriangle::executeAlgorithm()
 		some_point_is_moving = false;
 		compute_centroids(firstLoop, *log_stream__); // also computes sVector and centersTocenters
 
-		if(firstLoop)
-		{
-		// for each point
-		for (pid = 0; pid < num_points__; pid++)
-		{
-			rVector__[pid] = true;
-			// distance from current cluster
-			min = cosinDist(centroids__[points_to_clusters__[pid]],
-				ps__->getPoint(pid));
-	//				pointsToCenters__[pid][points_to_clusters__[pid]] = min;
-			this->upperBounds__.push_back(min);
-			// foreach centroid
-			cid = 0;
-			move = false;
-			for(int l=0; l<this->num_clusters__; ++l)
-			{
-				if(l == points_to_clusters__[pid])
-					continue;
-				Point c(this->centroids__[l]);
-				if(centersToCenters__[points_to_clusters__[pid]][l] >= 2*min)
-					d = min;
-				else
-				{
-					d = cosinDist(c, ps__->getPoint(pid));
-					(*log_stream__) << "pid: " << pid << " cid: " << l << " min: " << min << " d: " << d <<  " ? "  << (d<min)
-									<< " conds : " << (centersToCenters__[points_to_clusters__[pid]][l] >= 2*min) << endl;
-				}
 
-				this->lowerBounds__[l][pid] = d;
-				if (d < min)
-				{
 
-					min = d;
-	//						_pointsToCenters[pid][l] = min;
-					move = true;
-					to_cluster = cid;
-					this->upperBounds__[pid] = min;
-					// remove from current cluster
-					clusters_to_points__[points_to_clusters__[pid]].remove(pid);
-				}
-				cid++;
-			}
-			if (move) {
-				points_to_clusters__[pid] = to_cluster;
-				clusters_to_points__[to_cluster].insert(pid);
-	//					std::cout << "\t\tmove to cluster=" << to_cluster << std::endl;
-			}
-		} firstLoop = false;
-		} // if first loop
 
-		else
-		{
+
 
 		// foreach point
 		for(cid =0; cid<num_clusters__; ++cid)
@@ -230,7 +182,6 @@ void KMeansTriangle::executeAlgorithm()
 				}
 			}
 		}
-		} // else first loop
 		num_iterations++;
 	} // end while (some_point_is_moving)
 	used_iterations__ = num_iterations;

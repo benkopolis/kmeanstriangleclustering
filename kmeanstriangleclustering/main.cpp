@@ -37,7 +37,7 @@ void testClustering()
 	clustersData.open(QFile::WriteOnly);
 	QTextStream stream(&clustersData);
 	ClusterId num_clusters = 5;
-	PointId num_points = 300;
+	PointId num_points = 3000;
 	Dimensions num_dimensions = 200;
 
 	PointsSpace *ps = 0;
@@ -83,7 +83,7 @@ void testDistances()
 	QTextStream out(stdout);
 	out << endl;
 	PointId num_points = 2000;
-	Dimensions num_dimensions = 52;
+	Dimensions num_dimensions = 5244;
 
 	PointsSpace ps(num_points, num_dimensions);
 

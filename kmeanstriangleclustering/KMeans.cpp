@@ -170,7 +170,7 @@ void KMeans::printClusters(QTextStream& stream) const
 
 void KMeans::printDifferences(const KMeans* from, QTextStream& stream) const
 {
-	int i=0;
+	int i=0, total = 0;
 	foreach(const SetPoints set, clusters_to_points__)
 	{
 		stream << i << ": ";
@@ -180,9 +180,12 @@ void KMeans::printDifferences(const KMeans* from, QTextStream& stream) const
 			if(from->clusters_to_points__.at(i).find(point) == from->clusters_to_points__.at(i).end())
 				++diffs;
 		}
-		stream << diffs << "/" << from->clusters_to_points__.size() << endl;
+		stream << diffs << "/" << from->clusters_to_points__.at(i).size() << endl;
+		total += diffs;
 		++i;
 	}
+	stream << endl << "Points with various assignment: " << total << endl
+		   << "Errors %: " << ((float)total / num_points__) *100.0 << endl;
 }
 
 /**
