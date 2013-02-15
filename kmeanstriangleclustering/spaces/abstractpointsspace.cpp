@@ -8,3 +8,4 @@ AbstractPointsSpace::AbstractPointsSpace(PointId num_points, Dimensions num_dime
 	num_points__(num_points), num_dimensions__(num_dimensions)
 {
 }
+

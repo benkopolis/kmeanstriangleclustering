@@ -5,10 +5,6 @@
  *      Author: zby
  */
 
-#include <boost/foreach.hpp>
-#include <iostream>
-#include <set>
-#include <vector>
 #include "KMeans.hpp"
 #include "models.hpp"
 
@@ -24,7 +20,7 @@
 //
 // Dump a point
 //
-std::ostream& operator <<(std::ostream& os, Point& p) {
+QTextStream& operator <<(QTextStream& os, Point& p) {
 	foreach(Coord d, p){ os << d << " ";}
 return os;
 }
@@ -32,15 +28,15 @@ return os;
  //
  // Dump collection of Points
  //
-std::ostream& operator <<(std::ostream& os, Points& cps) {
-	foreach(Point p, cps){ os<<p <<std::endl;}
+QTextStream& operator <<(QTextStream& os, Points& cps) {
+	foreach(Point p, cps){ os<<p << endl;}
 return os;
 }
 
  //
  // Dump a Set of points
  //
-std::ostream& operator <<(std::ostream& os, SetPoints & sp) {
+QTextStream& operator <<(QTextStream& os, SetPoints & sp) {
 
 	foreach(SetPoints::value_type pid, sp){
 	os << "pid=" << pid << " ";
@@ -51,11 +47,11 @@ return os;
 //
 // Dump ClustersToPoints
 //
-std::ostream& operator <<(std::ostream& os, ClustersToPoints & cp) {
+QTextStream& operator <<(QTextStream& os, ClustersToPoints & cp) {
 	ClusterId cid = 0;
 	foreach(ClustersToPoints::value_type set, cp){
 	os << "clusterid[" << cid << "]" << "=("
-	<< set << ")" << std::endl;
+	<< set << ")" << endl;
 	cid++;
 }
 	return os;
@@ -64,28 +60,49 @@ std::ostream& operator <<(std::ostream& os, ClustersToPoints & cp) {
 //
 // Dump ClustersToPoints
 //
-std::ostream& operator <<(std::ostream& os, PointsToClusters & pc) {
+QTextStream& operator <<(QTextStream& os, PointsToClusters & pc) {
 	PointId pid = 0;
+	QTextStream cout(stdout);
 	foreach(PointsToClusters::value_type cid, pc){
 
-	std::cout << "pid[" << pid << "]=" << cid << std::endl;
+	cout << "pid[" << pid << "]=" << cid << endl;
 	pid ++;
 }
 	return os;
 }
 
-//void PointsSpace::init_points() {
-//	srand(23423255453);
-//	for (PointId i = 0; i < num_points__; i++) {
-//		Point p;
-//		for (Dimensions d = 0; d < num_dimensions__; d++) {
-//			p.push_back(rand() % 100);
-//		}
-//		points__.push_back(p);
+//////////////////////////////////////////////
 //
-//		std::cout << "pid[" << i << "]= (" << p << ")" << std::endl;
-//	}
-//}
+//  K - MEANS
+//
+//////////////////////////////////////////////
+
+
+KMeans::KMeans(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store) :
+		num_clusters__(nclusters), iterationsCount__(numIters), ps__(ps),
+	distances_call_count__(0), used_iterations__(0), store_states__(store)
+{
+	ClusterId i = 0;
+	Dimensions dim;
+	num_dimensions__ = ps->getNumDimensions();
+	num_points__ = ps->getNumPoints();
+	for (; i < nclusters; i++) {
+		Point point; // each centroid is a point
+		for (dim = 0; dim < num_dimensions__; dim++)
+			point.push_back(0.0);
+		SetPoints set_of_points;
+
+		// init centroids
+		centroids__.push_back(point);
+		QHash<PointId, Distance> hash;
+		all_distances__.insert(i, hash);
+
+		// init clusterId -> set of points
+		clusters_to_points__.push_back(set_of_points);
+		// init point <- cluster
+
+	}
+}
 
 KMeans::~KMeans() {
 	// TODO Auto-generated destructor stub
@@ -106,7 +123,7 @@ void KMeans::zero_centroids() {
 //
 // Compute Centroids
 //
-void KMeans::compute_centroids()
+void KMeans::compute_centroids(QTextStream& log)
 {
 	Dimensions i;
 	ClusterId cid = 0;
@@ -120,16 +137,22 @@ void KMeans::compute_centroids()
 		foreach(PointId pid, clusters_to_points__[cid])
 		{
 			Point p = ps__->getPoint(pid);
-			//std::cout << "(" << p << ")";
+			log << "kmeans centres: [" << pid << "]" << endl;
 			for (i=0; i<num_dimensions__; i++)
+			{
 				means[cid][i] += p[i];
+				log << "tmp means[" << cid << "][" << i << "] = " << means[cid][i] << endl;
+			}
 			num_points_in_cluster++;
 		}
 		//
 		// if no point in the clusters, this goes to inf (correct!)
 		//
 		for (i=0; i<num_dimensions__; i++)
+		{
 			means[cid][i] /= num_points_in_cluster;
+			log << "means[" << cid << "][" << i << "] /= " << num_points_in_cluster << " = " << means[cid][i] << endl;
+		}
 		cid++;
 	}
 	centroids__ = means;
@@ -199,7 +222,12 @@ void KMeans::executeAlgorithm()
 	PointId pid;
 	ClusterId cid, to_cluster;
 	Distance d, min;
-
+	QFile log_file__("log_template.txt");
+	QTextStream* log_stream__;
+	if(log_file__.open(QFile::WriteOnly))// | QFile::Append))
+		log_stream__ = new QTextStream(&log_file__);
+	else
+		log_stream__ = new QTextStream(stdout);
 	//
 	// Initial partition of points
 	//
@@ -210,24 +238,27 @@ void KMeans::executeAlgorithm()
 	//
 	while (some_point_is_moving && num_iterations <= iterationsCount__)
 	{
-		//	std::cout << std::endl << "*** Num Iterations " << num_iterations
-		//		<< std::endl << std::endl;
+		if(store_states__)
+			this->storeCurrentIterationState();
 		some_point_is_moving = false;
-		compute_centroids();
-
+		compute_centroids(*log_stream__);
+		for(int centerId=0; centerId < centroids__.size(); ++centerId)
+			all_distances__[centerId].clear();
 		// for each point
 		for (pid = 0; pid < num_points__; pid++)
 		{
 			// distance from current cluster
 			min = cosinDist(centroids__[points_to_clusters__[pid]],
 					ps__->getPoint(pid));
-
+			all_distances__[points_to_clusters__[pid]].insert(pid, min);
 			// foreach centroid
 			cid = 0;
 			move = false;
 			foreach(Centroids::value_type c, centroids__)
 			{
-				d = cosinDist(c, ps__->getPoint(pid));
+				if(!all_distances__[cid].contains(pid))
+					all_distances__[cid].insert(pid, cosinDist(c, ps__->getPoint(pid)));
+				d = all_distances__[cid][pid];
 				if (d < min)
 				{
 					min = d;
@@ -243,10 +274,6 @@ void KMeans::executeAlgorithm()
 				}
 				cid++;
 			}
-
-			//
-			// move towards a closer centroid
-			//
 			if (move)
 			{
 				// insert
@@ -258,5 +285,37 @@ void KMeans::executeAlgorithm()
 
 		num_iterations++;
 	} // end while (some_point_is_moving)
+	if(store_states__)
+		this->storeCurrentIterationState();
 	used_iterations__ = num_iterations;
 }
+
+
+void KMeans::storeCurrentIterationState()
+{
+	int i=0;
+	QString status;
+	QTextStream stream(&status);
+	foreach(const SetPoints set, clusters_to_points__)
+	{
+		stream << i << "(";
+		foreach(Coord c, centroids__[i])
+			stream << c << ", ";
+		stream << "): ";
+		QList<PointId> points = set.values();
+		qSort(points.begin(), points.end());
+		foreach(const PointId point, points)
+			stream << point << ", ";
+		stream << endl;
+		++i;
+	}
+	stream << "Distances: " << endl;
+	foreach(unsigned int cid, all_distances__.keys())
+	{
+		stream << cid << ":" << endl;
+		foreach(unsigned int pid, all_distances__[cid].keys())
+			stream << pid << ":" << all_distances__[cid][pid] << ", " << endl;
+	}
+	iterations_states__.push_back(status);
+}
+

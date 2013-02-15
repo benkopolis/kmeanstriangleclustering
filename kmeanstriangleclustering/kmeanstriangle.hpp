@@ -10,12 +10,7 @@
 class KMeansTriangle : public KMeans
 {
 public:
-	KMeansTriangle(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps) :
-		KMeans(nclusters, numIters, ps), conditions_use_counter__(0)
-//	    ,pointsToCenters__(nclusters, QVector<Distance>(ps.getNumPoints(), 1.0))
-	{
-
-	}
+	KMeansTriangle(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store=false);
 
 	virtual void executeAlgorithm();
 
@@ -39,10 +34,9 @@ protected:
 
 private:
 
-	Distances pointsToCenters__;
-	Distances centersToCenters__;
+	QVector<QVector<Distance> > centersToCenters__;
 	QVector<Distance> upperBounds__;
-	Distances lowerBounds__;
+	QVector<QVector<Distance> > lowerBounds__;
 	QVector<bool> rVector__;
 	QVector<Distance> sVector__;
 	unsigned conditions_use_counter__;

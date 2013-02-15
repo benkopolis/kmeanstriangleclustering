@@ -11,7 +11,7 @@
 #include <QtCore>
 #include <QVector>
 #include <QSet>
-#include <iostream>
+#include <QHash>
 
 //#if 1
 //#define foreach(a, b) for(a : b)
@@ -23,7 +23,7 @@ typedef double Coord;
 
 typedef double Distance;
 
-typedef QVector<QVector<Distance> > Distances;
+typedef QHash<unsigned int, QHash<unsigned int, Distance> > Distances;
 
 typedef QVector<Coord> Point;
 

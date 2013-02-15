@@ -1,5 +1,9 @@
 #include "pointsspace.h"
 
+PointsSpace::PointsSpace()
+{
+
+}
 
 PointsSpace::PointsSpace(PointId num_points, Dimensions num_dimensions) :
 		AbstractPointsSpace(num_points, num_dimensions) {
@@ -19,7 +23,7 @@ void PointsSpace::insertPoint(Point p, PointId index)
 
 Point PointsSpace::getPoint(PointId index) const
 {
-	return points__.at(index);
+	return points__.value(index);
 }
 
 void PointsSpace::init_points() {
@@ -29,9 +33,45 @@ void PointsSpace::init_points() {
 		for (Dimensions d = 0; d < num_dimensions__; d++) {
 			p.push_back((double)(rand() % 10)/10.0);
 		}
-		points__.push_back(p);
+		points__.insert(i, p);
 
 		//std::cout << "pid[" << i << "]= (" << p << ")" << std::endl;
+	}
+}
+
+void PointsSpace::savePointsSpace(QString fileName)
+{
+	QFile file(fileName);
+	if(!file.open(QFile::WriteOnly))
+		return;
+	QTextStream out(&file);
+	out << num_points__ << " " << num_dimensions__ << endl;
+	foreach(Point p, points__)
+	{
+		foreach(Coord c, p)
+			out << c << " ";
+		out << endl;
+	}
+}
+
+void PointsSpace::loadPointsSpace(QString fileName)
+{
+	QFile file(fileName);
+	if(!file.open(QFile::ReadOnly))
+		return;
+	QTextStream in(&file);
+	in >> num_points__;
+	in >> num_dimensions__;
+	for(int i=0; i<num_points__; ++i)
+	{
+		Coord tmp =0;
+		Point point;
+		for(int j=0; j<num_dimensions__; ++j)
+		{
+			in >> tmp;
+			point.push_back(tmp);
+		}
+		points__.insert(i, point);
 	}
 }
 

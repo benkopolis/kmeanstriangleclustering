@@ -11,6 +11,7 @@
 #include <climits>
 #include <cmath>
 #include <QDateTime>
+#include <QList>
 #include "models.hpp"
 #include "spaces/abstractpointsspace.h"
 
@@ -30,32 +31,12 @@ protected:
 	PointsToClusters points_to_clusters__;
 	Centroids centroids__;
 	unsigned int iterationsCount__;
+	Distances all_distances__;
 
 public:
 
-	KMeans(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps) :
-			num_clusters__(nclusters), iterationsCount__(numIters), ps__(ps),
-		distances_call_count__(0), used_iterations__(0)
-	{
-		ClusterId i = 0;
-		Dimensions dim;
-		num_dimensions__ = ps->getNumDimensions();
-		num_points__ = ps->getNumPoints();
-		for (; i < nclusters; i++) {
-			Point point; // each centroid is a point
-			for (dim = 0; dim < num_dimensions__; dim++)
-				point.push_back(0.0);
-			SetPoints set_of_points;
+	KMeans(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store=false);
 
-			// init centroids
-			centroids__.push_back(point);
-
-			// init clusterId -> set of points
-			clusters_to_points__.push_back(set_of_points);
-			// init point <- cluster
-
-		}
-	}
 	~KMeans();
 
 	virtual void executeAlgorithm();
@@ -79,7 +60,18 @@ public:
 
 	void printDifferences(const KMeans* from, QTextStream& stream) const;
 
+	inline QList<QString> getIterationsStates() const
+	{
+		return this->iterations_states__;
+	}
+
 protected:
+
+	QList<QString> iterations_states__;
+	bool store_states__;
+
+
+	void storeCurrentIterationState();
 
 	Distance dotMatrixes(Point a, Point b) {
 		Distance result = 0;
@@ -114,7 +106,7 @@ protected:
 	//
 	// Zero centroids
 	//
-	void compute_centroids();
+	void compute_centroids(QTextStream& log);
 
 	//
 	// Initial partition points among available clusters

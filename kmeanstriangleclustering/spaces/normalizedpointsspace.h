@@ -11,6 +11,9 @@ public:
 	virtual void insertPoint(Point p, PointId index) = 0;
 	virtual Point getPoint(PointId index) = 0;
 
+	virtual void savePointsSpace(QString fileName);
+	virtual void loadPointsSpace(QString fileName);
+
 protected:
 
 

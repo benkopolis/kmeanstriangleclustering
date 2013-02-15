@@ -36,16 +36,15 @@ void testClustering()
 	QFile clustersData("clusters.log");
 	clustersData.open(QFile::WriteOnly);
 	QTextStream stream(&clustersData);
-	ClusterId num_clusters = 5;
-	PointId num_points = 3000;
-	Dimensions num_dimensions = 200;
+	ClusterId num_clusters = 2;
+	PointId num_points = 10;
+	Dimensions num_dimensions = 2;
 
 	PointsSpace *ps = 0;
-	ps = new PointsSpace(num_points, num_dimensions);
-	//std::cout << "PointSpace" << ps;
-
-	KMeans clusters(num_clusters, 5, (AbstractPointsSpace*)ps);
-	KMeansTriangle traingle(num_clusters, 5, (AbstractPointsSpace*)ps);
+	ps = new PointsSpace();//(num_points, num_dimensions);
+	ps->loadPointsSpace("points_test.txt");
+	KMeans clusters(num_clusters, 5, (AbstractPointsSpace*)ps, true);
+	KMeansTriangle traingle(num_clusters, 5, (AbstractPointsSpace*)ps, true);
 	clusters.setDistanceFunction(&cosinDist);
 	QElapsedTimer etimer;
 	etimer.start();
@@ -74,6 +73,13 @@ void testClustering()
 	traingle.printClusters(stream);
 	stream << endl << "Diffs: " << endl;
 	traingle.printDifferences(&clusters, stream);
+	stream << "STATES: " << endl << "KMEANS" << endl;
+	int ii=0, jj=0;
+	foreach(QString s, clusters.getIterationsStates())
+		stream << ii++ << ": " << endl << s << endl;
+	stream << endl << "TRAINGLE" << endl;
+	foreach(QString s, traingle.getIterationsStates())
+		stream << jj++ << ": " << endl << s << endl;
 	stream.flush();
 	clustersData.close();
 }
@@ -82,14 +88,14 @@ void testDistances()
 {
 	QTextStream out(stdout);
 	out << endl;
-	PointId num_points = 2000;
-	Dimensions num_dimensions = 5244;
+	PointId num_points = 20;
+	Dimensions num_dimensions = 5;
 
 	PointsSpace ps(num_points, num_dimensions);
 
 	QElapsedTimer etimer;
 	etimer.start();
-	for(int i=0; i<1000; ++i)
+	for(int i=0; i<10; ++i)
 		cosinDist(ps.getPoint(2*i), ps.getPoint(2*i+1));
 
 	out << "elapsed 1000 cosin: " << etimer.elapsed() << "ms" << endl;
@@ -97,7 +103,7 @@ void testDistances()
 
 	QElapsedTimer e1timer;
 	e1timer.start();
-	for(int i=0; i<1000; ++i)
+	for(int i=0; i<10; ++i)
 		euclideanDist(ps.getPoint(2*i), ps.getPoint(2*i+1));
 
 	out << "elapsed 1000 euclidean: " << e1timer.elapsed() << "ms" << endl;
