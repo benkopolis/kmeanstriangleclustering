@@ -1,21 +1,27 @@
 #include "kmeanstriangle.hpp"
+#include <limits>
 
 KMeansTriangle::KMeansTriangle(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store) :
-	KMeans(nclusters, numIters, ps, store), conditions_use_counter__(0)
-//	    ,pointsToCenters__(nclusters, QVector<Distance>(ps.getNumPoints(), 1.0))
+	KMeans(nclusters, numIters, ps, store),
+	conditions_use_counter__(0),
+	sVector__(nclusters, std::numeric_limits<Distance>::max()),
+	centersToCenters__(nclusters, QVector<Distance>(nclusters, 0.0)),
+	lowerBounds__(nclusters, QVector<Distance>(ps->getNumPoints())),
+	upperBounds__(ps->getNumPoints(), std::numeric_limits<Distance>::max()),
+	new_centroids__(nclusters, QVector<Coord>(ps->getNumDimensions(), 0.0)),
+	rVector__(ps->getNumPoints(), false)
 {
 
 }
 
 
-void KMeansTriangle::compute_centroids(bool first, QTextStream& log)
+void KMeansTriangle::compute_centroids(QTextStream& log)
 {
 	Dimensions i;
 	ClusterId cid = 0;
 	PointId num_points_in_cluster;
 	// For each centroid
-	QVector<Point> means(centroids__); // implicitly shared data - const time. Copied on write.
-	foreach(Point centroid, centroids__)
+	for(int cid = 0; cid < centroids__.size(); ++cid)
 	{
 		num_points_in_cluster = 0;
 		// For earch PointId in this set
@@ -23,75 +29,105 @@ void KMeansTriangle::compute_centroids(bool first, QTextStream& log)
 		{
 			Point p = ps__->getPoint(pid);
 			for (i=0; i<num_dimensions__; i++)
-				means[cid][i] += p[i];
+				new_centroids__[cid][i] += p[i];
 			num_points_in_cluster++;
 		}
 		//
 		// if no point in the clusters, this goes to inf (correct!)
 		//
 		for (i=0; i<num_dimensions__; i++)
-			means[cid][i] /= num_points_in_cluster;
-		cid++;
+			new_centroids__[cid][i] /= num_points_in_cluster;
 	}
-	for(int i=0; i < this->num_clusters__; ++i)
-	{
-		for(int j=0; j<this->num_clusters__; ++j)
+}
+
+void KMeansTriangle::assignDSVectors()
+{
+	for (unsigned int a = 0; a < centroids__.size() - 1; ++a)
+			for (unsigned int b = a + 1; b < centroids__.size(); ++b)
+				centersToCenters__[a][b] = centersToCenters__[b][a] = cosinDist(centroids__[a], centroids__[b]) / 2.0;
+
+		for (unsigned int a = 0; a < centroids__.size(); ++a)
 		{
-			if(j!=i)
+			sVector__[a] = centersToCenters__[a][0];
+			for (unsigned int b = 1; b < centroids__.size(); ++b)
+				if (sVector__[a] > centersToCenters__[a][b])
+					sVector__[a] = centersToCenters__[a][b];
+		}
+}
+
+void KMeansTriangle::computeLowerAndUpperBounds()
+{
+	QVector<Distance> delta(this->num_clusters__);
+	for (unsigned int cid = 0; cid < centroids__.size(); ++cid)
+		delta[cid] = cosinDist(centroids__[cid], new_centroids__[cid]);
+
+	for (unsigned int pid = 0; pid < lowerBounds__.size(); ++pid)
+	{
+		for (unsigned int cid = 0; cid < centroids__.size(); ++cid)
+		{
+			lowerBounds__[pid][cid] = lowerBounds__[pid][cid] - delta[cid];
+			if (lowerBounds__[pid][cid] < 0)
+				lowerBounds__[pid][cid] = 0;
+		}
+		upperBounds__[pid] += delta[points_to_clusters__[pid]];
+	}
+}
+
+bool KMeansTriangle::computePointsAssignements()
+{
+	bool change = false;
+	for (unsigned int pid = 0; pid < upperBounds__.size(); ++pid)
+	{
+		if (upperBounds__[pid] > sVector__[points_to_clusters__[pid]])
+		{
+			for (unsigned int a = 0; a < centroids__.size(); ++a)
 			{
-				this->centersToCenters__[i][j] =
-						cosinDist(means[i], means[j]);
-				double tmpDbg = 0.5 * centersToCenters__[i][j];
-				sVector__[j] = tmpDbg;
+				if (a != points_to_clusters__[pid] &&
+						upperBounds__[pid] >= lowerBounds__[a][pid] &&
+						upperBounds__[pid] > centersToCenters__[points_to_clusters__[pid]][a])
+				{
+					if (rVector__[pid])
+					{
+						if(!all_distances__[points_to_clusters__[pid]].contains(pid))
+							all_distances__[points_to_clusters__[pid]].insert(pid, cosinDist(ps__->getPoint(pid),
+																							 centroids__[points_to_clusters__[pid]]));
+						upperBounds__[pid] = all_distances__[points_to_clusters__[pid]][pid];
+						lowerBounds__[points_to_clusters__[pid]][pid] = upperBounds__[pid];
+						rVector__[pid] = false;
+					}
+					if ((upperBounds__[pid] >= lowerBounds__[a][pid] ||
+						 upperBounds__[pid] > centersToCenters__[points_to_clusters__[pid]][a]) &&
+							((lowerBounds__[a][pid] = cosinDist(ps__->getPoint(pid), centroids__[a])) < upperBounds__[pid]))
+					{
+						clusters_to_points__[points_to_clusters__[pid]].remove(pid);
+						clusters_to_points__[a].insert(pid);
+						points_to_clusters__[pid] = a;
+						change = true;
+						upperBounds__[pid] = lowerBounds__[a][pid];
+						rVector__[pid] = false;
+					}
+				}
 			}
 		}
-		if(!first)
-		{
-			Distance delta =  cosinDist(centroids__[i], means[i]);
-			for(int pid=0; pid<num_points__; ++pid)
-			{
-				Distance newLower = lowerBounds__[i][pid] - delta;
-				lowerBounds__[i][pid] = newLower > 0 ? newLower : 0;
-			}
-		}
 	}
-	if(!first)
-	{
-		for(int pid=0; pid<num_points__; ++pid)
-		{
-			Distance delta =  cosinDist(centroids__[points_to_clusters__[pid]],
-										means[points_to_clusters__[pid]]);
-			upperBounds__[pid] = upperBounds__[pid] + delta;
-			rVector__[pid] = true;
-		}
-	}
-		centroids__ = means;
+	return change;
 }
 
 void KMeansTriangle::initial_partition_points()
 {
 	ClusterId cid;
-	for(int i=0; i < this->num_clusters__; ++i)
+	for (PointId pid = 0; pid < ps__->getNumPoints(); pid++)
 	{
-		sVector__.push_back(0);
-		this->centersToCenters__.push_back(QVector<Distance>());
-		this->lowerBounds__.push_back(QVector<Distance>());
-		for(int j=0; j<this->num_clusters__; ++j)
-			this->centersToCenters__[i].push_back(
-					cosinDist(this->centroids__[i], this->centroids__[j]));
-		for(int j=0; j<this->num_points__; ++j)
-			this->lowerBounds__[i].push_back(0);
-	}
-	for (PointId pid = 0; pid < ps__->getNumPoints(); pid++) {
-
-		rVector__.push_back(false);
 		cid = pid % num_clusters__;
-	//	std::cout << points_to_clusters__.size() << '\n';
 		points_to_clusters__.push_back(cid);
 		clusters_to_points__[cid].insert(pid);
 	}
 }
 
+void KMeansTriangle::initialLowerAndUpperBoundsRecalculation()
+{
+
+}
 
 /***
   * Method for executing k-means clustering algorithm with traingle inequality
@@ -115,94 +151,42 @@ void KMeansTriangle::executeAlgorithm()
 	// Initial partition of points
 	//
 	initial_partition_points();
+	compute_centroids(*log_stream__);
+	centroids__ = new_centroids__;
+
+
+	assignDSVectors();
 	if(store_states__)
 		this->storeCurrentIterationState();
 
-	compute_centroids(true, *log_stream__);
+	//initialLowerAndUpperBoundsRecalculation();
 	initialLoop(log_stream__);
+	computePointsAssignements();
+	compute_centroids(*log_stream__);
+	this->computeLowerAndUpperBounds();
+	this->rVector__ = QVector<bool>(ps__->getNumPoints(), true);
+//	initialLoop(log_stream__);
 	if(store_states__)
 		this->storeCurrentIterationState();
 	num_iterations = 1;
 	int skipped_1=0, skipped_2 = 0, skipped_3 = 0;
+	for(int distIterator =0; distIterator < this->num_clusters__; ++distIterator)
+		all_distances__[distIterator].clear();
 	while (some_point_is_moving && num_iterations <= iterationsCount__)
 	{
+		for(int distIterator =0; distIterator < this->num_clusters__; ++distIterator)
+			all_distances__[distIterator].clear();
+		centroids__ = new_centroids__;
+		some_point_is_moving = false;
 		if(store_states__)
 			this->storeCurrentIterationState();
-		some_point_is_moving = false;
-		compute_centroids(false, *log_stream__); // also computes sVector and centersTocenters
-
-		// foreach center
-		for(cid =0; cid<num_clusters__; ++cid)
-		{	// foreach point
-			int dupiasta =20;
-			for(pid =0; pid < num_points__; ++pid)
-			{
-				++conditions_use_counter__;
-				(*log_stream__) << "ITER FOR cid:" << cid << " pid:" << pid << endl;
-				if(pid ==8 && cid ==1)
-					dupiasta = 2343;
-				if(cid == points_to_clusters__[pid])
-					continue;
-				if(upperBounds__[pid] <= lowerBounds__[cid][pid])
-				{
-					(*log_stream__) << "skipped becouse: upperBounds__[" << pid << "] <= lowerBounds__[cid:"
-									<< cid << "][pid:"
-									<< pid << "]" << endl;
-					++skipped_1;
-					continue;
-				}
-				if(upperBounds__[pid] <=
-						0.5*centersToCenters__[points_to_clusters__[pid]][cid])
-				{
-					(*log_stream__) << "skipped becouse: upperBounds__[" << pid << "] <= 0.5*centersToCenters__[points_to_clusters__[pid:"
-									<< pid << "][cid:"
-									<< cid << "]" << endl;
-					++skipped_2;
-					continue;
-				}
-				if(upperBounds__[pid] < sVector__[points_to_clusters__[pid]])
-				{
-					(*log_stream__) << "skipped becouse: upperBounds__[" << pid << "] < sVector__[points_to_clusters__[pid:"
-									<< pid << "]]" << endl;
-					++skipped_3;
-					continue;
-				}
-				if(rVector__[pid])
-				{
-					if(!all_distances__[cid].contains(pid))
-						all_distances__[cid].insert(pid, cosinDist(centroids__[cid], ps__->getPoint(pid)));
-					rVector__[pid] = false;
-				}
-				else
-					all_distances__[cid].insert(pid, upperBounds__[pid]);
-				d = all_distances__[cid][pid];
-				if(pid == 8) // todo debug
-				{
-					(*log_stream__) << "AAAA cid:" << cid << " d:" << cosinDist(centroids__[1], ps__->getPoint(pid))
-									<< " cid:0 " << cosinDist(centroids__[0], ps__->getPoint(pid)) << endl;
-					(*log_stream__) << "BBB pid:8(" << ps__->getPoint(8)[0] << ", " << ps__->getPoint(8)[1] << ')' << endl;
-				}
-				if(d > lowerBounds__[points_to_clusters__[pid]][pid]
-						|| d > 0.5*centersToCenters__[points_to_clusters__[pid]][cid])
-					{
-						--conditions_use_counter__;
-					if(!all_distances__[points_to_clusters__[pid]].contains(pid))
-						all_distances__[points_to_clusters__[pid]].insert(pid,
-							cosinDist(centroids__[points_to_clusters__[pid]], ps__->getPoint(pid)));
-					Distance tmp = all_distances__[points_to_clusters__[pid]][pid];
-					if(tmp > d) // move
-					{
-						(*log_stream__) << "TO MOVE (" << tmp << " < " << d << ") pid: " << pid << "cid: " << cid << endl;
-						clusters_to_points__[points_to_clusters__[pid]].remove(pid); // remove from old cluster
-						points_to_clusters__[pid] = cid;
-						clusters_to_points__[cid].insert(pid);
-						some_point_is_moving = true;
-//							std::cout << "\t\tmove to cluster=" << to_cluster << std::endl;
-					}
-				}
-			}
-		}
-		num_iterations++;
+		sVector__ = QVector<Distance>(this->num_clusters__, std::numeric_limits<Distance>::max());
+		++num_iterations;
+		this->assignDSVectors();
+		some_point_is_moving = this->computePointsAssignements();
+		compute_centroids((*log_stream__));
+		this->computeLowerAndUpperBounds();
+		rVector__ = QVector<bool>(ps__->getNumPoints(), true);
 	} // end while (some_point_is_moving)
 	used_iterations__ = num_iterations;
 	if(store_states__)
@@ -212,6 +196,97 @@ void KMeansTriangle::executeAlgorithm()
 	log_file__.close();
 	delete log_stream__;
 }
+
+
+
+////////////////////////////////////////////////////////////////////////
+//
+// OLD UNSTABLE - inner part of while loop in execute algorithm
+//
+////////////////////////////////////////////////////////////////////////
+
+//		compute_centroids(*log_stream__);
+//		// foreach center
+//		for(cid =0; cid<num_clusters__; ++cid)
+//		{	// foreach point
+//			for(pid =0; pid < num_points__; ++pid)
+//			{
+//				++conditions_use_counter__;
+//				(*log_stream__) << "ITER FOR cid:" << cid << " pid:" << pid << endl;
+//				if(cid == points_to_clusters__[pid])
+//					continue;
+//				if(upperBounds__[pid] <= lowerBounds__[cid][pid])
+//				{
+//					(*log_stream__) << "skipped becouse: upperBounds__[" << pid << "] <= lowerBounds__[cid:"
+//									<< cid << "][pid:"
+//									<< pid << "]" << endl;
+//					++skipped_1;
+//					continue;
+//				}
+//				if(upperBounds__[pid] <=
+//						0.5*centersToCenters__[points_to_clusters__[pid]][cid])
+//				{
+//					(*log_stream__) << "skipped becouse: upperBounds__[" << pid << "] <= 0.5*centersToCenters__[points_to_clusters__[pid:"
+//									<< pid << "][cid:"
+//									<< cid << "]" << endl;
+//					++skipped_2;
+//					continue;
+//				}
+//				if(upperBounds__[pid] < sVector__[points_to_clusters__[pid]])
+//				{
+//					(*log_stream__) << "skipped becouse: upperBounds__[" << pid << "] < sVector__[points_to_clusters__[pid:"
+//									<< pid << "]]" << endl;
+//					++skipped_3;
+//					continue;
+//				}
+//				if(rVector__[pid])
+//				{
+//					if(!all_distances__[cid].contains(pid))
+//						all_distances__[cid].insert(pid, cosinDist(centroids__[cid], ps__->getPoint(pid)));
+//					rVector__[pid] = false;
+//				}
+//				else
+//					all_distances__[cid].insert(pid, upperBounds__[pid]);
+//				d = all_distances__[cid][pid];
+//				if(pid == 8) // todo debug
+//				{
+//					(*log_stream__) << "AAAA cid:" << cid << " d:" << cosinDist(centroids__[1], ps__->getPoint(pid))
+//									<< " cid:0 " << cosinDist(centroids__[0], ps__->getPoint(pid)) << endl;
+//					(*log_stream__) << "BBB pid:8(" << ps__->getPoint(8)[0] << ", " << ps__->getPoint(8)[1] << ')' << endl;
+//				}
+//				if(d > lowerBounds__[points_to_clusters__[pid]][pid]
+//						|| d > 0.5*centersToCenters__[points_to_clusters__[pid]][cid])
+//					{
+//						--conditions_use_counter__;
+//					if(!all_distances__[points_to_clusters__[pid]].contains(pid))
+//						all_distances__[points_to_clusters__[pid]].insert(pid,
+//							cosinDist(centroids__[points_to_clusters__[pid]], ps__->getPoint(pid)));
+//					Distance tmp = all_distances__[points_to_clusters__[pid]][pid];
+//					if(tmp > d) // move
+//					{
+//						(*log_stream__) << "TO MOVE (" << tmp << " < " << d << ") pid: " << pid << "cid: " << cid << endl;
+//						clusters_to_points__[points_to_clusters__[pid]].remove(pid); // remove from old cluster
+//						points_to_clusters__[pid] = cid;
+//						clusters_to_points__[cid].insert(pid);
+//						some_point_is_moving = true;
+////							std::cout << "\t\tmove to cluster=" << to_cluster << std::endl;
+//					}
+//				}
+//			}
+//		}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void KMeansTriangle::initialLoop(QTextStream* log_stream__)
 {
@@ -228,7 +303,7 @@ void KMeansTriangle::initialLoop(QTextStream* log_stream__)
 			ps__->getPoint(pid));
 		all_distances__[points_to_clusters__[pid]].insert(pid, min);
 //				pointsToCenters__[pid][points_to_clusters__[pid]] = min;
-		this->upperBounds__.push_back(min); ///////////////////////////////////// INIT of upperBounds
+		this->upperBounds__[pid] = min;
 		// foreach centroid
 		cid = 0;
 		move = false;
@@ -267,3 +342,13 @@ void KMeansTriangle::initialLoop(QTextStream* log_stream__)
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+

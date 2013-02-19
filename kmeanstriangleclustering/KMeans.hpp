@@ -65,6 +65,8 @@ public:
 		return this->iterations_states__;
 	}
 
+	Distance meanSquareError();
+
 protected:
 
 	QList<QString> iterations_states__;
@@ -87,11 +89,20 @@ protected:
 		++distances_call_count__;
 
 		long double sigma = 0.0;
+
+//		for(int i=0; i<p.size() && i<q.size(); ++i)
+//			sigma += fabs(p[i] - q[i]);
+//		return sigma;
+
 		for(int i=0; i<p.size() && i<q.size(); ++i)
 		{
 			sigma = sigma + (long double)((p[i] - q[i])*(p[i] - q[i]));
 		}
 		return sqrt((double)sigma);
+
+
+
+
 		// cosin distance
 //		return 1.0
 //				- (dotMatrixes(p, q) / sqrt(dotMatrixes(p, p))

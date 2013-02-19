@@ -36,13 +36,13 @@ void testClustering()
 	QFile clustersData("clusters.log");
 	clustersData.open(QFile::WriteOnly);
 	QTextStream stream(&clustersData);
-	ClusterId num_clusters = 2;
-	PointId num_points = 10;
-	Dimensions num_dimensions = 2;
+	ClusterId num_clusters = 18;
+	PointId num_points = 1200;
+	Dimensions num_dimensions = 20;
 
 	PointsSpace *ps = 0;
-	ps = new PointsSpace();//(num_points, num_dimensions);
-	ps->loadPointsSpace("points_test.txt");
+	ps = new PointsSpace(num_points, num_dimensions);//();//
+	ps->savePointsSpace("points_test.txt");
 	KMeans clusters(num_clusters, 5, (AbstractPointsSpace*)ps, true);
 	KMeansTriangle traingle(num_clusters, 5, (AbstractPointsSpace*)ps, true);
 	clusters.setDistanceFunction(&cosinDist);
@@ -54,6 +54,7 @@ void testClustering()
 	out << "distnace counter calls: " << clusters.getDistancesCallCount() << endl;
 	out << "used iterations: " << clusters.getUsedIterationsCount() << endl;
 	out << "distances calls per iteration: " << clusters.getDistancesCallCount() / clusters.getUsedIterationsCount() << endl;
+	out << "Error: " << clusters.meanSquareError() << endl;
 	out.flush();
 	stream << "K-Means" << endl;
 	clusters.printClusters(stream);
@@ -68,6 +69,7 @@ void testClustering()
 	out << "used iterations: " << traingle.getUsedIterationsCount() << endl;
 	out << "conditions counter: " << traingle.getConditionsUseCount() << endl;
 	out << "distances calls per iteration: " << traingle.getDistancesCallCount() / traingle.getUsedIterationsCount() << endl;
+	out << "Error: " << traingle.meanSquareError() << endl;
 	out.flush();
 	stream << "K-Means Traingle" << endl;
 	traingle.printClusters(stream);

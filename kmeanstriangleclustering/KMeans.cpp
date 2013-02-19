@@ -137,22 +137,15 @@ void KMeans::compute_centroids(QTextStream& log)
 		foreach(PointId pid, clusters_to_points__[cid])
 		{
 			Point p = ps__->getPoint(pid);
-			log << "kmeans centres: [" << pid << "]" << endl;
 			for (i=0; i<num_dimensions__; i++)
-			{
 				means[cid][i] += p[i];
-				log << "tmp means[" << cid << "][" << i << "] = " << means[cid][i] << endl;
-			}
 			num_points_in_cluster++;
 		}
 		//
 		// if no point in the clusters, this goes to inf (correct!)
 		//
 		for (i=0; i<num_dimensions__; i++)
-		{
 			means[cid][i] /= num_points_in_cluster;
-			log << "means[" << cid << "][" << i << "] /= " << num_points_in_cluster << " = " << means[cid][i] << endl;
-		}
 		cid++;
 	}
 	centroids__ = means;
@@ -232,7 +225,7 @@ void KMeans::executeAlgorithm()
 	// Initial partition of points
 	//
 	initial_partition_points();
-
+	compute_centroids(*log_stream__);
 	//
 	// Until not converge
 	//
@@ -318,4 +311,27 @@ void KMeans::storeCurrentIterationState()
 	}
 	iterations_states__.push_back(status);
 }
+
+Distance KMeans::meanSquareError()
+{
+	Distance mean = 0.0;
+//	QTextStream out(stdout);
+	QVector<Distance> lens(ps__->getNumPoints());
+	for(int i=0; i<this->ps__->getNumPoints(); ++i)
+	{
+		lens[i] = cosinDist(ps__->getPoint(i), centroids__[points_to_clusters__[i]]);
+		mean += lens[i];
+	}
+	mean /= ps__->getNumPoints();
+//	out << "Mean: " << mean << endl;
+	Distance error = 0.0;
+	for(int i=0; i<this->ps__->getNumPoints(); ++i)
+		error += (lens[i] - mean)*(lens[i] - mean);
+	error /= (double)(ps__->getNumPoints()*(ps__->getNumPoints() - 1));
+//	out << "Error: " << error << endl;
+	return sqrt(error);
+}
+
+
+
 

@@ -7,6 +7,9 @@
 #include "KMeans.hpp"
 #include "models.hpp"
 
+//QVector<Coord>& operator += (QVector<Coord>& v1, QVector<Coord>& v2);
+//QVector<Coord>& operator -= (QVector<Coord>& v1, QVector<Coord>& v2);
+
 class KMeansTriangle : public KMeans
 {
 public:
@@ -23,8 +26,15 @@ protected:
 	//
 	// Zero centroids
 	//
-	void compute_centroids(bool first, QTextStream& log);
+	void compute_centroids(QTextStream& log);
 
+	void assignDSVectors();
+
+	void computeLowerAndUpperBounds();
+
+	bool computePointsAssignements();
+
+	void initialLowerAndUpperBoundsRecalculation();
 	//
 	// Initial partition points among available clusters
 	//
@@ -35,6 +45,7 @@ protected:
 private:
 
 	QVector<QVector<Distance> > centersToCenters__;
+	QVector<Point> new_centroids__;
 	QVector<Distance> upperBounds__;
 	QVector<QVector<Distance> > lowerBounds__;
 	QVector<bool> rVector__;
