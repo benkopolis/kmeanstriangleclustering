@@ -54,7 +54,7 @@ void testClustering()
 	//ps->loadPointsSpace("D:/korpusy/classic_data/docbyterm.tfidf.norm.txt");
 	KMeans clusters(num_clusters, 10, ps, true);
 	KMeansTriangle traingle(num_clusters, 10, ps, true);
-	KMeansTriangle hamilton(num_clusters, 10, ps, true);
+	KMeans hamilton(num_clusters, 10, ps, true);
 	hamilton.setDistanceType(KMeans::Hamilton);
 	clusters.setDistanceFunction(&cosinDist);
 
@@ -66,6 +66,7 @@ void testClustering()
 	out << "used iterations: " << clusters.getUsedIterationsCount() << endl;
 	out << "distances calls per iteration: " << clusters.getDistancesCallCount() / clusters.getUsedIterationsCount() << endl;
 	out << "Error: " << clusters.meanSquareError() << endl;
+	out << "Moved: " << clusters.getMovedCount() << endl;
 	out << "Clusters: " << endl;
 	clusters.printClustersSize(out);
 	out.flush();
@@ -81,6 +82,7 @@ void testClustering()
 	out << "conditions counter: " << traingle.getConditionsUseCount() << endl;
 	out << "distances calls per iteration: " << traingle.getDistancesCallCount() / traingle.getUsedIterationsCount() << endl;
 	out << "Error: " << traingle.meanSquareError() << endl;
+	out << "Moved: " << traingle.getMovedCount() << endl;
 	out << "Clusters: " << endl;
 	traingle.printClustersSize(out);
 
@@ -90,9 +92,9 @@ void testClustering()
 	out << "elapsed: " << e2timer.elapsed() << "ms" << endl;
 	out << "distnace counter calls: " << hamilton.getDistancesCallCount() << endl;
 	out << "used iterations: " << hamilton.getUsedIterationsCount() << endl;
-	out << "conditions counter: " << hamilton.getConditionsUseCount() << endl;
 	out << "distances calls per iteration: " << hamilton.getDistancesCallCount() / hamilton.getUsedIterationsCount() << endl;
 	out << "Error: " << hamilton.meanSquareError() << endl;
+	out << "Moved: " << hamilton.getMovedCount() << endl;
 	out << "Clusters: " << endl;
 	hamilton.printClustersSize(out);
 

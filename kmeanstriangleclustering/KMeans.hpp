@@ -80,6 +80,8 @@ public:
 		return this->iterations_states__;
 	}
 
+	inline unsigned int getMovedCount() const { return num_moved__; }
+
 	void countPreRandIndex();
 	bool storePreRandIndex(QString fileName) const;
 	void printClustersSize(QTextStream& stream) const;

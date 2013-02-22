@@ -63,11 +63,11 @@ QTextStream& operator <<(QTextStream& os, ClustersToPoints & cp) {
 QTextStream& operator <<(QTextStream& os, PointsToClusters & pc) {
 	PointId pid = 0;
 	QTextStream cout(stdout);
-	foreach(PointsToClusters::value_type cid, pc){
-
-	cout << "pid[" << pid << "]=" << cid << endl;
-	pid ++;
-}
+	foreach(PointsToClusters::value_type cid, pc)
+	{
+		cout << "pid[" << pid << "]=" << cid << endl;
+		pid ++;
+	}
 	return os;
 }
 
@@ -79,8 +79,14 @@ QTextStream& operator <<(QTextStream& os, PointsToClusters & pc) {
 
 
 KMeans::KMeans(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store) :
-		num_clusters__(nclusters), iterationsCount__(numIters), ps__(ps),
-	distances_call_count__(0), used_iterations__(0), store_states__(store)
+	num_clusters__(nclusters),
+	iterationsCount__(numIters),
+	ps__(ps),
+	distances_call_count__(0),
+	used_iterations__(0),
+	store_states__(store),
+	num_moved__(0),
+	distance_type__(Euclidean)
 {
 	ClusterId i = 0;
 	Dimensions dim;
