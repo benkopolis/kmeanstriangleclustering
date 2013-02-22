@@ -6,9 +6,9 @@ KMeansTriangle::KMeansTriangle(ClusterId nclusters, unsigned int numIters, Abstr
 	conditions_use_counter__(0),
 	sVector__(nclusters, std::numeric_limits<Distance>::max()),
 	centersToCenters__(nclusters, QVector<Distance>(nclusters, 0.0)),
-	lowerBounds__(nclusters, QVector<Distance>(ps->getNumPoints())),
+	lowerBounds__(nclusters, QVector<Distance>(ps->getNumPoints(), 0.0)),
 	upperBounds__(ps->getNumPoints(), std::numeric_limits<Distance>::max()),
-	new_centroids__(nclusters, QVector<Coord>(ps->getNumDimensions(), 0.0)),
+	new_centroids__(nclusters, Point()),
 	rVector__(ps->getNumPoints(), false)
 {
 
@@ -76,6 +76,8 @@ void KMeansTriangle::computeLowerAndUpperBounds()
 bool KMeansTriangle::computePointsAssignements()
 {
 	bool change = false;
+	bool move = false;
+	ClusterId to_cluster = 0;
 	for (unsigned int pid = 0; pid < upperBounds__.size(); ++pid)
 	{
 		if (upperBounds__[pid] > sVector__[points_to_clusters__[pid]])
@@ -100,12 +102,19 @@ bool KMeansTriangle::computePointsAssignements()
 							((lowerBounds__[a][pid] = cosinDist(ps__->getPoint(pid), centroids__[a])) < upperBounds__[pid]))
 					{
 						clusters_to_points__[points_to_clusters__[pid]].remove(pid);
-						clusters_to_points__[a].insert(pid);
-						points_to_clusters__[pid] = a;
+						move = true;
 						change = true;
-						upperBounds__[pid] = lowerBounds__[a][pid];
-						rVector__[pid] = false;
+						to_cluster = a;
 					}
+				}
+				if(move)
+				{
+					clusters_to_points__[to_cluster].insert(pid);
+					points_to_clusters__[pid] = to_cluster;
+					upperBounds__[pid] = lowerBounds__[to_cluster][pid];
+					rVector__[pid] = false;
+					move = false;
+					++num_moved__;
 				}
 			}
 		}
@@ -275,18 +284,41 @@ void KMeansTriangle::executeAlgorithm()
 //			}
 //		}
 
-
-
-
-
-
-
-
-
-
-
-
-
+void KMeansTriangle::firstLoop(QTextStream& log)
+{
+	ClusterId to_cluster;
+	Distance d, min;
+	bool move = false;
+	for(PointId pid = 0; pid < ps__->getNumPoints(); ++pid)
+	{
+		min = cosinDist(centroids__[points_to_clusters__[pid]],
+			ps__->getPoint(pid));
+		lowerBounds__[points_to_clusters__[pid]][pid] = min;
+		upperBounds__[pid] = min;
+		for(ClusterId cid =0; cid < num_clusters__; ++cid)
+		{
+			if(cid == points_to_clusters__[pid])
+				continue;
+			d = cosinDist(centroids__[cid], ps__->getPoint(pid));
+			lowerBounds__[cid][pid] = d;
+			if(d<min)
+			{
+				upperBounds__[pid] = d;
+				move = true;
+				min = d;
+				to_cluster = cid;
+			}
+		}
+		if(move)
+		{
+			move = false;
+			clusters_to_points__[points_to_clusters__[pid]].remove(pid);
+			points_to_clusters__[pid] = to_cluster;
+			clusters_to_points__[to_cluster].insert(pid);
+			++num_moved__;
+		}
+	}
+}
 
 void KMeansTriangle::initialLoop(QTextStream* log_stream__)
 {

@@ -42,6 +42,8 @@ protected:
 
 	void initialLoop(QTextStream* log_stream__);
 
+	void firstLoop(QTextStream& log);
+
 private:
 
 	QVector<QVector<Distance> > centersToCenters__;

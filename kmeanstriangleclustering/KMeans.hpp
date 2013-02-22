@@ -18,6 +18,19 @@
 
 
 class KMeans {
+public:
+
+	enum DistanceType
+	{
+		Euclidean = 0,
+		Cosin = 1,
+		Hamilton = 2
+	};
+
+	KMeans(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store=false);
+
+	~KMeans();
+
 protected:
 
 	distanceFunc distance__;
@@ -33,13 +46,15 @@ protected:
 	unsigned int iterationsCount__;
 	Distances all_distances__;
 
+	DistanceType distance_type__;
+
 public:
 
-	KMeans(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store=false);
-
-	~KMeans();
-
 	virtual void executeAlgorithm();
+
+	inline void setDistanceType(DistanceType type) {
+		distance_type__ = type;
+	}
 
 	inline void setDistanceFunction(distanceFunc f) {
 		distance__ = f;
@@ -65,13 +80,18 @@ public:
 		return this->iterations_states__;
 	}
 
+	void countPreRandIndex();
+	bool storePreRandIndex(QString fileName) const;
+	void printClustersSize(QTextStream& stream) const;
+
 	Distance meanSquareError();
 
 protected:
 
 	QList<QString> iterations_states__;
 	bool store_states__;
-
+	QHash<QPair<PointId, PointId>, bool> pre_rand_index__;
+	unsigned int num_moved__;
 
 	void storeCurrentIterationState();
 
@@ -90,23 +110,28 @@ protected:
 
 		long double sigma = 0.0;
 
-//		for(int i=0; i<p.size() && i<q.size(); ++i)
-//			sigma += fabs(p[i] - q[i]);
-//		return sigma;
-
-		for(int i=0; i<p.size() && i<q.size(); ++i)
+		if(distance_type__ == Hamilton)
 		{
-			sigma = sigma + (long double)((p[i] - q[i])*(p[i] - q[i]));
+			for(int i=0; i<p.size() && i<q.size(); ++i)
+				sigma += fabs(p[i] - q[i]);
+			return sigma;
 		}
-		return sqrt((double)sigma);
-
-
-
-
-		// cosin distance
-//		return 1.0
-//				- (dotMatrixes(p, q) / sqrt(dotMatrixes(p, p))
-//						* sqrt(dotMatrixes(q, q)));
+		else if(distance_type__ == Euclidean)
+		{
+			for (int i=0; i<p.size() && i<q.size(); ++i)
+			{
+				if (p.contains(i) && q.contains(i))
+					sigma = sigma + (long double)((p[i] - q[i])*(p[i] - q[i]));
+				else if (p.contains(i))
+					sigma = sigma + p[i]*p[i];
+				else if (q.contains(i))
+					sigma = sigma + q[i]*q[i];
+			}
+			return sqrt((double)sigma);
+		}
+		if(distance_type__ == Cosin)
+			return 1.0 - (dotMatrixes(p, q) / sqrt(dotMatrixes(p, p))
+						* sqrt(dotMatrixes(q, q)));
 	}
 
 	//

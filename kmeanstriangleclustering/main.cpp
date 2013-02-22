@@ -3,6 +3,7 @@
 #include "KMeans.hpp"
 #include "kmeanstriangle.hpp"
 #include "spaces/pointsspace.h"
+#include "spaces/normalizedpointsspace.h"
 
 Distance dotMatrixes(Point a, Point b)
 {
@@ -30,60 +31,78 @@ Distance euclideanDist(Point p, Point q)
 	return sqrt((double)sigma);
 }
 
+void produceClusteringData()
+{
+
+}
+
 void testClustering()
 {
+//	QFile outputData("output.data");
+//	outputData.open(QFile::WriteOnly | QFile::Append);
 	QTextStream out(stdout);
 	QFile clustersData("clusters.log");
 	clustersData.open(QFile::WriteOnly);
 	QTextStream stream(&clustersData);
-	ClusterId num_clusters = 18;
-	PointId num_points = 1200;
-	Dimensions num_dimensions = 20;
+	ClusterId num_clusters = 10;
+	PointId num_points = 700;
+	Dimensions num_dimensions = 100;
 
-	PointsSpace *ps = 0;
-	ps = new PointsSpace(num_points, num_dimensions);//();//
-	ps->savePointsSpace("points_test.txt");
-	KMeans clusters(num_clusters, 5, (AbstractPointsSpace*)ps, true);
-	KMeansTriangle traingle(num_clusters, 5, (AbstractPointsSpace*)ps, true);
+	AbstractPointsSpace *ps = 0;
+//	ps = new NormalizedPointsSpace();//();//
+	ps = new PointsSpace(num_points, num_dimensions);
+	//ps->loadPointsSpace("D:/korpusy/classic_data/docbyterm.tfidf.norm.txt");
+	KMeans clusters(num_clusters, 10, ps, true);
+	KMeansTriangle traingle(num_clusters, 10, ps, true);
+	KMeansTriangle hamilton(num_clusters, 10, ps, true);
+	hamilton.setDistanceType(KMeans::Hamilton);
 	clusters.setDistanceFunction(&cosinDist);
+
 	QElapsedTimer etimer;
 	etimer.start();
 	clusters.executeAlgorithm();
-
 	out << "elapsed: " << etimer.elapsed() << "ms" << endl;
 	out << "distnace counter calls: " << clusters.getDistancesCallCount() << endl;
 	out << "used iterations: " << clusters.getUsedIterationsCount() << endl;
 	out << "distances calls per iteration: " << clusters.getDistancesCallCount() / clusters.getUsedIterationsCount() << endl;
 	out << "Error: " << clusters.meanSquareError() << endl;
+	out << "Clusters: " << endl;
+	clusters.printClustersSize(out);
 	out.flush();
 	stream << "K-Means" << endl;
-	clusters.printClusters(stream);
+
 
 	QElapsedTimer e1timer;
 	e1timer.start();
 	traingle.executeAlgorithm();
-
-
 	out << "elapsed: " << e1timer.elapsed() << "ms" << endl;
 	out << "distnace counter calls: " << traingle.getDistancesCallCount() << endl;
 	out << "used iterations: " << traingle.getUsedIterationsCount() << endl;
 	out << "conditions counter: " << traingle.getConditionsUseCount() << endl;
 	out << "distances calls per iteration: " << traingle.getDistancesCallCount() / traingle.getUsedIterationsCount() << endl;
 	out << "Error: " << traingle.meanSquareError() << endl;
+	out << "Clusters: " << endl;
+	traingle.printClustersSize(out);
+
+	QElapsedTimer e2timer;
+	e2timer.start();
+	hamilton.executeAlgorithm();
+	out << "elapsed: " << e2timer.elapsed() << "ms" << endl;
+	out << "distnace counter calls: " << hamilton.getDistancesCallCount() << endl;
+	out << "used iterations: " << hamilton.getUsedIterationsCount() << endl;
+	out << "conditions counter: " << hamilton.getConditionsUseCount() << endl;
+	out << "distances calls per iteration: " << hamilton.getDistancesCallCount() / hamilton.getUsedIterationsCount() << endl;
+	out << "Error: " << hamilton.meanSquareError() << endl;
+	out << "Clusters: " << endl;
+	hamilton.printClustersSize(out);
+
+	clusters.storePreRandIndex("classicKMeansX.prtxt");
+	traingle.storePreRandIndex("traingleX.prtxt");
+	hamilton.storePreRandIndex("hamiltonX.prtxt");
 	out.flush();
-	stream << "K-Means Traingle" << endl;
-	traingle.printClusters(stream);
-	stream << endl << "Diffs: " << endl;
-	traingle.printDifferences(&clusters, stream);
-	stream << "STATES: " << endl << "KMEANS" << endl;
-	int ii=0, jj=0;
-	foreach(QString s, clusters.getIterationsStates())
-		stream << ii++ << ": " << endl << s << endl;
-	stream << endl << "TRAINGLE" << endl;
-	foreach(QString s, traingle.getIterationsStates())
-		stream << jj++ << ": " << endl << s << endl;
 	stream.flush();
 	clustersData.close();
+	//outputData.close();
 }
 
 void testDistances()

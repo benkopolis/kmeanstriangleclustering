@@ -26,12 +26,22 @@ Point PointsSpace::getPoint(PointId index) const
 	return points__.value(index);
 }
 
+bool PointsSpace::contains(PointId index) const
+{
+	return points__.contains(index);
+}
+
+QList<PointId> PointsSpace::getPointIds() const
+{
+	return points__.keys();
+}
+
 void PointsSpace::init_points() {
 	srand(QDateTime::currentMSecsSinceEpoch());
 	for (PointId i = 0; i < num_points__; i++) {
 		Point p;
 		for (Dimensions d = 0; d < num_dimensions__; d++) {
-			p.push_back((double)(rand() % 10)/10.0);
+			p.insert(d, (double)(rand() % 10)/10.0);
 		}
 		points__.insert(i, p);
 
@@ -69,7 +79,7 @@ void PointsSpace::loadPointsSpace(QString fileName)
 		for(int j=0; j<num_dimensions__; ++j)
 		{
 			in >> tmp;
-			point.push_back(tmp);
+			point.insert(j, tmp);
 		}
 		points__.insert(i, point);
 	}

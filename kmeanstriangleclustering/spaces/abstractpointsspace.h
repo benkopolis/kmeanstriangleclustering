@@ -17,9 +17,12 @@ public:
 
 	virtual void insertPoint(Point p, PointId index) = 0;
 	virtual Point getPoint(PointId index) const = 0;
+	virtual bool contains(PointId index) const = 0;
 
 	virtual void savePointsSpace(QString fileName) = 0;
 	virtual void loadPointsSpace(QString fileName) = 0;
+
+	virtual QList<PointId> getPointIds() const = 0;
 
 protected:
 

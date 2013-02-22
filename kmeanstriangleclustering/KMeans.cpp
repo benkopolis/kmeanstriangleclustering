@@ -89,7 +89,7 @@ KMeans::KMeans(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* 
 	for (; i < nclusters; i++) {
 		Point point; // each centroid is a point
 		for (dim = 0; dim < num_dimensions__; dim++)
-			point.push_back(0.0);
+			point.insert(i, 0.0);
 		SetPoints set_of_points;
 
 		// init centroids
@@ -108,16 +108,51 @@ KMeans::~KMeans() {
 	// TODO Auto-generated destructor stub
 }
 
+
+void KMeans::countPreRandIndex()
+{
+	for(PointId i=0; i < ps__->getNumPoints()-1; ++i)
+	{
+		int tmp = ps__->getNumPoints()-1;
+		pre_rand_index__[QPair<PointId, PointId>(i, tmp)] = points_to_clusters__[i] == points_to_clusters__[tmp];
+		for(PointId j=i+1; ps__->getNumPoints(); ++j)
+			pre_rand_index__[QPair<PointId, PointId>(i, j)] = points_to_clusters__[i] == points_to_clusters__[j];
+	}
+}
+
+bool KMeans::storePreRandIndex(QString fileName) const
+{
+	QFile file(fileName);
+	if(!file.open(QFile::WriteOnly))
+		return false;
+	QTextStream out(&file);
+	out << ps__->getNumPoints() << ' ' << num_clusters__ << ' ' << ps__->getNumPoints() << endl;
+	foreach(PointId i, ps__->getPointIds())
+	{
+		out << i << ' ' << points_to_clusters__[i] << ' ' << 1.0 << endl;
+	}
+	file.close();
+	return true;
+}
+
+void KMeans::printClustersSize(QTextStream& stream) const
+{
+	for(ClusterId i=0; i < num_clusters__; ++i)
+		stream << i << ": " << clusters_to_points__[i].size() << endl;
+}
+
 //
 // Zero centroids
 //
 void KMeans::zero_centroids() {
 
-	foreach(Point centroid, centroids__){
-	foreach(Coord d, centroid) {
-		d = 0.0;
+	foreach(Point centroid, centroids__)
+	{
+		foreach(Coord d, centroid)
+		{
+			d = 0.0;
+		}
 	}
-}
 }
 
 //
@@ -213,7 +248,7 @@ void KMeans::executeAlgorithm()
 	bool some_point_is_moving = true;
 	unsigned int num_iterations = 0;
 	PointId pid;
-	ClusterId cid, to_cluster;
+	ClusterId to_cluster;
 	Distance d, min;
 	QFile log_file__("log_template.txt");
 	QTextStream* log_stream__;
@@ -225,50 +260,39 @@ void KMeans::executeAlgorithm()
 	// Initial partition of points
 	//
 	initial_partition_points();
-	compute_centroids(*log_stream__);
 	//
 	// Until not converge
 	//
 	while (some_point_is_moving && num_iterations <= iterationsCount__)
 	{
-		if(store_states__)
-			this->storeCurrentIterationState();
 		some_point_is_moving = false;
 		compute_centroids(*log_stream__);
-		for(int centerId=0; centerId < centroids__.size(); ++centerId)
-			all_distances__[centerId].clear();
+		if(store_states__)
+			this->storeCurrentIterationState();
 		// for each point
 		for (pid = 0; pid < num_points__; pid++)
 		{
 			// distance from current cluster
 			min = cosinDist(centroids__[points_to_clusters__[pid]],
 					ps__->getPoint(pid));
-			all_distances__[points_to_clusters__[pid]].insert(pid, min);
 			// foreach centroid
-			cid = 0;
 			move = false;
-			foreach(Centroids::value_type c, centroids__)
+			for(ClusterId cid=0; cid <  centroids__.size(); ++cid)
 			{
-				if(!all_distances__[cid].contains(pid))
-					all_distances__[cid].insert(pid, cosinDist(c, ps__->getPoint(pid)));
-				d = all_distances__[cid][pid];
+				d = cosinDist(centroids__[cid], ps__->getPoint(pid));
 				if (d < min)
 				{
 					min = d;
 					move = true;
 					to_cluster = cid;
-
-					// remove from current cluster
-					clusters_to_points__[points_to_clusters__[pid]].remove(pid);
-
+					++num_moved__;
 					some_point_is_moving = true;
-					//std::cout << "\tcluster=" << cid
-				//	<< " closer, dist=" << d << std::endl;
 				}
 				cid++;
 			}
 			if (move)
 			{
+				clusters_to_points__[points_to_clusters__[pid]].remove(pid);
 				// insert
 				points_to_clusters__[pid] = to_cluster;
 				clusters_to_points__[to_cluster].insert(pid);

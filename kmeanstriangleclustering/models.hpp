@@ -25,7 +25,7 @@ typedef double Distance;
 
 typedef QHash<unsigned int, QHash<unsigned int, Distance> > Distances;
 
-typedef QVector<Coord> Point;
+typedef QHash<unsigned int, Coord> Point;
 
 typedef QVector<Point> Points;
 

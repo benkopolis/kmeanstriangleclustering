@@ -5,7 +5,7 @@
 
 // This class stores all the points available in the model
 //
-class PointsSpace : AbstractPointsSpace {
+class PointsSpace : public AbstractPointsSpace {
 public:
 
 	//
@@ -30,9 +30,11 @@ public:
 
 	virtual void insertPoint(Point p, PointId index);
 	virtual Point getPoint(PointId index) const;
+	virtual bool contains(PointId index) const;
 
 	virtual void savePointsSpace(QString fileName);
 	virtual void loadPointsSpace(QString fileName);
+	virtual QList<PointId> getPointIds() const;
 
 
 protected:
