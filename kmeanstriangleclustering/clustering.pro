@@ -16,7 +16,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    KMeans_test.cpp \
     KMeans.cpp \
     kmeanstriangle.cpp \
     ui/clusteringview.cpp \

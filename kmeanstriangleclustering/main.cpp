@@ -48,14 +48,17 @@ void testClustering()
 	PointId num_points = 700;
 	Dimensions num_dimensions = 100;
 
-	AbstractPointsSpace *ps = 0;
-//	ps = new NormalizedPointsSpace();//();//
-	ps = new PointsSpace(num_points, num_dimensions);
+	AbstractPointsSpace *ps = 0, *ps1, *ps2;
+	//ps = new NormalizedPointsSpace();
+	ps = new PointsSpace();//(num_points, num_dimensions);//
 	//ps->loadPointsSpace("D:/korpusy/classic_data/docbyterm.tfidf.norm.txt");
+	ps->loadPointsSpace("points.data");
+	ps1 = new PointsSpace(*(PointsSpace*)ps);
+	ps2 = new PointsSpace(*(PointsSpace*)ps);
 	KMeans clusters(num_clusters, 10, ps, true);
-	KMeansTriangle traingle(num_clusters, 10, ps, true);
-	KMeans hamilton(num_clusters, 10, ps, true);
-	hamilton.setDistanceType(KMeans::Hamilton);
+	KMeansTriangle traingle(num_clusters, 10, ps1, true);
+	KMeans hamming(num_clusters, 10, ps2, true);
+	hamming.setDistanceType(KMeans::Hamming);
 	clusters.setDistanceFunction(&cosinDist);
 
 	QElapsedTimer etimer;
@@ -88,19 +91,19 @@ void testClustering()
 
 	QElapsedTimer e2timer;
 	e2timer.start();
-	hamilton.executeAlgorithm();
+	hamming.executeAlgorithm();
 	out << "elapsed: " << e2timer.elapsed() << "ms" << endl;
-	out << "distnace counter calls: " << hamilton.getDistancesCallCount() << endl;
-	out << "used iterations: " << hamilton.getUsedIterationsCount() << endl;
-	out << "distances calls per iteration: " << hamilton.getDistancesCallCount() / hamilton.getUsedIterationsCount() << endl;
-	out << "Error: " << hamilton.meanSquareError() << endl;
-	out << "Moved: " << hamilton.getMovedCount() << endl;
+	out << "distnace counter calls: " << hamming.getDistancesCallCount() << endl;
+	out << "used iterations: " << hamming.getUsedIterationsCount() << endl;
+	out << "distances calls per iteration: " << hamming.getDistancesCallCount() / hamming.getUsedIterationsCount() << endl;
+	out << "Error: " << hamming.meanSquareError() << endl;
+	out << "Moved: " << hamming.getMovedCount() << endl;
 	out << "Clusters: " << endl;
-	hamilton.printClustersSize(out);
+	hamming.printClustersSize(out);
 
 	clusters.storePreRandIndex("classicKMeansX.prtxt");
 	traingle.storePreRandIndex("traingleX.prtxt");
-	hamilton.storePreRandIndex("hamiltonX.prtxt");
+	hamming.storePreRandIndex("hammingX.prtxt");
 	out.flush();
 	stream.flush();
 	clustersData.close();

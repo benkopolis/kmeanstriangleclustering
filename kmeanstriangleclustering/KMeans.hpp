@@ -24,7 +24,7 @@ public:
 	{
 		Euclidean = 0,
 		Cosin = 1,
-		Hamilton = 2
+		Hamming = 2
 	};
 
 	KMeans(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store=false);
@@ -112,7 +112,7 @@ protected:
 
 		long double sigma = 0.0;
 
-		if(distance_type__ == Hamilton)
+		if(distance_type__ == Hamming)
 		{
 			for(int i=0; i<p.size() && i<q.size(); ++i)
 				sigma += fabs(p[i] - q[i]);

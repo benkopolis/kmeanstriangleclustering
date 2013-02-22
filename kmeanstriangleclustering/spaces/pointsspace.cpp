@@ -21,7 +21,7 @@ void PointsSpace::insertPoint(Point p, PointId index)
 	++AbstractPointsSpace::num_points__;
 }
 
-Point PointsSpace::getPoint(PointId index) const
+const Point PointsSpace::getPoint(PointId index) const
 {
 	return points__.value(index);
 }

@@ -29,7 +29,7 @@ public:
 //	void dumpToFile(QString fileName);
 
 	virtual void insertPoint(Point p, PointId index);
-	virtual Point getPoint(PointId index) const;
+	virtual const Point getPoint(PointId index) const;
 	virtual bool contains(PointId index) const;
 
 	virtual void savePointsSpace(QString fileName);

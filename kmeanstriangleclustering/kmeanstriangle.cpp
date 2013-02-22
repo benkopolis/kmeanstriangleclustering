@@ -24,6 +24,8 @@ void KMeansTriangle::compute_centroids(QTextStream& log)
 	for(int cid = 0; cid < centroids__.size(); ++cid)
 	{
 		num_points_in_cluster = 0;
+		for(unsigned int crd = 0; crd < num_dimensions__; ++crd)
+			new_centroids__[cid][crd] = 0;
 		// For earch PointId in this set
 		foreach(PointId pid, clusters_to_points__[cid])
 		{
@@ -32,9 +34,7 @@ void KMeansTriangle::compute_centroids(QTextStream& log)
 				new_centroids__[cid][i] += p[i];
 			num_points_in_cluster++;
 		}
-		//
 		// if no point in the clusters, this goes to inf (correct!)
-		//
 		for (i=0; i<num_dimensions__; i++)
 			new_centroids__[cid][i] /= num_points_in_cluster;
 	}
@@ -73,7 +73,7 @@ void KMeansTriangle::computeLowerAndUpperBounds()
 	}
 }
 
-bool KMeansTriangle::computePointsAssignements()
+bool KMeansTriangle::computePointsAssignements(QTextStream& log)
 {
 	bool change = false;
 	bool move = false;
@@ -119,6 +119,7 @@ bool KMeansTriangle::computePointsAssignements()
 			} // all centers checked
 			if(move)
 			{
+				log << pid << ':' << points_to_clusters__[pid] << ':' << to_cluster << endl;
 				clusters_to_points__[to_cluster].insert(pid);
 				points_to_clusters__[pid] = to_cluster;
 				upperBounds__[pid] = lowerBounds__[to_cluster][pid];
@@ -206,7 +207,7 @@ void KMeansTriangle::executeAlgorithm()
 
 		this->assignDSVectors();
 
-		some_point_is_moving = this->computePointsAssignements();
+		some_point_is_moving = this->computePointsAssignements(*log_stream__);
 
 		compute_centroids((*log_stream__));
 
@@ -217,7 +218,6 @@ void KMeansTriangle::executeAlgorithm()
 	used_iterations__ = num_iterations;
 	if(store_states__)
 		this->storeCurrentIterationState();
-	(*log_stream__) << "Skipping becouse of 1 (" << skipped_1 << "), 2 (" << skipped_2 << "), 3 (" << skipped_3 << ")" << endl;
 	(*log_stream__).flush();
 	log_file__.close();
 	delete log_stream__;
@@ -329,6 +329,7 @@ void KMeansTriangle::firstLoop(QTextStream& log)
 		}
 		if(move)
 		{
+			log << pid << ':' << points_to_clusters__[pid] << ':' << to_cluster << endl;
 			move = false;
 			clusters_to_points__[points_to_clusters__[pid]].remove(pid);
 			points_to_clusters__[pid] = to_cluster;

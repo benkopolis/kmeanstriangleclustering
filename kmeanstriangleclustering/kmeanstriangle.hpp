@@ -32,7 +32,7 @@ protected:
 
 	void computeLowerAndUpperBounds();
 
-	bool computePointsAssignements();
+	bool computePointsAssignements(QTextStream& log);
 
 	void initialLowerAndUpperBoundsRecalculation();
 	//
@@ -47,7 +47,7 @@ protected:
 private:
 
 	QVector<QVector<Distance> > centersToCenters__;
-	QVector<Point> new_centroids__;
+	Centroids new_centroids__;
 	QVector<Distance> upperBounds__;
 	QVector<QVector<Distance> > lowerBounds__;
 	QVector<bool> rVector__;

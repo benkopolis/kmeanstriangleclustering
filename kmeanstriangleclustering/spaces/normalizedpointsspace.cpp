@@ -9,7 +9,7 @@ void NormalizedPointsSpace::insertPoint(Point p, PointId index)
 	points__.insert(index, p);
 }
 
-Point NormalizedPointsSpace::getPoint(PointId index) const
+const Point NormalizedPointsSpace::getPoint(PointId index) const
 {
 	return points__.value(index);
 }

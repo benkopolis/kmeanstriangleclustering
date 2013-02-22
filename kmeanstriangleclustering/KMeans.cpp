@@ -256,7 +256,10 @@ void KMeans::executeAlgorithm()
 	PointId pid;
 	ClusterId to_cluster;
 	Distance d, min;
-	QFile log_file__("log_template.txt");
+	QString logName = "log_template.txt";
+	if(distance_type__ != Euclidean)
+		logName = "log_nottemp.txt";
+	QFile log_file__(logName);
 	QTextStream* log_stream__;
 	if(log_file__.open(QFile::WriteOnly))// | QFile::Append))
 		log_stream__ = new QTextStream(&log_file__);
@@ -285,24 +288,26 @@ void KMeans::executeAlgorithm()
 			move = false;
 			for(ClusterId cid=0; cid <  centroids__.size(); ++cid)
 			{
-				d = cosinDist(centroids__[cid], ps__->getPoint(pid));
-				if (d < min)
+				if(cid != points_to_clusters__[pid])
 				{
-					min = d;
-					move = true;
-					to_cluster = cid;
-					++num_moved__;
-					some_point_is_moving = true;
+					d = cosinDist(centroids__[cid], ps__->getPoint(pid));
+					if (d < min)
+					{
+						min = d;
+						move = true;
+						to_cluster = cid;
+						++num_moved__;
+						some_point_is_moving = true;
+					}
 				}
-				cid++;
 			}
 			if (move)
 			{
+				(*log_stream__) << pid << ':' << points_to_clusters__[pid] << ':' << to_cluster << endl;
 				clusters_to_points__[points_to_clusters__[pid]].remove(pid);
 				// insert
 				points_to_clusters__[pid] = to_cluster;
 				clusters_to_points__[to_cluster].insert(pid);
-				//std::cout << "\t\tmove to cluster=" << to_cluster << std::endl;
 			}
 		}
 
@@ -311,6 +316,10 @@ void KMeans::executeAlgorithm()
 	if(store_states__)
 		this->storeCurrentIterationState();
 	used_iterations__ = num_iterations;
+	(*log_stream__) << endl << endl << endl;
+	log_stream__->flush();
+	log_file__.close();
+	delete log_stream__;
 }
 
 
