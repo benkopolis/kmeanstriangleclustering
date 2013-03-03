@@ -85,6 +85,9 @@ bool KMeansTriangle::computePointsAssignements(QTextStream& log)
 		{
 			for (unsigned int a = 0; a < centroids__.size(); ++a)
 			{
+				log << pid << ':' << "upperBounds__[pid] < sVector__[" << points_to_clusters__[pid] << "]: " << (upperBounds__[pid] < sVector__[points_to_clusters__[pid]]) << endl;
+				log << "upperBounds__[pid] > lowerBounds__[" << a << "][pid]: " << (upperBounds__[pid] > lowerBounds__[a][pid]) << endl;
+				log << "upperBounds__[pid] > centersToCenters__[points_to_clusters__[pid]][a]/2.0: " << (upperBounds__[pid] > centersToCenters__[points_to_clusters__[pid]][a]/2.0) << endl << endl;
 				if(upperBounds__[pid] < sVector__[points_to_clusters__[pid]])
 					continue;
 				if (a != points_to_clusters__[pid] &&
@@ -182,7 +185,7 @@ void KMeansTriangle::executeAlgorithm()
 	firstLoop(*log_stream__);
 //	computePointsAssignements();
 	compute_centroids(*log_stream__);
-//	this->computeLowerAndUpperBounds();
+	this->computeLowerAndUpperBounds();
 	this->rVector__ = QVector<bool>(ps__->getNumPoints(), true);
 //	initialLoop(log_stream__);
 	if(store_states__)
