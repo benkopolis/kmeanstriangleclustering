@@ -12,13 +12,20 @@
 #include <cmath>
 #include <QDateTime>
 #include <QList>
+#include <QThread>
+#include <QMutex>
 #include "models.hpp"
 #include "spaces/abstractpointsspace.h"
 
 
+class KMeansComparer;
 
-class KMeans {
+
+class KMeans : public QThread
+{
 public:
+
+    friend class KMeansComparer;
 
 	enum DistanceType
 	{
@@ -27,7 +34,9 @@ public:
 		Hamming = 2
 	};
 
-	KMeans(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store=false);
+    KMeans(ClusterId nclusters, unsigned int numIters,
+           AbstractPointsSpace* ps, bool store=false,
+           KMeansComparer *monitor=0);
 
 	~KMeans();
 
@@ -48,9 +57,14 @@ protected:
 
 	DistanceType distance_type__;
 
+    KMeansComparer* monitor__;
+    QMutex mutex;
+
 public:
 
 	virtual void executeAlgorithm();
+
+    virtual void run();
 
 	inline void setDistanceType(DistanceType type) {
 		distance_type__ = type;

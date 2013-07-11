@@ -1,7 +1,10 @@
 #include "defaultnormalizedformatdatareader.h"
 
+
 #include <QTextStream>
 #include <QFile>
+
+#include "spaces/normalizedpointsspace.h"
 
 DefaultNormalizedFormatDataReader::DefaultNormalizedFormatDataReader()
 {
@@ -25,6 +28,23 @@ AbstractPointsSpace* DefaultNormalizedFormatDataReader::readPointSpaceFromFile(Q
 		err << "Can not open file for reading: " << fileName;
 		return 0;
 	}
-	int vectors, dimensions, lines;
-
+    NormalizedPointsSpace * space = new NormalizedPointsSpace();
+    PointId pointIndex = 0;
+    unsigned int coordtIndex = 0;
+    Coord c = 0.0;
+    char separator;
+    while(!in->atEnd())
+    {
+        QString line = in->readLine();
+        QTextStream line_in(&line);
+        Point p;
+        while(!line_in.atEnd())
+        {
+            line_in >> coordtIndex >> separator >> c;
+            if(!p.contains(coordtIndex))
+                p.insert(coordtIndex, c);
+        }
+        space->insertPoint(p, pointIndex);
+        ++pointIndex;
+    }
 }

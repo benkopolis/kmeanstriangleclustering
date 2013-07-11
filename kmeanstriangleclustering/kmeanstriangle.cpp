@@ -43,16 +43,18 @@ void KMeansTriangle::compute_centroids(QTextStream& log)
 void KMeansTriangle::assignDSVectors()
 {
 	for (unsigned int a = 0; a < centroids__.size() - 1; ++a)
-			for (unsigned int b = a + 1; b < centroids__.size(); ++b)
-				centersToCenters__[a][b] = centersToCenters__[b][a] = cosinDist(centroids__[a], centroids__[b]);
-
-		for (unsigned int a = 0; a < centroids__.size(); ++a)
-		{
-			sVector__[a] = centersToCenters__[a][0]/ 2.0;
-			for (unsigned int b = 1; b < centroids__.size(); ++b)
-				if (sVector__[a] > centersToCenters__[a][b]/ 2.0)
-					sVector__[a] = centersToCenters__[a][b]/ 2.0;
-		}
+	{
+		centersToCenters__[a][a] = 0;
+		for (unsigned int b = a + 1; b < centroids__.size(); ++b)
+			centersToCenters__[a][b] = centersToCenters__[b][a] = cosinDist(centroids__[a], centroids__[b]);
+	}
+	for (unsigned int a = 0; a < centroids__.size(); ++a)
+	{
+		sVector__[a] = centersToCenters__[a][0]/ 2.0;
+		for (unsigned int b = 1; b < centroids__.size(); ++b)
+			if (sVector__[a] > centersToCenters__[a][b]/ 2.0)
+				sVector__[a] = centersToCenters__[a][b]/ 2.0;
+	}
 }
 
 void KMeansTriangle::computeLowerAndUpperBounds()
@@ -122,7 +124,7 @@ bool KMeansTriangle::computePointsAssignements(QTextStream& log)
 			} // all centers checked
 			if(move)
 			{
-				log << pid << ':' << points_to_clusters__[pid] << ':' << to_cluster << endl;
+				log << pid << ':' << points_to_clusters__[pid] << '>' << to_cluster << endl;
 				clusters_to_points__[to_cluster].insert(pid);
 				points_to_clusters__[pid] = to_cluster;
 				upperBounds__[pid] = lowerBounds__[to_cluster][pid];

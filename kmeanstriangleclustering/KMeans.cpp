@@ -78,7 +78,9 @@ QTextStream& operator <<(QTextStream& os, PointsToClusters & pc) {
 //////////////////////////////////////////////
 
 
-KMeans::KMeans(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store) :
+KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
+               AbstractPointsSpace* ps, bool store,
+               KMeansComparer *monitor) :
 	num_clusters__(nclusters),
 	iterationsCount__(numIters),
 	ps__(ps),
@@ -86,7 +88,8 @@ KMeans::KMeans(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* 
 	used_iterations__(0),
 	store_states__(store),
 	num_moved__(0),
-	distance_type__(Euclidean)
+    distance_type__(Euclidean),
+    monitor__(monitor)
 {
 	ClusterId i = 0;
 	Dimensions dim;
@@ -111,7 +114,7 @@ KMeans::KMeans(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* 
 }
 
 KMeans::~KMeans() {
-	// TODO Auto-generated destructor stub
+    monitor__ = 0;
 }
 
 
@@ -245,6 +248,11 @@ void KMeans::printDifferences(const KMeans* from, QTextStream& stream) const
 		   << "Errors %: " << ((float)total / num_points__) *100.0 << endl;
 }
 
+void KMeans::run()
+{
+    executeAlgorithm();
+}
+
 /**
   *
   */
@@ -267,8 +275,10 @@ void KMeans::executeAlgorithm()
 		log_stream__ = new QTextStream(stdout);
 	//
 	// Initial partition of points
-	//
+    //
 	initial_partition_points();
+    if(monitor__)
+        ;
 	//
 	// Until not converge
 	//
@@ -276,6 +286,8 @@ void KMeans::executeAlgorithm()
 	{
 		some_point_is_moving = false;
 		compute_centroids(*log_stream__);
+        if(monitor__)
+            ;
 		if(store_states__)
 			this->storeCurrentIterationState();
 		// for each point

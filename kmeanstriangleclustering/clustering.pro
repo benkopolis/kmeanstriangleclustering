@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     readers/defaultnormalizedformatdatareader.cpp \
     spaces/abstractpointsspace.cpp \
     spaces/pointsspace.cpp \
-    spaces/normalizedpointsspace.cpp
+    spaces/normalizedpointsspace.cpp \
+    kmeanscomparer.cpp
 
 HEADERS += \
     models.hpp \
@@ -34,7 +35,8 @@ HEADERS += \
     readers/defaultnormalizedformatdatareader.h \
     spaces/abstractpointsspace.h \
     spaces/pointsspace.h \
-    spaces/normalizedpointsspace.h
+    spaces/normalizedpointsspace.h \
+    kmeanscomparer.h
 
 FORMS += \
     ui/clusteringview.ui
