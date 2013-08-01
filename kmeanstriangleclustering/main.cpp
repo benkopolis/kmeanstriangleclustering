@@ -4,6 +4,8 @@
 #include "kmeanstriangle.hpp"
 #include "spaces/pointsspace.h"
 #include "spaces/normalizedpointsspace.h"
+#include "kmeanscomparer.h"
+
 
 Distance dotMatrixes(Point a, Point b)
 {
@@ -136,11 +138,51 @@ void testDistances()
 	out.flush();
 }
 
+void testThreadClustering()
+{
+//	QFile outputData("output.data");
+//	outputData.open(QFile::WriteOnly | QFile::Append);
+    QTextStream out(stdout);
+    QFile clustersData("clusters.log");
+    clustersData.open(QFile::WriteOnly);
+    QTextStream stream(&clustersData);
+    ClusterId num_clusters = 10;
+    PointId num_points = 700;
+    Dimensions num_dimensions = 100;
+
+    AbstractPointsSpace *ps = 0, *ps1, *ps2;
+    //ps = new NormalizedPointsSpace();
+    ps = new PointsSpace();//(num_points, num_dimensions);//
+    //ps->loadPointsSpace("D:/korpusy/classic_data/docbyterm.tfidf.norm.txt");
+    ps->loadPointsSpace("points.data");
+    ps1 = new PointsSpace(*(PointsSpace*)ps);
+    ps2 = new PointsSpace(*(PointsSpace*)ps);
+
+    KMeansComparer* comparer = new KMeansComparer();
+    KMeans * clusters = new KMeans(num_clusters, 10, ps, true);
+    KMeansTriangle *traingle = new KMeansTriangle(num_clusters, 10, ps1, true);
+
+    clusters->start();
+    traingle->start();
+    comparer->start();
+
+    clusters->wait();
+    traingle->wait();
+    comparer->wait();
+
+    out << comparer->logs();
+
+    delete clusters;
+    delete traingle;
+    delete comparer;
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-	testClustering();
-	testDistances();
+//	testClustering();
+//	testDistances();
+    testThreadClustering();
 	system("pause");
 	return EXIT_SUCCESS;
 

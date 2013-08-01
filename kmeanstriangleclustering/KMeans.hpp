@@ -34,6 +34,15 @@ public:
 		Hamming = 2
 	};
 
+    enum AlgorithmPosition
+    {
+        None = -1,
+        InitialClusters = 0,
+        CentersComputed = 1,
+        DistancesCounted = 2,
+        EndLoop = 3
+    };
+
     KMeans(ClusterId nclusters, unsigned int numIters,
            AbstractPointsSpace* ps, bool store=false,
            KMeansComparer *monitor=0);
@@ -42,6 +51,7 @@ public:
 
 protected:
 
+    volatile AlgorithmPosition _algorithmPosition;
 	distanceFunc distance__;
 	unsigned used_iterations__;
 	unsigned distances_call_count__;
@@ -65,6 +75,10 @@ public:
 	virtual void executeAlgorithm();
 
     virtual void run();
+
+    inline AlgorithmPosition getAlgorithmPosition() {
+        return _algorithmPosition;
+    }
 
 	inline void setDistanceType(DistanceType type) {
 		distance_type__ = type;

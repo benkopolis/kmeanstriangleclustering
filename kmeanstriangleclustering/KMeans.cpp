@@ -7,6 +7,7 @@
 
 #include "KMeans.hpp"
 #include "models.hpp"
+#include "kmeanscomparer.h"
 
 //std::ostream& operator <<(std::ostream& os, PointsSpace & ps) {
 //
@@ -81,6 +82,7 @@ QTextStream& operator <<(QTextStream& os, PointsToClusters & pc) {
 KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
                AbstractPointsSpace* ps, bool store,
                KMeansComparer *monitor) :
+    _algorithmPosition(None),
 	num_clusters__(nclusters),
 	iterationsCount__(numIters),
 	ps__(ps),
@@ -95,6 +97,7 @@ KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
 	Dimensions dim;
 	num_dimensions__ = ps->getNumDimensions();
 	num_points__ = ps->getNumPoints();
+    monitor__->addAlgorithm(this);
 	for (; i < nclusters; i++) {
 		Point point; // each centroid is a point
 		for (dim = 0; dim < num_dimensions__; dim++)
@@ -277,8 +280,9 @@ void KMeans::executeAlgorithm()
 	// Initial partition of points
     //
 	initial_partition_points();
+    _algorithmPosition = InitialClusters;
     if(monitor__)
-        ;
+        monitor__->waitOnComparer();
 	//
 	// Until not converge
 	//
@@ -286,8 +290,9 @@ void KMeans::executeAlgorithm()
 	{
 		some_point_is_moving = false;
 		compute_centroids(*log_stream__);
+        _algorithmPosition = CentersComputed;
         if(monitor__)
-            ;
+            monitor__->waitOnComparer();
 		if(store_states__)
 			this->storeCurrentIterationState();
 		// for each point
@@ -322,9 +327,12 @@ void KMeans::executeAlgorithm()
 				clusters_to_points__[to_cluster].insert(pid);
 			}
 		}
-
+        _algorithmPosition = DistancesCounted;
+        if(monitor__)
+            monitor__->waitOnComparer();
 		num_iterations++;
 	} // end while (some_point_is_moving)
+    _algorithmPosition = EndLoop;
 	if(store_states__)
 		this->storeCurrentIterationState();
 	used_iterations__ = num_iterations;

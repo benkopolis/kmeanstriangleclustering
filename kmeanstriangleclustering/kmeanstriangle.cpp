@@ -1,4 +1,5 @@
 #include "kmeanstriangle.hpp"
+#include "kmeanscomparer.h"
 #include <limits>
 
 KMeansTriangle::KMeansTriangle(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store) :
