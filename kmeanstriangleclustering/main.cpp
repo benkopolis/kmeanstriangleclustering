@@ -46,18 +46,18 @@ void testClustering()
 	QFile clustersData("clusters.log");
 	clustersData.open(QFile::WriteOnly);
 	QTextStream stream(&clustersData);
-	ClusterId num_clusters = 10;
-	PointId num_points = 700;
-	Dimensions num_dimensions = 100;
+    ClusterId num_clusters = 2;
+    PointId num_points = 30;
+    Dimensions num_dimensions = 3;
 
 	AbstractPointsSpace *ps = 0, *ps1, *ps2;
 	//ps = new NormalizedPointsSpace();
-	ps = new PointsSpace();//(num_points, num_dimensions);//
+    ps = new PointsSpace(num_points, num_dimensions);//
 	//ps->loadPointsSpace("D:/korpusy/classic_data/docbyterm.tfidf.norm.txt");
-	ps->loadPointsSpace("points.data");
+//	ps->loadPointsSpace("points.data");
 	ps1 = new PointsSpace(*(PointsSpace*)ps);
 	ps2 = new PointsSpace(*(PointsSpace*)ps);
-	KMeans clusters(num_clusters, 10, ps, true);
+    KMeans clusters(num_clusters, 10, ps, true);
 	KMeansTriangle traingle(num_clusters, 10, ps1, true);
 	KMeans hamming(num_clusters, 10, ps2, true);
 	hamming.setDistanceType(KMeans::Hamming);
@@ -74,6 +74,7 @@ void testClustering()
 	out << "Moved: " << clusters.getMovedCount() << endl;
 	out << "Clusters: " << endl;
 	clusters.printClustersSize(out);
+    clusters.printClusters(stream);
 	out.flush();
 	stream << "K-Means" << endl;
 
@@ -90,6 +91,12 @@ void testClustering()
 	out << "Moved: " << traingle.getMovedCount() << endl;
 	out << "Clusters: " << endl;
 	traingle.printClustersSize(out);
+
+    clusters.printDifferences(&traingle, stream);
+    stream << endl << "KMEANS STATES" << endl;
+    clusters.printIterationStates(stream);
+    stream << endl << "TRAIANGLE STATES" << endl;
+    traingle.printIterationStates(stream);
 
 	QElapsedTimer e2timer;
 	e2timer.start();
@@ -140,50 +147,54 @@ void testDistances()
 
 void testThreadClustering()
 {
-//	QFile outputData("output.data");
-//	outputData.open(QFile::WriteOnly | QFile::Append);
+    QFile outputData("output.data");
+    outputData.open(QFile::WriteOnly | QFile::Append);
+    QTextStream logs(&outputData);
     QTextStream out(stdout);
     QFile clustersData("clusters.log");
     clustersData.open(QFile::WriteOnly);
     QTextStream stream(&clustersData);
-    ClusterId num_clusters = 10;
-    PointId num_points = 700;
+    ClusterId num_clusters = 4;
+    PointId num_points = 30;
     Dimensions num_dimensions = 100;
 
     AbstractPointsSpace *ps = 0, *ps1, *ps2;
     //ps = new NormalizedPointsSpace();
-    ps = new PointsSpace();//(num_points, num_dimensions);//
+    ps = new PointsSpace(num_points, num_dimensions);//
     //ps->loadPointsSpace("D:/korpusy/classic_data/docbyterm.tfidf.norm.txt");
-    ps->loadPointsSpace("points.data");
+//    ps->loadPointsSpace("points.data");
     ps1 = new PointsSpace(*(PointsSpace*)ps);
     ps2 = new PointsSpace(*(PointsSpace*)ps);
 
     KMeansComparer* comparer = new KMeansComparer();
     KMeans * clusters = new KMeans(num_clusters, 10, ps, true);
     KMeansTriangle *traingle = new KMeansTriangle(num_clusters, 10, ps1, true);
+    comparer->addAlgorithm(clusters);
+    comparer->addAlgorithm(traingle);
 
-    clusters->start();
-    traingle->start();
+    out << "Start" << endl;
+
     comparer->start();
-
-    clusters->wait();
-    traingle->wait();
     comparer->wait();
 
-    out << comparer->logs();
+    logs << comparer->logs();
 
+    traingle->wait();
+    clusters->wait();
     delete clusters;
     delete traingle;
     delete comparer;
+
+    out << "Done" << endl;
 }
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-//	testClustering();
+    testClustering();
 //	testDistances();
-    testThreadClustering();
-	system("pause");
+//    testThreadClustering();
+
 	return EXIT_SUCCESS;
 
 //    return a.exec();

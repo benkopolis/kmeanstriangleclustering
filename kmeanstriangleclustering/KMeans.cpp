@@ -97,7 +97,8 @@ KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
 	Dimensions dim;
 	num_dimensions__ = ps->getNumDimensions();
 	num_points__ = ps->getNumPoints();
-    monitor__->addAlgorithm(this);
+    if(monitor__ != 0)
+        monitor__->addAlgorithm(this);
 	for (; i < nclusters; i++) {
 		Point point; // each centroid is a point
 		for (dim = 0; dim < num_dimensions__; dim++)
@@ -231,6 +232,12 @@ void KMeans::printClusters(QTextStream& stream) const
 	}
 }
 
+void KMeans::printIterationStates(QTextStream& log)
+{
+    foreach(QString status, this->iterations_states__)
+        log << status << endl;
+}
+
 void KMeans::printDifferences(const KMeans* from, QTextStream& stream) const
 {
 	int i=0, total = 0;
@@ -295,11 +302,12 @@ void KMeans::executeAlgorithm()
             monitor__->waitOnComparer();
 		if(store_states__)
 			this->storeCurrentIterationState();
+        all_distances__.clear();
 		// for each point
 		for (pid = 0; pid < num_points__; pid++)
 		{
 			// distance from current cluster
-			min = cosinDist(centroids__[points_to_clusters__[pid]],
+            min = countDistance(centroids__[points_to_clusters__[pid]],
 					ps__->getPoint(pid));
 			// foreach centroid
 			move = false;
@@ -307,7 +315,8 @@ void KMeans::executeAlgorithm()
 			{
 				if(cid != points_to_clusters__[pid])
 				{
-					d = cosinDist(centroids__[cid], ps__->getPoint(pid));
+                    d = countDistance(centroids__[cid], ps__->getPoint(pid));
+                    all_distances__[cid].insert(pid, d);
 					if (d < min)
 					{
 						min = d;
@@ -333,6 +342,8 @@ void KMeans::executeAlgorithm()
 		num_iterations++;
 	} // end while (some_point_is_moving)
     _algorithmPosition = EndLoop;
+    if(monitor__)
+        monitor__->notifyAboutThreadEnd(this);
 	if(store_states__)
 		this->storeCurrentIterationState();
 	used_iterations__ = num_iterations;
@@ -368,6 +379,7 @@ void KMeans::storeCurrentIterationState()
 		foreach(unsigned int pid, all_distances__[cid].keys())
 			stream << pid << ":" << all_distances__[cid][pid] << ", " << endl;
 	}
+    stream.flush();
 	iterations_states__.push_back(status);
 }
 
@@ -378,7 +390,7 @@ Distance KMeans::meanSquareError()
 	QVector<Distance> lens(ps__->getNumPoints());
 	for(int i=0; i<this->ps__->getNumPoints(); ++i)
 	{
-		lens[i] = cosinDist(ps__->getPoint(i), centroids__[points_to_clusters__[i]]);
+        lens[i] = countDistance(ps__->getPoint(i), centroids__[points_to_clusters__[i]]);
 		mean += lens[i];
 	}
 	mean /= ps__->getNumPoints();

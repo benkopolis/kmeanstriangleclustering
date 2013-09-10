@@ -4,6 +4,7 @@ KMeansComparer::KMeansComparer():
     started(false),
     _algorithmsLoop(0),
     _number_of_locks(0),
+    _running_threads(0),
     _log(&_logs)
 {
 }
@@ -13,17 +14,26 @@ KMeansComparer::~KMeansComparer()
     algorithms.clear();
 }
 
+void KMeansComparer::addAlgorithm(KMeans* algorithm)
+{
+    algorithms.append(algorithm);
+    algorithm->setMonitor(this);
+}
+
 void KMeansComparer::runComparsion()
 {
     _comparsion = new QSemaphore(algorithms.size());
     foreach(KMeans* alg, algorithms)
         alg->start();
-    int running_threads = algorithms.size();
+    _running_threads = algorithms.size();
     int tmp_num_of_locks = 0;
-    while(running_threads)
-    {
-        _comparsion->acquire();
-
+    do {
+        if(!this->shouldThisRun())
+            break;
+        if(_running_threads > 1)
+            _comparsion->acquire(_running_threads);
+        else
+            break;
         foreach(KMeans* one, algorithms)
             foreach(KMeans* two, algorithms)
                 if(one != two)
@@ -35,12 +45,9 @@ void KMeansComparer::runComparsion()
         _mutex.unlock();
         _algorithmsLoop.release(tmp_num_of_locks);
         tmp_num_of_locks = 0;
-        running_threads = algorithms.size(); // checking if it should end
-        foreach(KMeans* alg, algorithms)
-            if(alg->isFinished())
-                --running_threads;
-
-    }
+        if(!this->shouldThisRun())
+            break;
+    } while(this->shouldThisRun());
 }
 
 void KMeansComparer::run()
@@ -56,12 +63,16 @@ void KMeansComparer::compare(KMeans* one, KMeans* two)
     switch(position)
     {
         case KMeans::InitialClusters:
+            this->compareInitialCenters(one, two);
             break;
         case KMeans::CentersComputed:
+            this->compareCenters(one, two);
             break;
         case KMeans::DistancesCounted:
+            this->compareDistances(one, two);
             break;
         case KMeans::EndLoop:
+            this->compareEndLoop(one, two);
             break;
         default:
             break;
@@ -168,11 +179,30 @@ void KMeansComparer::compareEndLoop(KMeans* one, KMeans* two)
     _log << "CLUSTERS comparsion END" << endl;
 }
 
+bool KMeansComparer::shouldThisRun()
+{
+    _mutex.lock();
+    bool b = _running_threads > 0;
+    _mutex.unlock();
+    return b;
+}
+
+void KMeansComparer::notifyAboutThreadEnd(KMeans* alg)
+{
+    _mutex.lock();
+    --_running_threads;
+    if(_comparsion->available() > _running_threads)
+        _comparsion->release(_comparsion->available() - _running_threads);
+    _mutex.unlock();
+}
+
 void KMeansComparer::waitOnComparer()
 {
     _mutex.lock();
     _comparsion->release();
     ++_number_of_locks;
     _mutex.unlock();
+    if(_running_threads < 2)
+        return;
     _algorithmsLoop.acquire();
 }

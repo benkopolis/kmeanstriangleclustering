@@ -15,7 +15,7 @@ public:
 
     virtual ~KMeansComparer();
 
-    inline void addAlgorithm(KMeans* algorithm) { algorithms.append(algorithm); }
+    void addAlgorithm(KMeans* algorithm);
     inline QString logs() const { return _logs; }
 
     void runComparsion();
@@ -23,6 +23,8 @@ public:
     virtual void run();
 
     void waitOnComparer();
+
+    void notifyAboutThreadEnd(KMeans* alg);
 
 protected:
 
@@ -32,15 +34,18 @@ protected:
     void compareDistances(KMeans* one, KMeans* two);
     void compareEndLoop(KMeans* one, KMeans* two);
 
+    bool shouldThisRun();
+
     QSemaphore _algorithmsLoop;
     QSemaphore* _comparsion;
     QMutex _mutex;
     QString _logs;
     QTextStream _log;
+    volatile unsigned int _running_threads;
 
-    unsigned int _number_of_locks;
+    volatile unsigned int _number_of_locks;
     QList<KMeans* > algorithms;
-    bool started;
+    volatile bool started;
 };
 
 #endif // KMEANSCOMPARER_H

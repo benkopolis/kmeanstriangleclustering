@@ -72,9 +72,13 @@ protected:
 
 public:
 
+    void printIterationStates(QTextStream& log);
+
 	virtual void executeAlgorithm();
 
     virtual void run();
+
+    inline void setMonitor(KMeansComparer *comparer) { monitor__ = comparer; }
 
     inline AlgorithmPosition getAlgorithmPosition() {
         return _algorithmPosition;
@@ -123,7 +127,7 @@ protected:
 	QHash<QPair<PointId, PointId>, bool> pre_rand_index__;
 	unsigned int num_moved__;
 
-	void storeCurrentIterationState();
+    virtual void storeCurrentIterationState();
 
 	Distance dotMatrixes(Point a, Point b) {
 		Distance result = 0;
@@ -135,7 +139,7 @@ protected:
 	}
 
 
-	Distance cosinDist(Point p, Point q) {
+    Distance countDistance(Point p, Point q) {
 		++distances_call_count__;
 
 		long double sigma = 0.0;

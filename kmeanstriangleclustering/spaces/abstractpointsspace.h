@@ -7,11 +7,11 @@ class AbstractPointsSpace
 {
 public:
 
-	inline const PointId getNumPoints() const {
+    inline PointId getNumPoints() const {
 		return num_points__;
 	}
 
-	inline const PointId getNumDimensions() const {
+    inline PointId getNumDimensions() const {
 		return num_dimensions__;
 	}
 

@@ -23,6 +23,7 @@ public:
 
 protected:
 
+    virtual void storeCurrentIterationState();
 	//
 	// Zero centroids
 	//
@@ -34,7 +35,6 @@ protected:
 
 	bool computePointsAssignements(QTextStream& log);
 
-	void initialLowerAndUpperBoundsRecalculation();
 	//
 	// Initial partition points among available clusters
 	//
