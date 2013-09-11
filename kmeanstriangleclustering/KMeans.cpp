@@ -177,8 +177,13 @@ void KMeans::compute_centroids(QTextStream& log)
 	ClusterId cid = 0;
 	PointId num_points_in_cluster;
 	// For each centroid
-	QVector<Point> means(centroids__); // implicitly shared data - const time. Copied on write.
-	foreach(Point centroid, centroids__)
+    QVector<Point> means(centroids__.size(), QHash<unsigned int, Coord>());
+    for(int i = 0; i< means.size(); ++i)
+    {
+        for(int j=0; j<ps__->getNumDimensions(); ++j)
+            means[i].insert(j, 0);
+    }
+    foreach(Point centroid, centroids__)
 	{
 		num_points_in_cluster = 0;
 		// For earch PointId in this set

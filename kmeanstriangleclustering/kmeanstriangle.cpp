@@ -69,10 +69,10 @@ void KMeansTriangle::computeLowerAndUpperBounds()
 	{
 		for (unsigned int cid = 0; cid < centroids__.size(); ++cid)
 		{
-            lowerBounds__[pid][cid] =
-                    fabs(lowerBounds__[pid][cid] - delta[cid]);
-//			if (lowerBounds__[pid][cid] < 0)
-//				lowerBounds__[pid][cid] = 0;
+            lowerBounds__[pid][cid] = lowerBounds__[pid][cid] - delta[cid];
+//                    fabs(lowerBounds__[pid][cid] - delta[cid]);
+            if (lowerBounds__[pid][cid] < 0)
+                lowerBounds__[pid][cid] = 0;
 		}
 		upperBounds__[pid] += delta[points_to_clusters__[pid]];
 	}

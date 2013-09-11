@@ -51,10 +51,11 @@ void testClustering()
     Dimensions num_dimensions = 3;
 
 	AbstractPointsSpace *ps = 0, *ps1, *ps2;
-	//ps = new NormalizedPointsSpace();
-    ps = new PointsSpace(num_points, num_dimensions);//
-	//ps->loadPointsSpace("D:/korpusy/classic_data/docbyterm.tfidf.norm.txt");
+//	ps = new NormalizedPointsSpace();
+    ps = new PointsSpace();//(num_points, num_dimensions);//
+    ps->loadPointsSpace("small_test_point_space.txt");
 //	ps->loadPointsSpace("points.data");
+//    ps->savePointsSpace("small_test_point_space.txt");
 	ps1 = new PointsSpace(*(PointsSpace*)ps);
 	ps2 = new PointsSpace(*(PointsSpace*)ps);
     KMeans clusters(num_clusters, 10, ps, true);
