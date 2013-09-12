@@ -46,16 +46,21 @@ void KMeansTriangle::assignDSVectors()
 	for (unsigned int a = 0; a < centroids__.size() - 1; ++a)
 	{
 		centersToCenters__[a][a] = 0;
-		for (unsigned int b = a + 1; b < centroids__.size(); ++b)
+        for (int b = a + 1; b < centroids__.size(); ++b)
             centersToCenters__[a][b] = centersToCenters__[b][a] =
                     countDistance(centroids__[a], centroids__[b]);
 	}
-	for (unsigned int a = 0; a < centroids__.size(); ++a)
+    for (int a = 0; a < centroids__.size(); ++a)
 	{
-		sVector__[a] = centersToCenters__[a][0]/ 2.0;
-		for (unsigned int b = 1; b < centroids__.size(); ++b)
-			if (sVector__[a] > centersToCenters__[a][b]/ 2.0)
-				sVector__[a] = centersToCenters__[a][b]/ 2.0;
+//        if(a != 0)
+//            sVector__[a] = centersToCenters__[a][0];
+        for (unsigned int b = 0; b < centroids__.size(); ++b)
+        {
+            if(a == b)
+                continue;
+            if (sVector__[a] > centersToCenters__[a][b]/2.0)
+                sVector__[a] = centersToCenters__[a][b]/2.0;
+        }
 	}
 }
 
@@ -93,11 +98,11 @@ bool KMeansTriangle::computePointsAssignements(QTextStream& log)
 				log << pid << ':' << "upperBounds__[pid] < sVector__[" << points_to_clusters__[pid] << "]: " << (upperBounds__[pid] < sVector__[points_to_clusters__[pid]]) << endl;
 				log << "upperBounds__[pid] > lowerBounds__[" << a << "][pid]: " << (upperBounds__[pid] > lowerBounds__[a][pid]) << endl;
 				log << "upperBounds__[pid] > centersToCenters__[points_to_clusters__[pid]][a]/2.0: " << (upperBounds__[pid] > centersToCenters__[points_to_clusters__[pid]][a]/2.0) << endl << endl;
-				if(upperBounds__[pid] < sVector__[points_to_clusters__[pid]])
+                if(upperBounds__[pid] < sVector__[a])
 					continue;
 				if (a != points_to_clusters__[pid] &&
-						upperBounds__[pid] > lowerBounds__[a][pid] &&
-						upperBounds__[pid] > centersToCenters__[points_to_clusters__[pid]][a]/2.0)
+                        upperBounds__[pid] < lowerBounds__[a][pid] &&
+                        upperBounds__[pid] > centersToCenters__[points_to_clusters__[pid]][a]/2.0)
 				{
 					if (rVector__[pid])
 					{
@@ -114,7 +119,7 @@ bool KMeansTriangle::computePointsAssignements(QTextStream& log)
 						if(!all_distances__[a].contains(pid))
                             all_distances__[a].insert(pid, countDistance(ps__->getPoint(pid), centroids__[a]));
 						d = all_distances__[a][pid];
-						if(d < min)
+                        if(d < min) // move
 						{
 							min = d;
 							clusters_to_points__[points_to_clusters__[pid]].remove(pid);
