@@ -12,14 +12,13 @@
 #include <cmath>
 #include <QDateTime>
 #include <QList>
+#include <QMultiMap>
 #include <QThread>
 #include <QMutex>
 #include "models.hpp"
 #include "spaces/abstractpointsspace.h"
 
-
 class KMeansComparer;
-
 
 class KMeans : public QThread
 {
@@ -31,7 +30,8 @@ public:
 	{
 		Euclidean = 0,
 		Cosin = 1,
-		Hamming = 2
+        Hamming = 2,
+        HammingSimplified = 3
 	};
 
     enum AlgorithmPosition
@@ -41,6 +41,13 @@ public:
         CentersComputed = 1,
         DistancesCounted = 2,
         EndLoop = 3
+    };
+
+    enum InitialPartitionType
+    {
+        Sequential = 0,
+        MinimalNumberOfDimensions = 1,
+        DeterminigNumberOfClusters = 2
     };
 
     KMeans(ClusterId nclusters, unsigned int numIters,
@@ -53,24 +60,29 @@ protected:
 
     volatile AlgorithmPosition _algorithmPosition;
 	distanceFunc distance__;
-	unsigned used_iterations__;
+    unsigned int iterationsCount__;
+    AbstractPointsSpace* ps__; // the point space
 	unsigned distances_call_count__;
 	ClusterId num_clusters__; // number of clusters
-	AbstractPointsSpace* ps__; // the point space
+    unsigned used_iterations__;
 	Dimensions num_dimensions__; // the dimensions of vectors
 	PointId num_points__; // total number of points
 	ClustersToPoints clusters_to_points__;
 	PointsToClusters points_to_clusters__;
 	Centroids centroids__;
-	unsigned int iterationsCount__;
 	Distances all_distances__;
 
 	DistanceType distance_type__;
-
     KMeansComparer* monitor__;
     QMutex mutex;
+    InitialPartitionType _initial_partition_type;
+    QList<QList<Distance> > points_distances__;
+    QMultiMap<Distance, QPair<PointId, PointId> > sorted_edges__;
+    QList<QPair<QSet<PointId>, Distance> > temporary_groups__;
 
 public:
+
+    inline void setInitialPartitionType(InitialPartitionType type) { _initial_partition_type = type; }
 
     void printIterationStates(QTextStream& log);
 
@@ -116,7 +128,12 @@ public:
 
 	void countPreRandIndex();
 	bool storePreRandIndex(QString fileName) const;
-	void printClustersSize(QTextStream& stream) const;
+    void printClustersSize(QTextStream& stream) const;
+    bool printClusteringResults(QString fileName) const;
+    bool fillWithResults(QString fileName);
+    Distance getWeightOfConnecting(PointId p, QSet<PointId> set);
+    int getTemporaryGroupsSize();
+
 
 	Distance meanSquareError();
 
@@ -129,44 +146,14 @@ protected:
 
     virtual void storeCurrentIterationState();
 
-	Distance dotMatrixes(Point a, Point b) {
-		Distance result = 0;
-		foreach (Coord c, a) {
-			foreach (Coord i, b)
-				result = result + c * i;
-		}
-		return result;
-	}
+    Distance dotMatrixes(Point a, Point b);
 
 
-    Distance countDistance(Point p, Point q) {
-		++distances_call_count__;
-
-		long double sigma = 0.0;
-
-		if(distance_type__ == Hamming)
-		{
-			for(int i=0; i<p.size() && i<q.size(); ++i)
-				sigma += fabs(p[i] - q[i]);
-			return sigma;
-		}
-		else if(distance_type__ == Euclidean)
-		{
-			for (int i=0; i<p.size() && i<q.size(); ++i)
-			{
-				if (p.contains(i) && q.contains(i))
-					sigma = sigma + (long double)((p[i] - q[i])*(p[i] - q[i]));
-				else if (p.contains(i))
-					sigma = sigma + p[i]*p[i];
-				else if (q.contains(i))
-					sigma = sigma + q[i]*q[i];
-			}
-			return sqrt((double)sigma);
-		}
-		if(distance_type__ == Cosin)
-			return 1.0 - (dotMatrixes(p, q) / sqrt(dotMatrixes(p, p))
-						* sqrt(dotMatrixes(q, q)));
-	}
+    Distance countDistance(Point p, Point q);
+    Distance euclideanDistance(Point p, Point q);
+    Distance hammingDistance(Point p, Point q);
+    Distance hammingSimplified(Point p, Point q);
+    Distance cosineDistance(Point p, Point q);
 
 	//
 	// Zero centroids
@@ -176,13 +163,17 @@ protected:
 	//
 	// Zero centroids
 	//
-	void compute_centroids(QTextStream& log);
+    void compute_centroids();
 
 	//
 	// Initial partition points among available clusters
 	//
 	virtual void initial_partition_points();
 
+    void sequential_partition_points();
+    void minimal_dimensions_partitions_points();
+    void determinig_number_of_clusters_partition_points();
+    void fillPointsDistances();
 }
 ;
 

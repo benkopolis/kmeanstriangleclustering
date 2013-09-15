@@ -22,6 +22,8 @@ public:
 
 	PointsSpace();
 
+    virtual ~PointsSpace() {}
+
 	PointsSpace(PointId num_points, Dimensions num_dimensions);
 
 	PointsSpace(const PointsSpace& reference);

@@ -25,11 +25,11 @@ void NormalizedPointsSpace::savePointsSpace(QString fileName)
 	if(!file.open(QFile::WriteOnly))
 		return;
 	QTextStream out(&file);
-	out << num_points__ << ' ' << num_dimensions__ << ' ' << lines__ << endl;
+    out << num_points__ << ' ' << num_dimensions__ << ' ' << endl;
 	foreach(PointId key, points__.keys())
 	{
 		foreach(unsigned int dim, points__[key].keys())
-			out << key << ' ' << dim << ' ' << points__[key][dim] << endl;
+            out << dim << ':' << points__[key][dim] << endl;
 	}
 	out.flush();
 	file.close();
@@ -41,28 +41,27 @@ void NormalizedPointsSpace::loadPointsSpace(QString fileName)
 	if(!file.open(QFile::ReadOnly))
 		return;
 	QTextStream in(&file);
-	int points=0, dimensions=0, lines=0;
-	in >> points >> dimensions >> lines;
+    int points=0, dimensions=0;
+    in >> points >> dimensions;
 	this->num_points__ = points;
 	this->num_dimensions__ = dimensions;
-	this->lines__ = lines;
+    this->lines__ = points;
 	int counter = 0, coordId=0, pointId=0, tmpPointId=0;
 	Coord tmp;
 	in >> pointId;
 	tmpPointId = pointId;
-	while(counter < lines && !in.atEnd())
+    char separator;
+    while(!in.atEnd())
 	{
 		Point point;
-		pointId = tmpPointId;
-		while(tmpPointId == pointId)
+        QString line = in.readLine();
+        QTextStream inner(&line);
+        while(!inner.atEnd())
 		{
-			in >> coordId;
-			in >> tmp;
+            inner >> coordId >> separator >> tmp;
 			point.insert(coordId, tmp);
-			in >> tmpPointId;
 		}
-		points__.insert(counter, point);
-		++counter;
+        points__.insert(counter++, point);
 	}
 	file.close();
 }

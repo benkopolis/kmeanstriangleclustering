@@ -5,6 +5,7 @@
 #include "spaces/pointsspace.h"
 #include "spaces/normalizedpointsspace.h"
 #include "kmeanscomparer.h"
+#include "tfidf/stemmedfileinmemoryparser.h"
 
 
 Distance dotMatrixes(Point a, Point b)
@@ -117,6 +118,9 @@ void testClustering()
 	out.flush();
 	stream.flush();
 	clustersData.close();
+    delete ps1;
+    delete ps2;
+    delete ps;
 	//outputData.close();
 }
 
@@ -189,14 +193,91 @@ void testThreadClustering()
     out << "Done" << endl;
 }
 
+void createTfIdfFile(int argc, char *argv[])
+{
+    StemmedFileInMemoryParser parser;
+    QTextStream out(stdout);
+    if(argc != 4)
+    {
+        out << "Please give 2 more args: input file name and output file name" << endl;
+        return;
+    }
+    QElapsedTimer e1timer;
+    e1timer.start();
+    parser.fillWithData(argv[2]);
+    parser.countTfidfAndStoreInFile(argv[3]);
+    QString kwFile(argv[3]);
+    kwFile = kwFile.replace("tfidf", "tfidfKW");
+    parser.countKeyWordsTfidfAndStoreInFile(kwFile);
+    out << "Elapsed: " << e1timer.elapsed() << endl;
+}
+
+void generateResults(int argc, char *argv[])
+{
+    QTextStream out(stdout);
+    if(argc != 5)
+    {
+        out << "Please give 3 more args: input data file, ouput prerand file name, and output results file name" << endl;
+        return;
+    }
+    QElapsedTimer e1timer;
+    NormalizedPointsSpace* space = new NormalizedPointsSpace();
+    space->loadPointsSpace(argv[2]);
+    KMeans* clusters = new KMeans(10, 10, space, false);
+    e1timer.start();
+    clusters->executeAlgorithm();
+    out << "Elapsed: " << e1timer.elapsed() << endl;
+    out << "Mean square error: " << clusters->meanSquareError();
+
+    clusters->countPreRandIndex();
+    clusters->storePreRandIndex(argv[3]);
+    clusters->printClusteringResults(argv[4]);
+}
+
+void countMeanSquareErrorFromResultFile(int argc, char *argv[])
+{
+    QTextStream out(stdout);
+    if(argc != 4)
+    {
+        out << "Please give 3 more args: tfidf file, and input results file name" << endl;
+        return;
+    }
+    QElapsedTimer e1timer;
+    NormalizedPointsSpace* space = new NormalizedPointsSpace();
+    space->loadPointsSpace(argv[2]);
+    KMeans* clusters = new KMeans(10, 10, space, false);
+    clusters->fillWithResults(argv[3]);
+    Distance d = clusters->meanSquareError();
+    out << "Elapsed: " << e1timer.elapsed() << endl;
+    out << "Mean Square error: " << d << endl;
+    delete clusters;
+    delete space;
+}
+
+void man()
+{
+    QTextStream out(stdout);
+    out << "please add args:" << endl;
+    out << "-tfidf input_file_name output_file_name" << endl
+        << "\t for genereting tfidf file based on stemmed documents set." << endl;
+    out << "-res input_file_name output_prerand_file_name output_results_file_name" << endl
+        << "\t for generating results of clustering, pre rand indexes and mean square error." << endl;
+    out << "-mse tfidf_file exisitng_results_file" << endl
+        << "\t for generating mean square error base on tfidf file and results of clustering tfidf vectors from this file." << endl;
+}
+
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
-    testClustering();
-//	testDistances();
-//    testThreadClustering();
-
+    if(argc < 2)
+        man();
+    else if(!qstrcmp(argv[1], "-tfidf"))
+        createTfIdfFile(argc, argv);
+    else if(!qstrcmp(argv[1], "-res"))
+        generateResults(argc, argv);
+    else if(!qstrcmp(argv[1], "-mse"))
+        countMeanSquareErrorFromResultFile(argc, argv);
+    else
+        man();
 	return EXIT_SUCCESS;
 
-//    return a.exec();
 }

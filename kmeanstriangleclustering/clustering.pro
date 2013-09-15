@@ -24,7 +24,10 @@ SOURCES += main.cpp \
     spaces/abstractpointsspace.cpp \
     spaces/pointsspace.cpp \
     spaces/normalizedpointsspace.cpp \
-    kmeanscomparer.cpp
+    kmeanscomparer.cpp \
+    tfidf/stemmedfileinmemoryparser.cpp \
+    commons/abstractcenterspicker.cpp \
+    commons/sequentialcenterspicker.cpp
 
 HEADERS += \
     models.hpp \
@@ -36,7 +39,10 @@ HEADERS += \
     spaces/abstractpointsspace.h \
     spaces/pointsspace.h \
     spaces/normalizedpointsspace.h \
-    kmeanscomparer.h
+    kmeanscomparer.h \
+    tfidf/stemmedfileinmemoryparser.h \
+    commons/abstractcenterspicker.h \
+    commons/sequentialcenterspicker.h
 
 FORMS += \
     ui/clusteringview.ui

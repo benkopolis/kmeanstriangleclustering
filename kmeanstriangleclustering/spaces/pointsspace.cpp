@@ -59,7 +59,7 @@ void PointsSpace::savePointsSpace(QString fileName)
 	foreach(Point p, points__)
 	{
 		foreach(Coord c, p)
-			out << c << " ";
+            out << c << ' ';
 		out << endl;
 	}
 }

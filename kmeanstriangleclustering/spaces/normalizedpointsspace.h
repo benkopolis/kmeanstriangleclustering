@@ -8,6 +8,8 @@ class NormalizedPointsSpace : public AbstractPointsSpace
 public:
     NormalizedPointsSpace();
 
+    virtual ~NormalizedPointsSpace() {}
+
 	virtual void insertPoint(Point p, PointId index);
 	virtual const Point getPoint(PointId index) const;
 	virtual bool contains(PointId index) const;
@@ -15,6 +17,9 @@ public:
 	virtual void savePointsSpace(QString fileName);
 	virtual void loadPointsSpace(QString fileName);
 	virtual QList<PointId> getPointIds() const;
+
+    inline void setNumberOfDimensions(unsigned int numDim) { num_dimensions__ = numDim; }
+    inline void setNumberOfPoints(unsigned int numPoints) { num_points__ = numPoints; }
 
 protected:
 

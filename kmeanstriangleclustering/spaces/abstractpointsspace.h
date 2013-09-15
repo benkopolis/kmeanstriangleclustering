@@ -7,6 +7,8 @@ class AbstractPointsSpace
 {
 public:
 
+    virtual ~AbstractPointsSpace() {}
+
     inline PointId getNumPoints() const {
 		return num_points__;
 	}

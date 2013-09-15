@@ -31,6 +31,10 @@ AbstractPointsSpace* DefaultNormalizedFormatDataReader::readPointSpaceFromFile(Q
     NormalizedPointsSpace * space = new NormalizedPointsSpace();
     PointId pointIndex = 0;
     unsigned int coordtIndex = 0;
+    unsigned int numP=0, numD=0;
+    *in >> numP >> numD;
+    space->setNumberOfDimensions(numD);
+    space->setNumberOfPoints(numP);
     Coord c = 0.0;
     char separator;
     while(!in->atEnd())
