@@ -266,8 +266,21 @@ void man()
         << "\t for generating mean square error base on tfidf file and results of clustering tfidf vectors from this file." << endl;
 }
 
+void testArgs()
+{
+    QTextStream out(stdout);
+    QElapsedTimer e1timer;
+    NormalizedPointsSpace* space = new NormalizedPointsSpace();
+    space->loadPointsSpace("data/r8-train-tfidf-out.txt");
+    KMeans* clusters = new KMeans(10, 10, space, false);
+    e1timer.start();
+    clusters->testInitialPartitioning(KMeans::MinimalNumberOfDimensions);
+    out << "Elapsed: " << e1timer.elapsed() << endl;
+}
+
 int main(int argc, char *argv[])
 {
+    testArgs();
     if(argc < 2)
         man();
     else if(!qstrcmp(argv[1], "-tfidf"))

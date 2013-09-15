@@ -211,6 +211,14 @@ void KMeans::compute_centroids()
 	centroids__ = means;
 }
 
+void KMeans::testInitialPartitioning(InitialPartitionType type)
+{
+    InitialPartitionType old = _initial_partition_type;
+    this->setInitialPartitionType(type);
+    this->initial_partition_points();
+    this->setInitialPartitionType(old);
+}
+
 //
 // Initial partition points among available clusters
 //
@@ -261,14 +269,14 @@ void KMeans::minimal_dimensions_partitions_points()
         Distance d = i.next();
         possibleSeeds.append(sorted_edges__.values(d));
     } // now possibleSeeds contains list of smallest edges, ready to perform draw
-    QHash<PointId, bool> drawedPoints;
+    QSet<PointId> *drawedPoints = new QSet<PointId>();
     for(int j=0; j < num_clusters__;) // think about better way to choose seeds
     {
         QPair<PointId, PointId> p = possibleSeeds.at(qrand() % possibleSeeds.size());
-        if(drawedPoints.contains(p.first) || drawedPoints.contains(p.second))
+        if(drawedPoints->contains(p.first) || drawedPoints->contains(p.second))
             continue;
-        drawedPoints.insert(p.first, true);
-        drawedPoints.insert(p.second, true);
+        drawedPoints->insert(p.first);
+        drawedPoints->insert(p.second);
         QPair<QSet<PointId>, Distance> tmp;
         tmp.first.insert(p.first);
         tmp.first.insert(p.second);
@@ -277,6 +285,8 @@ void KMeans::minimal_dimensions_partitions_points()
         sorted_edges__.remove(points_distances__[p.first][p.second], p);
         ++j;
     } // now groups are initialized with two points each
+    delete drawedPoints;
+    drawedPoints = 0;
     QListIterator<QPair<QSet<PointId>, Distance> > l(temporary_groups__);
     while((PointId)getTemporaryGroupsSize() < ps__->getNumPoints())
     {
@@ -336,7 +346,12 @@ void KMeans::determinig_number_of_clusters_partition_points()
     fillPointsDistances();
 }
 
-Distance KMeans::countDistance(Point p, Point q)
+QSet<PointId> KMeans::getUniqueUnion(QList<PointId> one, QList<PointId> two)
+{
+    return one.toSet() + two.toSet();
+}
+
+Distance KMeans::countDistance(const Point& p, const Point& q)
 {
     ++distances_call_count__;
 
@@ -355,7 +370,7 @@ Distance KMeans::countDistance(Point p, Point q)
     }
 }
 
-Distance KMeans::dotMatrixes(Point a, Point b)
+Distance KMeans::dotMatrixes(const Point& a, const Point& b)
 {
     Distance result = 0;
     foreach (Coord c, a) {
@@ -365,10 +380,10 @@ Distance KMeans::dotMatrixes(Point a, Point b)
     return result;
 }
 
-Distance KMeans::euclideanDistance(Point p, Point q)
+Distance KMeans::euclideanDistance(const Point& p, const Point& q)
 {
     long double sigma = 0.0;
-    for (int i=0; i<p.size() && i<q.size(); ++i)
+    foreach(PointId i, getUniqueUnion(p.keys(), q.keys()))
     {
         if (p.contains(i) && q.contains(i))
             sigma = sigma + (long double)((p[i] - q[i])*(p[i] - q[i]));
@@ -380,10 +395,10 @@ Distance KMeans::euclideanDistance(Point p, Point q)
     return sqrt((double)sigma);
 }
 
-Distance KMeans::hammingDistance(Point p, Point q)
+Distance KMeans::hammingDistance(const Point& p, const Point& q)
 {
     long double sigma = 0.0;
-    for(int i=0; i<p.size() && i<q.size(); ++i)
+    foreach(PointId i, getUniqueUnion(p.keys(), q.keys()))
     {
         if(p.contains(i) && q.contains(i))
             sigma += fabs(p[i] - q[i]);
@@ -395,10 +410,10 @@ Distance KMeans::hammingDistance(Point p, Point q)
     return sigma;
 }
 
-Distance KMeans::hammingSimplified(Point p, Point q)
+Distance KMeans::hammingSimplified(const Point& p, const Point& q)
 {
     long double sigma = 0.0;
-    for(int i=0; i<p.size() && i<q.size(); ++i)
+    foreach(PointId i, getUniqueUnion(p.keys(), q.keys()))
     {
         if(p.contains(i) && !q.contains(i))
             sigma += 1.0;
@@ -408,7 +423,7 @@ Distance KMeans::hammingSimplified(Point p, Point q)
     return sigma;
 }
 
-Distance KMeans::cosineDistance(Point p, Point q)
+Distance KMeans::cosineDistance(const Point& p, const Point& q)
 {
     return 1.0 - (dotMatrixes(p, q) / sqrt(dotMatrixes(p, p))
                 * sqrt(dotMatrixes(q, q)));

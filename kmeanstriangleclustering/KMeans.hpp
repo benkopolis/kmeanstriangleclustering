@@ -84,6 +84,8 @@ public:
 
     inline void setInitialPartitionType(InitialPartitionType type) { _initial_partition_type = type; }
 
+    void testInitialPartitioning(InitialPartitionType type);
+
     void printIterationStates(QTextStream& log);
 
 	virtual void executeAlgorithm();
@@ -146,14 +148,14 @@ protected:
 
     virtual void storeCurrentIterationState();
 
-    Distance dotMatrixes(Point a, Point b);
+    Distance dotMatrixes(const Point& a, const Point& b);
 
-
-    Distance countDistance(Point p, Point q);
-    Distance euclideanDistance(Point p, Point q);
-    Distance hammingDistance(Point p, Point q);
-    Distance hammingSimplified(Point p, Point q);
-    Distance cosineDistance(Point p, Point q);
+    QSet<PointId> getUniqueUnion(QList<PointId> one, QList<PointId> two);
+    Distance countDistance(const Point& p, const Point& q);
+    Distance euclideanDistance(const Point& p, const Point& q);
+    Distance hammingDistance(const Point& p, const Point& q);
+    Distance hammingSimplified(const Point& p, const Point& q);
+    Distance cosineDistance(const Point& p, const Point& q);
 
 	//
 	// Zero centroids
