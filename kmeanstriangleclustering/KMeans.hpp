@@ -65,20 +65,25 @@ protected:
 	unsigned distances_call_count__;
 	ClusterId num_clusters__; // number of clusters
     unsigned used_iterations__;
+    QList<QString> iterations_states__;
+    bool store_states__;
+    QHash<QPair<PointId, PointId>, bool> pre_rand_index__;
+    unsigned int num_moved__;
 	Dimensions num_dimensions__; // the dimensions of vectors
 	PointId num_points__; // total number of points
 	ClustersToPoints clusters_to_points__;
 	PointsToClusters points_to_clusters__;
 	Centroids centroids__;
 	Distances all_distances__;
-
 	DistanceType distance_type__;
     KMeansComparer* monitor__;
-    QMutex mutex;
     InitialPartitionType _initial_partition_type;
-    QList<QList<Distance> > points_distances__;
-    QMultiMap<Distance, QPair<PointId, PointId> > sorted_edges__;
-    QList<QPair<QSet<PointId>, Distance> > temporary_groups__;
+    unsigned int dimensions_delta__;
+    QMutex mutex;
+    QHash<PointId, QHash<PointId, Distance>* > points_distances__;
+    //QMultiMap<Distance, QPair<PointId, PointId>* > sorted_edges__;
+    QHash<PointId, QMap<Distance, PointId>* > distances_to_points__;
+    QHash<PointId, QPair<QSet<PointId>*, Distance>* > temporary_groups__;
 
 public:
 
@@ -117,6 +122,14 @@ public:
 		return used_iterations__;
 	}
 
+    inline void setDimensionsDelta(unsigned int delta) {
+        dimensions_delta__ = delta;
+    }
+
+    inline unsigned int getDimensionsDelta() const {
+        return dimensions_delta__;
+    }
+
 	void printClusters(QTextStream& stream) const;
 
 	void printDifferences(const KMeans* from, QTextStream& stream) const;
@@ -129,34 +142,30 @@ public:
 	inline unsigned int getMovedCount() const { return num_moved__; }
 
 	void countPreRandIndex();
-	bool storePreRandIndex(QString fileName) const;
+    bool storePreRandIndex(const QString& fileName) const;
     void printClustersSize(QTextStream& stream) const;
-    bool printClusteringResults(QString fileName) const;
-    bool fillWithResults(QString fileName);
-    Distance getWeightOfConnecting(PointId p, QSet<PointId> set);
-    int getTemporaryGroupsSize();
+    bool printClusteringResults(const QString& fileName) const;
+    bool printCentroids(const QString& fileName) const;
+    bool fillWithResults(const QString& fileName);
+    Distance getWeightOfConnecting(PointId p, const QSet<PointId> *set) const;
+    int getTemporaryGroupsSize() const;
 
 
 	Distance meanSquareError();
 
 protected:
 
-	QList<QString> iterations_states__;
-	bool store_states__;
-	QHash<QPair<PointId, PointId>, bool> pre_rand_index__;
-	unsigned int num_moved__;
-
     virtual void storeCurrentIterationState();
 
-    Distance dotMatrixes(const Point& a, const Point& b);
+    Distance dotMatrixes(const Point& a, const Point& b) const;
 
-    QSet<PointId> getUniqueUnion(QList<PointId> one, QList<PointId> two);
+    QSet<PointId> getUniqueUnion(const QList<PointId> &one, const QList<PointId> &two) const;
     Distance countDistance(const Point& p, const Point& q);
-    Distance euclideanDistance(const Point& p, const Point& q);
-    Distance hammingDistance(const Point& p, const Point& q);
-    Distance hammingSimplified(const Point& p, const Point& q);
-    Distance cosineDistance(const Point& p, const Point& q);
-
+    Distance euclideanDistance(const Point& p, const Point& q) const;
+    Distance hammingDistance(const Point& p, const Point& q) const;
+    Distance hammingSimplified(const Point& p, const Point& q) const;
+    Distance cosineDistance(const Point& p, const Point& q) const;
+    Distance get_dist_p2p(PointId x, PointId y) const;
 	//
 	// Zero centroids
 	//

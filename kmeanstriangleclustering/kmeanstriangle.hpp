@@ -27,7 +27,7 @@ protected:
 	//
 	// Zero centroids
 	//
-	void compute_centroids(QTextStream& log);
+    void compute_centroids();
 
 	void assignDSVectors();
 
@@ -46,13 +46,14 @@ protected:
 
 private:
 
-	QVector<QVector<Distance> > centersToCenters__;
-	Centroids new_centroids__;
+    unsigned conditions_use_counter__;
+    QVector<Distance> sVector__;
+    QVector<QVector<Distance> > centersToCenters__;
+    QVector<QVector<Distance> > lowerBounds__;
 	QVector<Distance> upperBounds__;
-	QVector<QVector<Distance> > lowerBounds__;
-	QVector<bool> rVector__;
-	QVector<Distance> sVector__;
-	unsigned conditions_use_counter__;
+    Centroids new_centroids__;
+    QVector<bool> rVector__;
+
 };
 
 #endif // KMEANSTRIANGLE_HPP

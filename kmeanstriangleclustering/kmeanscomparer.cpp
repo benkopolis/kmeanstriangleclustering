@@ -161,12 +161,12 @@ void KMeansComparer::compareEndLoop(KMeans* one, KMeans* two)
     _log << "CLUSTERS comparsion BEGIN" << endl;
     for(ClusterId cid =0; cid < one->num_clusters__; ++cid)
     {
-        foreach(PointId pid, one->clusters_to_points__[cid])
+        foreach(PointId pid, *(one->clusters_to_points__[cid]))
         {
             ++tmpTab[two->points_to_clusters__[pid]];
         }
         _log << "for ONE cluster " << cid << "("
-             << one->clusters_to_points__[cid].size() << "):" << endl;
+             << one->clusters_to_points__[cid]->size() << "):" << endl;
         _log << "from above in TWO clusters: " << endl;
         for(int i=0; i<one->num_clusters__; ++i)
         {

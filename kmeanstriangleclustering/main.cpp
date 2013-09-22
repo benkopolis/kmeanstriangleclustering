@@ -48,8 +48,6 @@ void testClustering()
 	clustersData.open(QFile::WriteOnly);
 	QTextStream stream(&clustersData);
     ClusterId num_clusters = 2;
-    PointId num_points = 30;
-    Dimensions num_dimensions = 3;
 
 	AbstractPointsSpace *ps = 0, *ps1, *ps2;
 //	ps = new NormalizedPointsSpace();
@@ -163,13 +161,13 @@ void testThreadClustering()
     PointId num_points = 30;
     Dimensions num_dimensions = 100;
 
-    AbstractPointsSpace *ps = 0, *ps1, *ps2;
+    AbstractPointsSpace *ps = 0, *ps1;//, *ps2;
     //ps = new NormalizedPointsSpace();
     ps = new PointsSpace(num_points, num_dimensions);//
     //ps->loadPointsSpace("D:/korpusy/classic_data/docbyterm.tfidf.norm.txt");
 //    ps->loadPointsSpace("points.data");
     ps1 = new PointsSpace(*(PointsSpace*)ps);
-    ps2 = new PointsSpace(*(PointsSpace*)ps);
+//    ps2 = new PointsSpace(*(PointsSpace*)ps);
 
     KMeansComparer* comparer = new KMeansComparer();
     KMeans * clusters = new KMeans(num_clusters, 10, ps, true);
@@ -212,26 +210,74 @@ void createTfIdfFile(int argc, char *argv[])
     out << "Elapsed: " << e1timer.elapsed() << endl;
 }
 
+
+QString getOutputFileName(QString input, QString fileType, int num_clusters, int num_iters)
+{
+    input.replace("tfidf", fileType);
+    input.replace("data", "data/out");
+    QString appendix = QString("%1g%2i-out").arg(QString("%1").arg(num_clusters),
+                                                 QString("%1").arg(num_iters));
+    return input.replace("out", appendix);
+}
+
+QString getPreRandFileName(QString input, int num_clusters, int num_iters)
+{
+    return getOutputFileName(input, "prerand", num_clusters, num_iters);
+}
+
+QString getResultsFileName(QString input, int num_clusters, int num_iters)
+{
+    return getOutputFileName(input, "results", num_clusters, num_iters);
+}
+
+QString getCentroidsFileName(QString input, int num_clusters, int num_iters)
+{
+    return getOutputFileName(input, "centroids", num_clusters, num_iters);
+}
+
 void generateResults(int argc, char *argv[])
 {
     QTextStream out(stdout);
-    if(argc != 5)
+    if(argc < 4)
     {
-        out << "Please give 3 more args: input data file, ouput prerand file name, and output results file name" << endl;
+        out << "Please give 2 or 3 more args:" << endl <<
+               "input-data-file max-iterations num_of_clusters [optional, def:10]" << endl
+            << "input file must contains 'tfidf' and 'out' strings in its name" << endl;
         return;
     }
     QElapsedTimer e1timer;
     NormalizedPointsSpace* space = new NormalizedPointsSpace();
     space->loadPointsSpace(argv[2]);
-    KMeans* clusters = new KMeans(10, 10, space, false);
+    bool ok = false;
+    QString iters(argv[3]);
+    int num_iters = iters.toInt(&ok);
+    if(!ok)
+    {
+        out << "Parameter max-iterations must have an integer value!" << endl;
+        return;
+    }
+    int num_clusters = 0;
+    if(argc == 5)
+    {
+        QString clustersStr(argv[4]);
+        num_clusters = clustersStr.toInt(&ok);
+        if(!ok)
+        {
+            out << "Parameter num_of_clusters must have an integer value!" << endl;
+            num_clusters = 10;
+            return;
+        }
+    }
+    KMeans* clusters = new KMeans(num_clusters, num_iters, space, false);
     e1timer.start();
     clusters->executeAlgorithm();
     out << "Elapsed: " << e1timer.elapsed() << endl;
     out << "Mean square error: " << clusters->meanSquareError();
 
     clusters->countPreRandIndex();
-    clusters->storePreRandIndex(argv[3]);
-    clusters->printClusteringResults(argv[4]);
+    clusters->storePreRandIndex(getPreRandFileName(argv[2], num_clusters, num_iters));
+    clusters->printClusteringResults(getResultsFileName(argv[2], num_clusters, num_iters));
+    clusters->printCentroids(getCentroidsFileName(argv[2], num_clusters, num_iters));
 }
 
 void countMeanSquareErrorFromResultFile(int argc, char *argv[])
@@ -271,15 +317,18 @@ void testArgs()
     QTextStream out(stdout);
     QElapsedTimer e1timer;
     NormalizedPointsSpace* space = new NormalizedPointsSpace();
-    space->loadPointsSpace("data/r8-train-tfidf-out.txt");
+    space->loadPointsSpace("small_norm_point_space.txt"); //  "data/r8-train-tfidf-out.txt"
     KMeans* clusters = new KMeans(10, 10, space, false);
     e1timer.start();
     clusters->testInitialPartitioning(KMeans::MinimalNumberOfDimensions);
     out << "Elapsed: " << e1timer.elapsed() << endl;
+    clusters->printCentroids("data/r8-train-centroidsTEST-out.txt");
 }
 
 int main(int argc, char *argv[])
 {
+    QTime time = QTime::currentTime();
+    qsrand((uint)time.msec());
     testArgs();
     if(argc < 2)
         man();

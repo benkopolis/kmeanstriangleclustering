@@ -16,10 +16,9 @@ KMeansTriangle::KMeansTriangle(ClusterId nclusters, unsigned int numIters, Abstr
 }
 
 
-void KMeansTriangle::compute_centroids(QTextStream& log)
+void KMeansTriangle::compute_centroids()
 {
 	Dimensions i;
-	ClusterId cid = 0;
 	PointId num_points_in_cluster;
 	// For each centroid
 	for(int cid = 0; cid < centroids__.size(); ++cid)
@@ -28,7 +27,7 @@ void KMeansTriangle::compute_centroids(QTextStream& log)
 		for(unsigned int crd = 0; crd < num_dimensions__; ++crd)
 			new_centroids__[cid][crd] = 0;
 		// For earch PointId in this set
-		foreach(PointId pid, clusters_to_points__[cid])
+        foreach(PointId pid, *clusters_to_points__[cid])
 		{
 			Point p = ps__->getPoint(pid);
 			for (i=0; i<num_dimensions__; i++)
@@ -43,18 +42,18 @@ void KMeansTriangle::compute_centroids(QTextStream& log)
 
 void KMeansTriangle::assignDSVectors()
 {
-	for (unsigned int a = 0; a < centroids__.size() - 1; ++a)
+    for (unsigned int a = 0; a < (unsigned)centroids__.size() - 1; ++a)
 	{
 		centersToCenters__[a][a] = 0;
-        for (int b = a + 1; b < centroids__.size(); ++b)
+        for (unsigned int b = a + 1; b < (unsigned)centroids__.size(); ++b)
             centersToCenters__[a][b] = centersToCenters__[b][a] =
                     countDistance(centroids__[a], centroids__[b]);
 	}
-    for (int a = 0; a < centroids__.size(); ++a)
+    for (unsigned int a = 0; a < (unsigned)centroids__.size(); ++a)
 	{
 //        if(a != 0)
 //            sVector__[a] = centersToCenters__[a][0];
-        for (unsigned int b = 0; b < centroids__.size(); ++b)
+        for (unsigned int b = 0; b < (unsigned)centroids__.size(); ++b)
         {
             if(a == b)
                 continue;
@@ -67,12 +66,12 @@ void KMeansTriangle::assignDSVectors()
 void KMeansTriangle::computeLowerAndUpperBounds()
 {
 	QVector<Distance> delta(this->num_clusters__);
-	for (unsigned int cid = 0; cid < centroids__.size(); ++cid)
+    for (unsigned int cid = 0; cid < (unsigned)centroids__.size(); ++cid)
         delta[cid] = countDistance(centroids__[cid], new_centroids__[cid]);
 
-	for (unsigned int pid = 0; pid < lowerBounds__.size(); ++pid)
+    for (unsigned int pid = 0; pid < (unsigned)lowerBounds__.size(); ++pid)
 	{
-		for (unsigned int cid = 0; cid < centroids__.size(); ++cid)
+        for (unsigned int cid = 0; cid < (unsigned)centroids__.size(); ++cid)
 		{
             lowerBounds__[pid][cid] = lowerBounds__[pid][cid] - delta[cid];
 //                    fabs(lowerBounds__[pid][cid] - delta[cid]);
@@ -89,11 +88,11 @@ bool KMeansTriangle::computePointsAssignements(QTextStream& log)
 	bool move = false;
 	ClusterId to_cluster = 0;
 	Distance d, min;
-	for (unsigned int pid = 0; pid < upperBounds__.size(); ++pid)
+    for (unsigned int pid = 0; pid < (unsigned)upperBounds__.size(); ++pid)
 	{
 		if (upperBounds__[pid] > sVector__[points_to_clusters__[pid]])
 		{
-			for (unsigned int a = 0; a < centroids__.size(); ++a)
+            for (unsigned int a = 0; a < (unsigned)centroids__.size(); ++a)
 			{
 				log << pid << ':' << "upperBounds__[pid] < sVector__[" << points_to_clusters__[pid] << "]: " << (upperBounds__[pid] < sVector__[points_to_clusters__[pid]]) << endl;
 				log << "upperBounds__[pid] > lowerBounds__[" << a << "][pid]: " << (upperBounds__[pid] > lowerBounds__[a][pid]) << endl;
@@ -101,7 +100,7 @@ bool KMeansTriangle::computePointsAssignements(QTextStream& log)
                 if(upperBounds__[pid] < sVector__[a])
 					continue;
 				if (a != points_to_clusters__[pid] &&
-                        upperBounds__[pid] < lowerBounds__[a][pid] &&
+                        upperBounds__[pid] > lowerBounds__[a][pid] &&
                         upperBounds__[pid] > centersToCenters__[points_to_clusters__[pid]][a]/2.0)
 				{
 					if (rVector__[pid])
@@ -122,7 +121,7 @@ bool KMeansTriangle::computePointsAssignements(QTextStream& log)
                         if(d < min) // move
 						{
 							min = d;
-							clusters_to_points__[points_to_clusters__[pid]].remove(pid);
+                            clusters_to_points__[points_to_clusters__[pid]]->remove(pid);
 							move = true;
 							change = true;
 							to_cluster = a;
@@ -133,7 +132,7 @@ bool KMeansTriangle::computePointsAssignements(QTextStream& log)
 			if(move)
 			{
 				log << pid << ':' << points_to_clusters__[pid] << '>' << to_cluster << endl;
-				clusters_to_points__[to_cluster].insert(pid);
+                clusters_to_points__[to_cluster]->insert(pid);
 				points_to_clusters__[pid] = to_cluster;
 				upperBounds__[pid] = lowerBounds__[to_cluster][pid];
 				rVector__[pid] = false;
@@ -152,7 +151,7 @@ void KMeansTriangle::initial_partition_points()
 	{
 		cid = pid % num_clusters__;
 		points_to_clusters__.push_back(cid);
-		clusters_to_points__[cid].insert(pid);
+        clusters_to_points__[cid]->insert(pid);
 	}
 }
 
@@ -170,18 +169,13 @@ void KMeansTriangle::executeAlgorithm()
 		log_stream__ = new QTextStream(stdout);
 	bool some_point_is_moving = true;
 	unsigned int num_iterations = 0;
-	PointId pid;
-	ClusterId cid, to_cluster;
-	Distance d, min;
 
-	//
 	// Initial partition of points
-	//
 	initial_partition_points();
     _algorithmPosition = InitialClusters;
     if(monitor__)
         monitor__->waitOnComparer();
-	compute_centroids(*log_stream__);
+    compute_centroids();
 	centroids__ = new_centroids__;
     assignDSVectors();
 	if(store_states__)
@@ -195,19 +189,18 @@ void KMeansTriangle::executeAlgorithm()
     if(monitor__)
         monitor__->waitOnComparer();
 
-	compute_centroids(*log_stream__);
+    compute_centroids();
 	this->computeLowerAndUpperBounds();
 	this->rVector__ = QVector<bool>(ps__->getNumPoints(), true);
 
 	if(store_states__)
 		this->storeCurrentIterationState();
 	num_iterations = 1;
-	int skipped_1=0, skipped_2 = 0, skipped_3 = 0;
-	for(int distIterator =0; distIterator < this->num_clusters__; ++distIterator)
+    for(unsigned int distIterator =0; distIterator < this->num_clusters__; ++distIterator)
 		all_distances__[distIterator].clear();
 	while (some_point_is_moving && num_iterations <= iterationsCount__)
 	{
-		for(int distIterator =0; distIterator < this->num_clusters__; ++distIterator)
+        for(unsigned int distIterator =0; distIterator < this->num_clusters__; ++distIterator)
 			all_distances__[distIterator].clear();
 		centroids__ = new_centroids__;
         _algorithmPosition = CentersComputed;
@@ -227,7 +220,7 @@ void KMeansTriangle::executeAlgorithm()
         _algorithmPosition = DistancesCounted;
         if(monitor__)
             monitor__->waitOnComparer();
-		compute_centroids((*log_stream__));
+        compute_centroids();
 		this->computeLowerAndUpperBounds();
         if(store_states__)
             this->storeCurrentIterationState();
@@ -274,9 +267,9 @@ void KMeansTriangle::firstLoop(QTextStream& log)
 		{
 			log << pid << ':' << points_to_clusters__[pid] << ':' << to_cluster << endl;
 			move = false;
-			clusters_to_points__[points_to_clusters__[pid]].remove(pid);
+            clusters_to_points__[points_to_clusters__[pid]]->remove(pid);
 			points_to_clusters__[pid] = to_cluster;
-			clusters_to_points__[to_cluster].insert(pid);
+            clusters_to_points__[to_cluster]->insert(pid);
 			++num_moved__;
 		}
 	}
@@ -304,7 +297,7 @@ void KMeansTriangle::initialLoop(QTextStream* log_stream__)
 		// foreach centroid
 		cid = 0;
 		move = false;
-		for(int l=0; l<this->num_clusters__; ++l)
+        for(unsigned int l=0; l<this->num_clusters__; ++l)
 		{
 			if(l == points_to_clusters__[pid])
 				continue;
@@ -328,13 +321,13 @@ void KMeansTriangle::initialLoop(QTextStream* log_stream__)
 				to_cluster = cid;
 				this->upperBounds__[pid] = min;
 				// remove from current cluster
-				clusters_to_points__[points_to_clusters__[pid]].remove(pid);
+                clusters_to_points__[points_to_clusters__[pid]]->remove(pid);
 			}
 			cid++;
 		}
 		if (move) {
 			points_to_clusters__[pid] = to_cluster;
-			clusters_to_points__[to_cluster].insert(pid);
+            clusters_to_points__[to_cluster]->insert(pid);
 //					std::cout << "\t\tmove to cluster=" << to_cluster << std::endl;
 		}
 	}
@@ -345,13 +338,13 @@ void KMeansTriangle::storeCurrentIterationState()
     int i=0;
     QString status;
     QTextStream stream(&status);
-    foreach(const SetPoints set, clusters_to_points__)
+    foreach(const SetPoints* set, clusters_to_points__)
     {
         stream << i << "(";
         foreach(Coord c, centroids__[i])
             stream << c << ", ";
         stream << "): ";
-        QList<PointId> points = set.values();
+        QList<PointId> points = set->values();
         qSort(points.begin(), points.end());
         foreach(const PointId point, points)
             stream << point << ", ";

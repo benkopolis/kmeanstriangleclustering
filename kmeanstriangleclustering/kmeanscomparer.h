@@ -41,11 +41,12 @@ protected:
     QMutex _mutex;
     QString _logs;
     QTextStream _log;
+    volatile bool started;
+    volatile unsigned int _number_of_locks;
     volatile unsigned int _running_threads;
 
-    volatile unsigned int _number_of_locks;
     QList<KMeans* > algorithms;
-    volatile bool started;
+
 };
 
 #endif // KMEANSCOMPARER_H

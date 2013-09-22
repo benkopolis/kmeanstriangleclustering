@@ -93,7 +93,8 @@ KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
 	num_moved__(0),
     distance_type__(Euclidean),
     monitor__(monitor),
-    _initial_partition_type(Sequential)
+    _initial_partition_type(Sequential),
+    dimensions_delta__(0)
 {
 	ClusterId i = 0;
 	Dimensions dim;
@@ -105,7 +106,7 @@ KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
 		Point point; // each centroid is a point
 		for (dim = 0; dim < num_dimensions__; dim++)
 			point.insert(i, 0.0);
-		SetPoints set_of_points;
+        SetPoints* set_of_points = new SetPoints();
 
 		// init centroids
 		centroids__.push_back(point);
@@ -122,6 +123,23 @@ KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
 KMeans::~KMeans() {
     monitor__ = 0;
     ps__ = 0;
+    foreach(PointId p, points_distances__.keys())
+    {
+        delete points_distances__[p];
+        points_distances__[p] = 0;
+    }
+    foreach(PointId p, distances_to_points__.keys())
+    {
+        delete distances_to_points__[p];
+        distances_to_points__[p] = 0;
+    }
+    foreach(PointId p, temporary_groups__.keys())
+    {
+        delete temporary_groups__[p]->first;
+        temporary_groups__[p]->first = 0;
+        delete temporary_groups__[p];
+        temporary_groups__[p] = 0;
+    }
 }
 
 
@@ -138,7 +156,7 @@ void KMeans::countPreRandIndex()
 	}
 }
 
-bool KMeans::storePreRandIndex(QString fileName) const
+bool KMeans::storePreRandIndex(const QString& fileName) const
 {
 	QFile file(fileName);
     if(pre_rand_index__.size() == 0)
@@ -158,7 +176,7 @@ bool KMeans::storePreRandIndex(QString fileName) const
 void KMeans::printClustersSize(QTextStream& stream) const
 {
 	for(ClusterId i=0; i < num_clusters__; ++i)
-		stream << i << ": " << clusters_to_points__[i].size() << endl;
+        stream << i << ": " << clusters_to_points__[i]->size() << endl;
 }
 
 //
@@ -166,13 +184,13 @@ void KMeans::printClustersSize(QTextStream& stream) const
 //
 void KMeans::zero_centroids() {
 
-	foreach(Point centroid, centroids__)
-	{
-		foreach(Coord d, centroid)
-		{
-			d = 0.0;
-		}
-	}
+    for(int i=0; i<centroids__.size();++i)
+    {
+        foreach(unsigned int j, centroids__[i].keys())
+        {
+            centroids__[i][j] = 0.0;
+        }
+    }
 }
 
 //
@@ -187,14 +205,14 @@ void KMeans::compute_centroids()
     QVector<Point> means(centroids__.size(), QHash<unsigned int, Coord>());
     for(int i = 0; i< means.size(); ++i)
     {
-        for(int j=0; j<ps__->getNumDimensions(); ++j)
+        for(unsigned int j=0; j<ps__->getNumDimensions(); ++j)
             means[i].insert(j, 0);
     }
     foreach(Point centroid, centroids__)
 	{
 		num_points_in_cluster = 0;
 		// For earch PointId in this set
-		foreach(PointId pid, clusters_to_points__[cid])
+        foreach(PointId pid, *clusters_to_points__[cid])
 		{
 			Point p = ps__->getPoint(pid);
 			for (i=0; i<num_dimensions__; i++)
@@ -216,6 +234,7 @@ void KMeans::testInitialPartitioning(InitialPartitionType type)
     InitialPartitionType old = _initial_partition_type;
     this->setInitialPartitionType(type);
     this->initial_partition_points();
+    this->compute_centroids();
     this->setInitialPartitionType(old);
 }
 
@@ -239,7 +258,7 @@ void KMeans::sequential_partition_points()
     {
         cid = pid % num_clusters__;
         points_to_clusters__.push_back(cid);
-        clusters_to_points__[cid].insert(pid);
+        clusters_to_points__[cid]->insert(pid);
     }
 }
 
@@ -248,12 +267,14 @@ void KMeans::fillPointsDistances()
     Distance tmp = 0.0;
     for(PointId pi=0; pi < ps__->getNumPoints()-1; ++pi)
     {
-        points_distances__.push_back(QList<Distance>());
+        points_distances__.insert(pi, new QHash<PointId, Distance>());
+        distances_to_points__.insert(pi, new QMap<Distance, PointId>());
         for(PointId qi=pi+1; qi < ps__->getNumPoints(); ++qi)
         {
             tmp = hammingSimplified(ps__->getPoint(pi), ps__->getPoint(qi));
-            points_distances__[pi].push_back(tmp);
-            sorted_edges__.insert(tmp, QPair<PointId, PointId>(pi, qi));
+            points_distances__[pi]->insert(qi, tmp);
+            //sorted_edges__.insert(tmp, new QPair<PointId, PointId>(pi, qi));
+            distances_to_points__[pi]->insert(tmp, qi);
         }
     }
 }
@@ -261,92 +282,103 @@ void KMeans::fillPointsDistances()
 void KMeans::minimal_dimensions_partitions_points()
 {
     fillPointsDistances();
-    QList<QPair<PointId, PointId> > possibleSeeds;
-    QListIterator<Distance> i(sorted_edges__.uniqueKeys());
-    int seedsCount = num_clusters__*10;
-    while(possibleSeeds.size() < seedsCount && i.hasNext())
+    QSet<PointId> *usedPoints = new QSet<PointId>();
+    int low=0, high = ps__->getNumPoints() / num_clusters__;
+    int pDelta = high;
+    for(unsigned int j=0; j < num_clusters__; ++j) // think about better way to choose seeds
     {
-        Distance d = i.next();
-        possibleSeeds.append(sorted_edges__.values(d));
-    } // now possibleSeeds contains list of smallest edges, ready to perform draw
-    QSet<PointId> *drawedPoints = new QSet<PointId>();
-    for(int j=0; j < num_clusters__;) // think about better way to choose seeds
-    {
-        QPair<PointId, PointId> p = possibleSeeds.at(qrand() % possibleSeeds.size());
-        if(drawedPoints->contains(p.first) || drawedPoints->contains(p.second))
-            continue;
-        drawedPoints->insert(p.first);
-        drawedPoints->insert(p.second);
-        QPair<QSet<PointId>, Distance> tmp;
-        tmp.first.insert(p.first);
-        tmp.first.insert(p.second);
-        tmp.second = points_distances__[p.first][p.second];
-        temporary_groups__.push_back(tmp);
-        sorted_edges__.remove(points_distances__[p.first][p.second], p);
-        ++j;
+        PointId seed = qrand() % ((high + 1) - low) + low;
+        QPair<QSet<PointId>*, Distance>* pair =
+                new QPair<QSet<PointId>*, Distance>(new QSet<PointId>(), 0);
+        pair->first->insert(seed);
+        usedPoints->insert(seed);
+        temporary_groups__.insert(j, pair);
+        low += pDelta;
+        high += pDelta;
     } // now groups are initialized with two points each
-    delete drawedPoints;
-    drawedPoints = 0;
-    QListIterator<QPair<QSet<PointId>, Distance> > l(temporary_groups__);
-    while((PointId)getTemporaryGroupsSize() < ps__->getNumPoints())
+    PointId groupId = 0;
+    while((unsigned)usedPoints->size() < ps__->getNumPoints())
     {
-        if(!l.hasNext())
-            l.toFront();
-        QPair<QSet<PointId>, Distance> group = l.next();
-        QListIterator<Distance> k(sorted_edges__.uniqueKeys());
-        QMap<Distance, QPair<PointId, PointId> > possibleMatches;
-        while(k.hasNext())
-        {
-            QPair<PointId, PointId> edge;
-            foreach(edge, sorted_edges__.values(k.peekNext()))
+        if(!(groupId < num_clusters__))
+            groupId = 0;
+        foreach(PointId pointInGroup, (*temporary_groups__[groupId]->first))
+        { // first the greedy version
+            if(!distances_to_points__.contains(pointInGroup))
+                continue;
+            if(distances_to_points__[pointInGroup] == 0)
+                continue;
+            if(distances_to_points__[pointInGroup]->size() == 0)
+                continue;
+            Distance minK = distances_to_points__[pointInGroup]->begin().key();
+            foreach(PointId newP, distances_to_points__[pointInGroup]->values(minK))
             {
-                if(group.first.contains(edge.first) && !group.first.contains(edge.second))
-                    possibleMatches.insert(getWeightOfConnecting(edge.second, group.first),
-                                           edge);
-                else if(group.first.contains(edge.second) && !group.first.contains(edge.first))
-                    possibleMatches.insert(getWeightOfConnecting(edge.first, group.first),
-                                           edge);
+                if(!usedPoints->contains(newP))
+                {
+                    usedPoints->insert(newP);
+                    temporary_groups__[groupId]->first->insert(newP);
+                    temporary_groups__[groupId]->second +=
+                            getWeightOfConnecting(newP,
+                                temporary_groups__[groupId]->first);
+                }
             }
-            if(possibleMatches.size() == 0)
-                k.next();
-            else
+            distances_to_points__[pointInGroup]->remove(minK);
+            if(distances_to_points__[pointInGroup]->size() == 0)
             {
-                Distance toAdd = possibleMatches.uniqueKeys().first();
-                QPair<PointId, PointId> adding = possibleMatches.values(toAdd).first();
-                if(group.first.contains(adding.first))
-                    group.first.insert(adding.second);
-                else
-                    group.first.insert(adding.first);
-                sorted_edges__.remove(points_distances__[adding.first][adding.second], adding);
-                group.second += toAdd;
+                delete distances_to_points__[pointInGroup];
+                distances_to_points__[pointInGroup] = 0;
+                distances_to_points__.remove(pointInGroup);
             }
         }
+        ++groupId;
     }
+    delete usedPoints;
+    usedPoints = 0;
 }
 
-Distance KMeans::getWeightOfConnecting(PointId p, QSet<PointId> set)
+Distance KMeans::getWeightOfConnecting(PointId p, const QSet<PointId>* set) const
 {
     Distance weight = 0.0;
-    foreach(PointId q, set)
-        weight += points_distances__[p < q ? p : q][p < q ? q : p];
+    foreach(PointId q, *set)
+        weight += get_dist_p2p(p, q);
     return weight;
 }
 
-int KMeans::getTemporaryGroupsSize()
+Distance KMeans::get_dist_p2p(PointId x, PointId y) const
+{
+    if (x == y)
+        return 0.0;
+    else if(points_distances__.contains(x) && points_distances__[x]->contains(y))
+        return (*points_distances__[x])[y];
+    else if(points_distances__.contains(y) && points_distances__[y]->contains(x))
+        return (*points_distances__[y])[x];
+    else
+    {
+        Distance tmp = hammingSimplified(ps__->getPoint(x), ps__->getPoint(y));
+        if (x < y && points_distances__.contains(x))
+            points_distances__[x]->insert(y, tmp);
+        else if (y < x && points_distances__.contains(y))
+            points_distances__[y]->insert(x, tmp);
+        return tmp;
+    }
+}
+
+int KMeans::getTemporaryGroupsSize() const
 {
     int size = 0;
-    QPair<QSet<PointId>, Distance> group;
-    foreach(group, temporary_groups__)
-        size += group.first.size();
+    QPair<QSet<PointId>*, Distance>* group;
+    foreach(group, temporary_groups__.values())
+        size += group->first->size();
     return size;
 }
 
 void KMeans::determinig_number_of_clusters_partition_points()
 {
+    if(dimensions_delta__ == 0)
+        return;
     fillPointsDistances();
 }
 
-QSet<PointId> KMeans::getUniqueUnion(QList<PointId> one, QList<PointId> two)
+QSet<PointId> KMeans::getUniqueUnion(const QList<PointId>& one, const QList<PointId>& two) const
 {
     return one.toSet() + two.toSet();
 }
@@ -370,7 +402,7 @@ Distance KMeans::countDistance(const Point& p, const Point& q)
     }
 }
 
-Distance KMeans::dotMatrixes(const Point& a, const Point& b)
+Distance KMeans::dotMatrixes(const Point& a, const Point& b) const
 {
     Distance result = 0;
     foreach (Coord c, a) {
@@ -380,7 +412,7 @@ Distance KMeans::dotMatrixes(const Point& a, const Point& b)
     return result;
 }
 
-Distance KMeans::euclideanDistance(const Point& p, const Point& q)
+Distance KMeans::euclideanDistance(const Point& p, const Point& q) const
 {
     long double sigma = 0.0;
     foreach(PointId i, getUniqueUnion(p.keys(), q.keys()))
@@ -395,7 +427,7 @@ Distance KMeans::euclideanDistance(const Point& p, const Point& q)
     return sqrt((double)sigma);
 }
 
-Distance KMeans::hammingDistance(const Point& p, const Point& q)
+Distance KMeans::hammingDistance(const Point& p, const Point& q) const
 {
     long double sigma = 0.0;
     foreach(PointId i, getUniqueUnion(p.keys(), q.keys()))
@@ -410,7 +442,7 @@ Distance KMeans::hammingDistance(const Point& p, const Point& q)
     return sigma;
 }
 
-Distance KMeans::hammingSimplified(const Point& p, const Point& q)
+Distance KMeans::hammingSimplified(const Point& p, const Point& q) const
 {
     long double sigma = 0.0;
     foreach(PointId i, getUniqueUnion(p.keys(), q.keys()))
@@ -423,7 +455,7 @@ Distance KMeans::hammingSimplified(const Point& p, const Point& q)
     return sigma;
 }
 
-Distance KMeans::cosineDistance(const Point& p, const Point& q)
+Distance KMeans::cosineDistance(const Point& p, const Point& q) const
 {
     return 1.0 - (dotMatrixes(p, q) / sqrt(dotMatrixes(p, p))
                 * sqrt(dotMatrixes(q, q)));
@@ -482,7 +514,7 @@ void KMeans::executeAlgorithm()
 					ps__->getPoint(pid));
 			// foreach centroid
 			move = false;
-			for(ClusterId cid=0; cid <  centroids__.size(); ++cid)
+            for(ClusterId cid=0; cid <  (unsigned)centroids__.size(); ++cid)
 			{
 				if(cid != points_to_clusters__[pid])
 				{
@@ -501,10 +533,10 @@ void KMeans::executeAlgorithm()
 			if (move)
 			{
 				(*log_stream__) << pid << ':' << points_to_clusters__[pid] << ':' << to_cluster << endl;
-				clusters_to_points__[points_to_clusters__[pid]].remove(pid);
+                clusters_to_points__[points_to_clusters__[pid]]->remove(pid);
 				// insert
 				points_to_clusters__[pid] = to_cluster;
-				clusters_to_points__[to_cluster].insert(pid);
+                clusters_to_points__[to_cluster]->insert(pid);
 			}
 		}
         _algorithmPosition = DistancesCounted;
@@ -530,13 +562,13 @@ void KMeans::storeCurrentIterationState()
 	int i=0;
 	QString status;
 	QTextStream stream(&status);
-	foreach(const SetPoints set, clusters_to_points__)
+    foreach(const SetPoints* set, clusters_to_points__)
 	{
 		stream << i << "(";
 		foreach(Coord c, centroids__[i])
 			stream << c << ", ";
 		stream << "): ";
-		QList<PointId> points = set.values();
+        QList<PointId> points = set->values();
 		qSort(points.begin(), points.end());
 		foreach(const PointId point, points)
 			stream << point << ", ";
@@ -554,7 +586,7 @@ void KMeans::storeCurrentIterationState()
 	iterations_states__.push_back(status);
 }
 
-bool KMeans::printClusteringResults(QString fileName) const
+bool KMeans::printClusteringResults(const QString& fileName) const
 {
     QFile file(fileName);
     if(!file.open(QFile::WriteOnly))
@@ -562,9 +594,9 @@ bool KMeans::printClusteringResults(QString fileName) const
     QTextStream stream(&file);
     int i=0;
     stream << num_clusters__ << ' ' << ps__->getNumPoints() << endl; // magic switch ;)
-    foreach(const SetPoints set, clusters_to_points__)
+    foreach(const SetPoints* set, clusters_to_points__)
     {
-        foreach(const PointId point, set)
+        foreach(const PointId point, *set)
         {
             stream << point << ':' << "1.0" << ' ';
         }
@@ -580,10 +612,10 @@ bool KMeans::printClusteringResults(QString fileName) const
 void KMeans::printClusters(QTextStream& stream) const
 {
     int i=0;
-    foreach(const SetPoints set, clusters_to_points__)
+    foreach(const SetPoints* set, clusters_to_points__)
     {
         stream << i << ':';
-        foreach(const PointId point, set)
+        foreach(const PointId point, *set)
         {
             stream << point << ',';
         }
@@ -601,16 +633,16 @@ void KMeans::printIterationStates(QTextStream& log)
 void KMeans::printDifferences(const KMeans* from, QTextStream& stream) const
 {
     int i=0, total = 0;
-    foreach(const SetPoints set, clusters_to_points__)
+    foreach(const SetPoints *set, clusters_to_points__)
     {
         stream << i << ": ";
         int diffs = 0;
-        foreach(const PointId point, set)
+        foreach(const PointId point, *set)
         {
-            if(from->clusters_to_points__.at(i).find(point) == from->clusters_to_points__.at(i).end())
+            if(from->clusters_to_points__.at(i)->find(point) == from->clusters_to_points__.at(i)->end())
                 ++diffs;
         }
-        stream << diffs << "/" << from->clusters_to_points__.at(i).size() << endl;
+        stream << diffs << "/" << from->clusters_to_points__.at(i)->size() << endl;
         total += diffs;
         ++i;
     }
@@ -618,7 +650,7 @@ void KMeans::printDifferences(const KMeans* from, QTextStream& stream) const
            << "Errors %: " << ((float)total / num_points__) *100.0 << endl;
 }
 
-bool KMeans::fillWithResults(QString fileName)
+bool KMeans::fillWithResults(const QString& fileName)
 {
     QFile file(fileName);
     if(!file.open(QFile::ReadOnly))
@@ -637,7 +669,7 @@ bool KMeans::fillWithResults(QString fileName)
         {
             inner >> pIndex >> c >> coord;
             points_to_clusters__[pIndex] = cIndex;
-            clusters_to_points__[cIndex].insert(pIndex);
+            clusters_to_points__[cIndex]->insert(pIndex);
         }
         ++cIndex;
     }
@@ -651,7 +683,7 @@ Distance KMeans::meanSquareError()
 	Distance mean = 0.0;
 //	QTextStream out(stdout);
 	QVector<Distance> lens(ps__->getNumPoints());
-	for(int i=0; i<this->ps__->getNumPoints(); ++i)
+    for(unsigned int i=0; i<this->ps__->getNumPoints(); ++i)
 	{
         lens[i] = countDistance(ps__->getPoint(i), centroids__[points_to_clusters__[i]]);
 		mean += lens[i];
@@ -659,13 +691,28 @@ Distance KMeans::meanSquareError()
 	mean /= ps__->getNumPoints();
 //	out << "Mean: " << mean << endl;
 	Distance error = 0.0;
-	for(int i=0; i<this->ps__->getNumPoints(); ++i)
+    for(unsigned int i=0; i<this->ps__->getNumPoints(); ++i)
 		error += (lens[i] - mean)*(lens[i] - mean);
 	error /= (double)(ps__->getNumPoints()*(ps__->getNumPoints() - 1));
 //	out << "Error: " << error << endl;
 	return sqrt(error);
 }
 
-
+bool KMeans::printCentroids(const QString& fileName) const
+{
+    QFile file(fileName);
+    if(!file.open(QFile::WriteOnly))
+        return false;
+    QTextStream out(&file);
+    foreach(Point p, centroids__)
+    {
+        foreach(Coord c, p.keys())
+            out << c << ':' << p[c] << ' ';
+        out << endl;
+    }
+    out.flush();
+    file.close();
+    return true;
+}
 
 
