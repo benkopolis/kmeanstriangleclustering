@@ -40,8 +40,6 @@ protected:
 	//
 	virtual void initial_partition_points();
 
-	void initialLoop(QTextStream* log_stream__);
-
 	void firstLoop(QTextStream& log);
 
 private:
@@ -52,7 +50,8 @@ private:
     QVector<QVector<Distance> > lowerBounds__;
 	QVector<Distance> upperBounds__;
     Centroids new_centroids__;
-    QVector<bool> rVector__;
+    QVector<DistancesCountData> rVector__;
+    QStack<unsigned int> modifiedR;
 
 };
 

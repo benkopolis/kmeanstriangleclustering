@@ -16,7 +16,7 @@ KMeansComparer::~KMeansComparer()
 
 void KMeansComparer::addAlgorithm(KMeans* algorithm)
 {
-    algorithms.append(algorithm);
+    algorithms << algorithm;
     algorithm->setMonitor(this);
 }
 
@@ -93,7 +93,6 @@ void KMeansComparer::universalCentersComparsion(KMeans* one,
                                                 KMeans* two, QString msg)
 {
     _log << msg << " comparsion BEGIN" << endl;
-    int tmpP=-1, tmpQ=-1;
     bool found = false;
     foreach(Point p, one->centroids__)
     {
@@ -121,9 +120,9 @@ void KMeansComparer::compareDistances(KMeans* one, KMeans* two)
     Distances fromOne = one->all_distances__,
               fromTwo = two->all_distances__;
     _log << "DISTANCES comparsion BEGIN" << endl;
-    for(int i=0; i<one->num_points__; ++i)
+    for(unsigned int i=0; i<one->num_points__; ++i)
     {
-        for(int j=i+1; j<one->num_points__; ++j)
+        for(unsigned int j=i+1; j<one->num_points__; ++j)
         {
             if(!fromOne.contains(i))
             {
@@ -156,7 +155,7 @@ void KMeansComparer::compareDistances(KMeans* one, KMeans* two)
 void KMeansComparer::compareEndLoop(KMeans* one, KMeans* two)
 {
     int *tmpTab = new int [one->num_clusters__];
-    for(int i=0; i<one->num_clusters__; ++i)
+    for(unsigned int i=0; i<one->num_clusters__; ++i)
         tmpTab = 0;
     _log << "CLUSTERS comparsion BEGIN" << endl;
     for(ClusterId cid =0; cid < one->num_clusters__; ++cid)
@@ -168,7 +167,7 @@ void KMeansComparer::compareEndLoop(KMeans* one, KMeans* two)
         _log << "for ONE cluster " << cid << "("
              << one->clusters_to_points__[cid]->size() << "):" << endl;
         _log << "from above in TWO clusters: " << endl;
-        for(int i=0; i<one->num_clusters__; ++i)
+        for(unsigned int i=0; i<one->num_clusters__; ++i)
         {
             _log << "cid: " << i << " size: " << tmpTab[i];
             tmpTab[i] = 0;
@@ -187,11 +186,11 @@ bool KMeansComparer::shouldThisRun()
     return b;
 }
 
-void KMeansComparer::notifyAboutThreadEnd(KMeans* alg)
+void KMeansComparer::notifyAboutThreadEnd()
 {
     _mutex.lock();
     --_running_threads;
-    if(_comparsion->available() > _running_threads)
+    if((unsigned)_comparsion->available() > _running_threads)
         _comparsion->release(_comparsion->available() - _running_threads);
     _mutex.unlock();
 }

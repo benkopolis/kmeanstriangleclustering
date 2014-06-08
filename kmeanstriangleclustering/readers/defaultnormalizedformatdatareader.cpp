@@ -41,14 +41,15 @@ AbstractPointsSpace* DefaultNormalizedFormatDataReader::readPointSpaceFromFile(Q
     {
         QString line = in->readLine();
         QTextStream line_in(&line);
-        Point p;
+        Point* p = new Point();
         while(!line_in.atEnd())
         {
             line_in >> coordtIndex >> separator >> c;
-            if(!p.contains(coordtIndex))
-                p.insert(coordtIndex, c);
+            if(!p->contains(coordtIndex))
+                p->insert(coordtIndex, c);
         }
         space->insertPoint(p, pointIndex);
         ++pointIndex;
     }
+    return space;
 }

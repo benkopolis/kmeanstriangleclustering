@@ -13,12 +13,19 @@
 #include <QSet>
 #include <QHash>
 #include <QList>
+#include <limits>
 
-//#if 1
-//#define foreach(a, b) for(a : b)
-//#else
-//#define foreach(a, b) BOOST_FOREACH(a, b)
-//#endif
+#define LOG_ALL 1
+
+#ifdef LOG_ALL
+#define logall(x) log_all(x)
+#define logoneline(s) log_one_line(s)
+#else
+#define logall(x) log_all("")
+#define logoneline(s) log_one_line("")
+#endif
+
+extern QTextStream* m_globalLogger;
 
 typedef double Coord;
 
@@ -47,6 +54,23 @@ typedef QVector<ClusterId> PointsToClusters;
 typedef QVector<Point> Centroids;
 
 typedef Distance (*distanceFunc)(Point, Point);
+
+struct DistancesCountData {
+
+    DistancesCountData()
+    {
+        reset();
+    }
+
+    bool notCounted;
+    Distance distance;
+
+    void reset()
+    {
+        distance = std::numeric_limits<Distance>::max();
+        notCounted = true;
+    }
+};
 
 //
 // Dump a point

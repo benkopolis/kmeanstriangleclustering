@@ -62,7 +62,7 @@ protected:
 	distanceFunc distance__;
     unsigned int iterationsCount__;
     AbstractPointsSpace* ps__; // the point space
-	unsigned distances_call_count__;
+    mutable unsigned distances_call_count__;
 	ClusterId num_clusters__; // number of clusters
     unsigned used_iterations__;
     QList<QString> iterations_states__;
@@ -74,7 +74,6 @@ protected:
 	ClustersToPoints clusters_to_points__;
 	PointsToClusters points_to_clusters__;
 	Centroids centroids__;
-	Distances all_distances__;
 	DistanceType distance_type__;
     KMeansComparer* monitor__;
     InitialPartitionType _initial_partition_type;
@@ -82,8 +81,26 @@ protected:
     QMutex mutex;
     QHash<PointId, QHash<PointId, Distance>* > points_distances__;
     //QMultiMap<Distance, QPair<PointId, PointId>* > sorted_edges__;
-    QHash<PointId, QMap<Distance, PointId>* > distances_to_points__;
+    QHash<PointId, QMultiMap<Distance, PointId>* > distances_to_points__;
     QHash<PointId, QPair<QSet<PointId>*, Distance>* > temporary_groups__;
+
+    static inline void log_all(const QString& message)
+    {
+#ifdef LOG_ALL
+        *m_globalLogger << endl << message << endl;
+#endif
+    }
+
+    static inline void log_one_line(const QString& message)
+    {
+#ifdef LOG_ALL
+        *m_globalLogger << message;
+#endif
+    }
+
+private:
+
+    Distances all_distances__;
 
 public:
 
@@ -130,6 +147,13 @@ public:
         return dimensions_delta__;
     }
 
+    static inline void setGlobarLoger(QTextStream* globalLogger)
+    {
+#ifdef LOG_ALL
+        m_globalLogger = globalLogger;
+#endif
+    }
+
 	void printClusters(QTextStream& stream) const;
 
 	void printDifferences(const KMeans* from, QTextStream& stream) const;
@@ -160,7 +184,7 @@ protected:
     Distance dotMatrixes(const Point& a, const Point& b) const;
 
     QSet<PointId> getUniqueUnion(const QList<PointId> &one, const QList<PointId> &two) const;
-    Distance countDistance(const Point& p, const Point& q);
+    Distance countDistance(const Point& p, const Point& q) const;
     Distance euclideanDistance(const Point& p, const Point& q) const;
     Distance hammingDistance(const Point& p, const Point& q) const;
     Distance hammingSimplified(const Point& p, const Point& q) const;
@@ -183,6 +207,7 @@ protected:
 
     void sequential_partition_points();
     void minimal_dimensions_partitions_points();
+    QList<PointId> *iterateOverTemporaryGroupsAndAssignPoints(PointId groupId, QSet<PointId> *usedPoints, QSet<PointId> *notUsedPoints, QList<PointId> *pointsToCheck);
     void determinig_number_of_clusters_partition_points();
     void fillPointsDistances();
 }

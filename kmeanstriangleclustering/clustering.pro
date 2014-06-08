@@ -27,7 +27,9 @@ SOURCES += main.cpp \
     kmeanscomparer.cpp \
     tfidf/stemmedfileinmemoryparser.cpp \
     commons/abstractcenterspicker.cpp \
-    commons/sequentialcenterspicker.cpp
+    commons/sequentialcenterspicker.cpp \
+    triangle/abstractaccountingcontainer.cpp \
+    triangle/upperbounds.cpp
 
 HEADERS += \
     models.hpp \
@@ -42,7 +44,10 @@ HEADERS += \
     kmeanscomparer.h \
     tfidf/stemmedfileinmemoryparser.h \
     commons/abstractcenterspicker.h \
-    commons/sequentialcenterspicker.h
+    commons/sequentialcenterspicker.h \
+    triangle/abstractaccountingcontainer.h \
+    triangle/upperbounds.h \
+    main.hpp
 
 FORMS += \
     ui/clusteringview.ui

@@ -7,11 +7,12 @@ class NormalizedPointsSpace : public AbstractPointsSpace
 {
 public:
     NormalizedPointsSpace();
+    NormalizedPointsSpace(const NormalizedPointsSpace& another);
 
     virtual ~NormalizedPointsSpace() {}
 
-	virtual void insertPoint(Point p, PointId index);
-	virtual const Point getPoint(PointId index) const;
+    virtual void insertPoint(Point *p, PointId index);
+    virtual const Point &getPoint(PointId index) const;
 	virtual bool contains(PointId index) const;
 
 	virtual void savePointsSpace(QString fileName);
@@ -23,7 +24,7 @@ public:
 
 protected:
 
-	QHash<PointId, Point> points__;
+    QHash<PointId, Point*> points__;
 	unsigned int lines__;
 
 

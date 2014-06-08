@@ -14,24 +14,24 @@ public:
 	friend std::ostream& operator <<(std::ostream& os, PointsSpace & ps) {
 
 		PointId i = 0;
-		foreach (Point p, ps.points__.values()) {
-			os << "point[" << i++ << "]=" << p << '\n';
+        foreach (Point* p, ps.points__.values()) {
+            os << "point[" << i++ << "]=" << *p << '\n';
 		}
 		return os;
 	}
 
 	PointsSpace();
 
+    PointsSpace(const PointsSpace& another);
+
     virtual ~PointsSpace() {}
 
 	PointsSpace(PointId num_points, Dimensions num_dimensions);
 
-	PointsSpace(const PointsSpace& reference);
-
 //	void dumpToFile(QString fileName);
 
-	virtual void insertPoint(Point p, PointId index);
-	virtual const Point getPoint(PointId index) const;
+    virtual void insertPoint(Point* p, PointId index);
+    virtual const Point &getPoint(PointId index) const;
 	virtual bool contains(PointId index) const;
 
 	virtual void savePointsSpace(QString fileName);
@@ -45,7 +45,7 @@ protected:
 	//
 	void init_points();
 
-	QHash<unsigned int, Point> points__;
+    QHash<unsigned int, Point*> points__;
 };
 
 #endif // POINTSSPACE_H

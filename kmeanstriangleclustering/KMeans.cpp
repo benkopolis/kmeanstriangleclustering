@@ -80,6 +80,7 @@ QTextStream& operator <<(QTextStream& os, PointsToClusters & pc) {
 //////////////////////////////////////////////
 
 
+
 KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
                AbstractPointsSpace* ps, bool store,
                KMeansComparer *monitor) :
@@ -96,6 +97,7 @@ KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
     _initial_partition_type(Sequential),
     dimensions_delta__(0)
 {
+    //logall(KMeans::KMeans);
 	ClusterId i = 0;
 	Dimensions dim;
 	num_dimensions__ = ps->getNumDimensions();
@@ -121,6 +123,7 @@ KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
 }
 
 KMeans::~KMeans() {
+    logall("KMeans::~KMeans() ");
     monitor__ = 0;
     ps__ = 0;
     foreach(PointId p, points_distances__.keys())
@@ -140,11 +143,13 @@ KMeans::~KMeans() {
         delete temporary_groups__[p];
         temporary_groups__[p] = 0;
     }
+    logall("KMEANS DESTRIOYED");
 }
 
 
 void KMeans::countPreRandIndex()
 {
+    logall("KMeans::countPreRandIndex()");
 	for(PointId i=0; i < ps__->getNumPoints()-1; ++i)
 	{
 		int tmp = ps__->getNumPoints()-1;
@@ -158,6 +163,7 @@ void KMeans::countPreRandIndex()
 
 bool KMeans::storePreRandIndex(const QString& fileName) const
 {
+    logall("KMeans::storePreRandIndex(const QString& fileName) const");
 	QFile file(fileName);
     if(pre_rand_index__.size() == 0)
         return false;
@@ -184,6 +190,7 @@ void KMeans::printClustersSize(QTextStream& stream) const
 //
 void KMeans::zero_centroids() {
 
+    logall("KMeans::zero_centroids()");
     for(int i=0; i<centroids__.size();++i)
     {
         foreach(unsigned int j, centroids__[i].keys())
@@ -198,6 +205,7 @@ void KMeans::zero_centroids() {
 //
 void KMeans::compute_centroids()
 {
+    logall("KMeans::compute_centroids()");
 	Dimensions i;
 	ClusterId cid = 0;
 	PointId num_points_in_cluster;
@@ -212,18 +220,24 @@ void KMeans::compute_centroids()
 	{
 		num_points_in_cluster = 0;
 		// For earch PointId in this set
+        logall(QString("Center %1 has assigned points: ").arg(QString::number(cid)));
         foreach(PointId pid, *clusters_to_points__[cid])
 		{
-			Point p = ps__->getPoint(pid);
+            const Point& p = ps__->getPoint(pid);
 			for (i=0; i<num_dimensions__; i++)
 				means[cid][i] += p[i];
 			num_points_in_cluster++;
+            logoneline(QString("%1, ").arg(QString::number(pid)));
 		}
 		//
 		// if no point in the clusters, this goes to inf (correct!)
 		//
+        logall(QString("Center %1 has coords: ").arg(QString::number(cid)));
 		for (i=0; i<num_dimensions__; i++)
+        {
 			means[cid][i] /= num_points_in_cluster;
+            logoneline(QString("%1:%2, ").arg(QString::number(i), QString::number(means[cid][i])));
+        }
 		cid++;
 	}
 	centroids__ = means;
@@ -231,6 +245,7 @@ void KMeans::compute_centroids()
 
 void KMeans::testInitialPartitioning(InitialPartitionType type)
 {
+    logall("void KMeans::testInitialPartitioning(InitialPartitionType type)");
     InitialPartitionType old = _initial_partition_type;
     this->setInitialPartitionType(type);
     this->initial_partition_points();
@@ -243,6 +258,7 @@ void KMeans::testInitialPartitioning(InitialPartitionType type)
 //
 void KMeans::initial_partition_points()
 {
+    logall("KMeans::initial_partition_points()");
     if(_initial_partition_type == Sequential)
         sequential_partition_points();
     else if(_initial_partition_type == MinimalNumberOfDimensions)
@@ -253,6 +269,7 @@ void KMeans::initial_partition_points()
 
 void KMeans::sequential_partition_points()
 {
+    logall("KMeans::sequential_partition_points()");
     ClusterId cid;
     for (PointId pid = 0; pid < ps__->getNumPoints(); pid++)
     {
@@ -264,11 +281,18 @@ void KMeans::sequential_partition_points()
 
 void KMeans::fillPointsDistances()
 {
+    logall("KMeans::fillPointsDistances()");
     Distance tmp = 0.0;
     for(PointId pi=0; pi < ps__->getNumPoints()-1; ++pi)
     {
         points_distances__.insert(pi, new QHash<PointId, Distance>());
-        distances_to_points__.insert(pi, new QMap<Distance, PointId>());
+        distances_to_points__.insert(pi, new QMultiMap<Distance, PointId>());
+        if(pi > 0)
+        {
+            for(int ri=pi-1; ri>=0;--ri)
+                distances_to_points__[pi]->insert(distances_to_points__[(unsigned)ri]->value(pi),
+                                                  (unsigned)ri);
+        }
         for(PointId qi=pi+1; qi < ps__->getNumPoints(); ++qi)
         {
             tmp = hammingSimplified(ps__->getPoint(pi), ps__->getPoint(qi));
@@ -277,14 +301,24 @@ void KMeans::fillPointsDistances()
             distances_to_points__[pi]->insert(tmp, qi);
         }
     }
+    unsigned int lastPoint = ps__->getNumPoints() -1;
+    distances_to_points__.insert(lastPoint, new QMultiMap<Distance, PointId>());
+    for(int ri= lastPoint-1; ri>=0;--ri)
+        distances_to_points__[lastPoint]->insert(distances_to_points__[(unsigned)ri]->value(lastPoint),
+                                          (unsigned)ri);
 }
 
 void KMeans::minimal_dimensions_partitions_points()
 {
+    logall("KMeans::minimal_dimensions_partitions_points()");
     fillPointsDistances();
     QSet<PointId> *usedPoints = new QSet<PointId>();
     int low=0, high = ps__->getNumPoints() / num_clusters__;
     int pDelta = high;
+    QVector<QList<PointId>*> pointsForCheck(this->num_clusters__, 0);
+    QSet<PointId>* notUsedPoints = new QSet<PointId>();
+    for(PointId pi=0; pi < ps__->getNumPoints()-1; ++pi)
+        notUsedPoints->insert(pi);
     for(unsigned int j=0; j < num_clusters__; ++j) // think about better way to choose seeds
     {
         PointId seed = qrand() % ((high + 1) - low) + low;
@@ -293,35 +327,69 @@ void KMeans::minimal_dimensions_partitions_points()
         pair->first->insert(seed);
         usedPoints->insert(seed);
         temporary_groups__.insert(j, pair);
+        pointsForCheck[j] = new QList<PointId>();
+        *pointsForCheck[j] << seed;
         low += pDelta;
         high += pDelta;
     } // now groups are initialized with two points each
     PointId groupId = 0;
+    int usedPointsSize = 0;
+    QList<PointId> * newPointsToCheck = 0;
     while((unsigned)usedPoints->size() < ps__->getNumPoints())
     {
         if(!(groupId < num_clusters__))
             groupId = 0;
-        foreach(PointId pointInGroup, (*temporary_groups__[groupId]->first))
-        { // first the greedy version
-            if(!distances_to_points__.contains(pointInGroup))
-                continue;
-            if(distances_to_points__[pointInGroup] == 0)
-                continue;
-            if(distances_to_points__[pointInGroup]->size() == 0)
-                continue;
+        usedPointsSize = usedPoints->size();
+        newPointsToCheck =
+                iterateOverTemporaryGroupsAndAssignPoints(groupId,
+                                                          usedPoints,
+                                                          notUsedPoints,
+                                                          pointsForCheck[groupId]);
+        delete pointsForCheck[groupId];
+        pointsForCheck[groupId] = newPointsToCheck;
+        ++groupId;
+    }
+    delete usedPoints;
+    usedPoints = 0;
+    delete notUsedPoints;
+    notUsedPoints = 0;
+    for(unsigned int j=0; j<this->num_clusters__; ++j)
+    {
+        delete pointsForCheck[j];
+        pointsForCheck[j] = 0;
+    }
+}
+
+QList<PointId> * KMeans::iterateOverTemporaryGroupsAndAssignPoints(PointId groupId,
+                                                                   QSet<PointId> *usedPoints,
+                                                                   QSet<PointId> *notUsedPoints,
+                                                                   QList<PointId>* pointsToCheck)
+{
+    logall("KMeans::iterateOverTemporaryGroupsAndAssignPoints");
+    QList<PointId> * result = new QList<PointId>();
+    foreach(PointId pointInGroup, *pointsToCheck)
+    { // first the greedy version
+        if(distances_to_points__.contains(pointInGroup))
+        {
             Distance minK = distances_to_points__[pointInGroup]->begin().key();
+            QList<QPair<Distance, PointId> > toRemoveFromDists;
             foreach(PointId newP, distances_to_points__[pointInGroup]->values(minK))
             {
                 if(!usedPoints->contains(newP))
                 {
                     usedPoints->insert(newP);
+                    *result << newP;
                     temporary_groups__[groupId]->first->insert(newP);
-                    temporary_groups__[groupId]->second +=
-                            getWeightOfConnecting(newP,
+                    temporary_groups__[groupId]->second += getWeightOfConnecting(newP,
                                 temporary_groups__[groupId]->first);
+                    notUsedPoints->remove(newP);
                 }
+                else
+                    toRemoveFromDists << QPair<Distance, PointId>(minK, newP);
             }
-            distances_to_points__[pointInGroup]->remove(minK);
+            QPair<Distance, PointId> p;
+            foreach(p, toRemoveFromDists)
+                distances_to_points__[pointInGroup]->remove(p.first, p.second);
             if(distances_to_points__[pointInGroup]->size() == 0)
             {
                 delete distances_to_points__[pointInGroup];
@@ -329,14 +397,14 @@ void KMeans::minimal_dimensions_partitions_points()
                 distances_to_points__.remove(pointInGroup);
             }
         }
-        ++groupId;
     }
-    delete usedPoints;
-    usedPoints = 0;
+
+    return result;
 }
 
 Distance KMeans::getWeightOfConnecting(PointId p, const QSet<PointId>* set) const
 {
+    logall("KMeans::getWeightOfConnecting(PointId p, const QSet<PointId>* set)");
     Distance weight = 0.0;
     foreach(PointId q, *set)
         weight += get_dist_p2p(p, q);
@@ -345,6 +413,7 @@ Distance KMeans::getWeightOfConnecting(PointId p, const QSet<PointId>* set) cons
 
 Distance KMeans::get_dist_p2p(PointId x, PointId y) const
 {
+    logall("KMeans::get_dist_p2p(PointId x, PointId y)");
     if (x == y)
         return 0.0;
     else if(points_distances__.contains(x) && points_distances__[x]->contains(y))
@@ -364,6 +433,7 @@ Distance KMeans::get_dist_p2p(PointId x, PointId y) const
 
 int KMeans::getTemporaryGroupsSize() const
 {
+    logall("KMeans::getTemporaryGroupsSize()");
     int size = 0;
     QPair<QSet<PointId>*, Distance>* group;
     foreach(group, temporary_groups__.values())
@@ -373,6 +443,7 @@ int KMeans::getTemporaryGroupsSize() const
 
 void KMeans::determinig_number_of_clusters_partition_points()
 {
+    logall("KMeans::determinig_number_of_clusters_partition_points()");
     if(dimensions_delta__ == 0)
         return;
     fillPointsDistances();
@@ -380,11 +451,13 @@ void KMeans::determinig_number_of_clusters_partition_points()
 
 QSet<PointId> KMeans::getUniqueUnion(const QList<PointId>& one, const QList<PointId>& two) const
 {
+    logall("KMeans::getUniqueUnion(const QList<PointId>& one, const QList<PointId>& two)");
     return one.toSet() + two.toSet();
 }
 
-Distance KMeans::countDistance(const Point& p, const Point& q)
+Distance KMeans::countDistance(const Point& p, const Point& q) const
 {
+    logall("KMeans::countDistance(const Point& p, const Point& q)");
     ++distances_call_count__;
 
     if(distance_type__ == Hamming)
@@ -404,6 +477,7 @@ Distance KMeans::countDistance(const Point& p, const Point& q)
 
 Distance KMeans::dotMatrixes(const Point& a, const Point& b) const
 {
+    logall("KMeans::dotMatrixes(const Point& a, const Point& b) const");
     Distance result = 0;
     foreach (Coord c, a) {
         foreach (Coord i, b)
@@ -414,8 +488,13 @@ Distance KMeans::dotMatrixes(const Point& a, const Point& b) const
 
 Distance KMeans::euclideanDistance(const Point& p, const Point& q) const
 {
+    logall("KMeans::euclideanDistance(const Point& p, const Point& q) const");
     long double sigma = 0.0;
-    foreach(PointId i, getUniqueUnion(p.keys(), q.keys()))
+    int a = p.size();
+    int b = q.size();
+    const QSet<PointId>& uniqueUnion = b == 0 ? (a == 0 ? QSet<PointId>() : q.keys().toSet()) :
+                                                 (a == 0 ? p.keys().toSet() : getUniqueUnion(p.keys(), q.keys()));
+    foreach(PointId i, uniqueUnion)
     {
         if (p.contains(i) && q.contains(i))
             sigma = sigma + (long double)((p[i] - q[i])*(p[i] - q[i]));
@@ -429,6 +508,7 @@ Distance KMeans::euclideanDistance(const Point& p, const Point& q) const
 
 Distance KMeans::hammingDistance(const Point& p, const Point& q) const
 {
+    logall("KMeans::hammingDistance(const Point& p, const Point& q) const");
     long double sigma = 0.0;
     foreach(PointId i, getUniqueUnion(p.keys(), q.keys()))
     {
@@ -444,6 +524,7 @@ Distance KMeans::hammingDistance(const Point& p, const Point& q) const
 
 Distance KMeans::hammingSimplified(const Point& p, const Point& q) const
 {
+    logall("KMeans::hammingSimplified(const Point& p, const Point& q) const");
     long double sigma = 0.0;
     foreach(PointId i, getUniqueUnion(p.keys(), q.keys()))
     {
@@ -457,12 +538,14 @@ Distance KMeans::hammingSimplified(const Point& p, const Point& q) const
 
 Distance KMeans::cosineDistance(const Point& p, const Point& q) const
 {
+    logall("KMeans::cosineDistance(const Point& p, const Point& q) const");
     return 1.0 - (dotMatrixes(p, q) / sqrt(dotMatrixes(p, p))
                 * sqrt(dotMatrixes(q, q)));
 }
 
 void KMeans::run()
 {
+    logall("KMeans::run()");
     executeAlgorithm();
 }
 
@@ -471,6 +554,7 @@ void KMeans::run()
   */
 void KMeans::executeAlgorithm()
 {
+    logall("KMeans::executeAlgorithm()");
 	bool move;
 	bool some_point_is_moving = true;
 	unsigned int num_iterations = 0;
@@ -486,18 +570,16 @@ void KMeans::executeAlgorithm()
 		log_stream__ = new QTextStream(&log_file__);
 	else
 		log_stream__ = new QTextStream(stdout);
-	//
-	// Initial partition of points
-    //
+    logall("Before firs loop - preprocessing");
+
 	initial_partition_points();
     _algorithmPosition = InitialClusters;
     if(monitor__)
         monitor__->waitOnComparer();
-	//
-	// Until not converge
-	//
+
     while (some_point_is_moving && num_iterations < iterationsCount__)
-	{
+    {
+        logall(QString("Iteration %1").arg(num_iterations));
 		some_point_is_moving = false;
         compute_centroids();
         _algorithmPosition = CentersComputed;
@@ -512,6 +594,9 @@ void KMeans::executeAlgorithm()
 			// distance from current cluster
             min = countDistance(centroids__[points_to_clusters__[pid]],
 					ps__->getPoint(pid));
+            logall(QString("Point %1 assigned to %2 with distance %3").arg(QString::number(pid),
+                                                                           QString::number(points_to_clusters__[pid]),
+                                                                           QString::number(min)));
 			// foreach centroid
 			move = false;
             for(ClusterId cid=0; cid <  (unsigned)centroids__.size(); ++cid)
@@ -520,6 +605,9 @@ void KMeans::executeAlgorithm()
 				{
                     d = countDistance(centroids__[cid], ps__->getPoint(pid));
                     all_distances__[cid].insert(pid, d);
+                    logall(QString("Point %1 to center %2 has distance %3 ").arg(QString::number(pid),
+                                                                                QString::number(cid),
+                                                                                QString::number(d)));
 					if (d < min)
 					{
 						min = d;
@@ -527,6 +615,7 @@ void KMeans::executeAlgorithm()
 						to_cluster = cid;
 						++num_moved__;
 						some_point_is_moving = true;
+                        logall(QString("Point %1 will be moved to center %2").arg(QString::number(pid), QString::number(cid)));
 					}
 				}
 			}
@@ -537,6 +626,7 @@ void KMeans::executeAlgorithm()
 				// insert
 				points_to_clusters__[pid] = to_cluster;
                 clusters_to_points__[to_cluster]->insert(pid);
+                logall(QString("Moving point %1 to center %2").arg(QString::number(pid), QString::number(to_cluster)));
 			}
 		}
         _algorithmPosition = DistancesCounted;
@@ -546,7 +636,7 @@ void KMeans::executeAlgorithm()
 	} // end while (some_point_is_moving)
     _algorithmPosition = EndLoop;
     if(monitor__)
-        monitor__->notifyAboutThreadEnd(this);
+        monitor__->notifyAboutThreadEnd();
 	if(store_states__)
 		this->storeCurrentIterationState();
 	used_iterations__ = num_iterations;
@@ -559,6 +649,7 @@ void KMeans::executeAlgorithm()
 
 void KMeans::storeCurrentIterationState()
 {
+    logall("KMeans::storeCurrentIterationState()");
 	int i=0;
 	QString status;
 	QTextStream stream(&status);
@@ -588,6 +679,7 @@ void KMeans::storeCurrentIterationState()
 
 bool KMeans::printClusteringResults(const QString& fileName) const
 {
+    logall("KMeans::printClusteringResults(const QString& fileName) const");
     QFile file(fileName);
     if(!file.open(QFile::WriteOnly))
         return false;
@@ -611,6 +703,7 @@ bool KMeans::printClusteringResults(const QString& fileName) const
 
 void KMeans::printClusters(QTextStream& stream) const
 {
+    logall("KMeans::printClusters(QTextStream& stream) const");
     int i=0;
     foreach(const SetPoints* set, clusters_to_points__)
     {
@@ -626,12 +719,14 @@ void KMeans::printClusters(QTextStream& stream) const
 
 void KMeans::printIterationStates(QTextStream& log)
 {
+    logall("KMeans::printIterationStates(QTextStream& log)");
     foreach(QString status, this->iterations_states__)
         log << status << endl;
 }
 
 void KMeans::printDifferences(const KMeans* from, QTextStream& stream) const
 {
+    logall("KMeans::printDifferences(const KMeans* from, QTextStream& stream) const");
     int i=0, total = 0;
     foreach(const SetPoints *set, clusters_to_points__)
     {
@@ -652,6 +747,7 @@ void KMeans::printDifferences(const KMeans* from, QTextStream& stream) const
 
 bool KMeans::fillWithResults(const QString& fileName)
 {
+    logall("KMeans::fillWithResults(const QString& fileName)");
     QFile file(fileName);
     if(!file.open(QFile::ReadOnly))
         return false;
@@ -680,6 +776,7 @@ bool KMeans::fillWithResults(const QString& fileName)
 
 Distance KMeans::meanSquareError()
 {
+    logall("KMeans::meanSquareError()");
 	Distance mean = 0.0;
 //	QTextStream out(stdout);
 	QVector<Distance> lens(ps__->getNumPoints());
@@ -700,6 +797,7 @@ Distance KMeans::meanSquareError()
 
 bool KMeans::printCentroids(const QString& fileName) const
 {
+    logall("KMeans::printCentroids(const QString& fileName) const");
     QFile file(fileName);
     if(!file.open(QFile::WriteOnly))
         return false;

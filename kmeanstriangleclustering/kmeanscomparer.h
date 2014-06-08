@@ -24,7 +24,7 @@ public:
 
     void waitOnComparer();
 
-    void notifyAboutThreadEnd(KMeans* alg);
+    void notifyAboutThreadEnd();
 
 protected:
 
@@ -36,14 +36,17 @@ protected:
 
     bool shouldThisRun();
 
+    volatile bool started;
     QSemaphore _algorithmsLoop;
     QSemaphore* _comparsion;
     QMutex _mutex;
     QString _logs;
-    QTextStream _log;
-    volatile bool started;
+
     volatile unsigned int _number_of_locks;
     volatile unsigned int _running_threads;
+    QTextStream _log;
+
+
 
     QList<KMeans* > algorithms;
 

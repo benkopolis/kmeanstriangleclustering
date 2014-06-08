@@ -17,8 +17,8 @@ public:
 		return num_dimensions__;
 	}
 
-	virtual void insertPoint(Point p, PointId index) = 0;
-	virtual const Point getPoint(PointId index) const = 0;
+    virtual void insertPoint(Point* p, PointId index) = 0;
+    virtual const Point& getPoint(PointId index) const = 0;
 	virtual bool contains(PointId index) const = 0;
 
 	virtual void savePointsSpace(QString fileName) = 0;

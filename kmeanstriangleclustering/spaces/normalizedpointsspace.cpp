@@ -4,14 +4,27 @@ NormalizedPointsSpace::NormalizedPointsSpace()
 {
 }
 
-void NormalizedPointsSpace::insertPoint(Point p, PointId index)
+NormalizedPointsSpace::NormalizedPointsSpace(const NormalizedPointsSpace& another) :
+    AbstractPointsSpace(another.num_points__, another.num_dimensions__)
+{
+    for(unsigned int i=0; i<num_points__; ++i)
+    {
+        Point* point = new Point();
+        const Point& src = another.getPoint(i);
+        for(unsigned int j=0; j<num_dimensions__; ++j)
+            point->insert(j, src.value(j));
+        points__.insert(i, point);
+    }
+}
+
+void NormalizedPointsSpace::insertPoint(Point* p, PointId index)
 {
 	points__.insert(index, p);
 }
 
-const Point NormalizedPointsSpace::getPoint(PointId index) const
+const Point& NormalizedPointsSpace::getPoint(PointId index) const
 {
-	return points__.value(index);
+    return *points__.value(index);
 }
 
 bool NormalizedPointsSpace::contains(PointId index) const
@@ -28,8 +41,8 @@ void NormalizedPointsSpace::savePointsSpace(QString fileName)
     out << num_points__ << ' ' << num_dimensions__ << ' ' << endl;
 	foreach(PointId key, points__.keys())
 	{
-		foreach(unsigned int dim, points__[key].keys())
-            out << dim << ':' << points__[key][dim] << endl;
+        foreach(unsigned int dim, points__[key]->keys())
+            out << dim << ':' << (*points__[key])[dim] << endl;
 	}
 	out.flush();
 	file.close();
@@ -46,20 +59,19 @@ void NormalizedPointsSpace::loadPointsSpace(QString fileName)
 	this->num_points__ = points;
 	this->num_dimensions__ = dimensions;
     this->lines__ = points;
-	int counter = 0, coordId=0, pointId=0, tmpPointId=0;
+    int counter = 0, coordId=0, pointId=0;
 	Coord tmp;
 	in >> pointId;
-	tmpPointId = pointId;
     char separator;
     while(!in.atEnd())
 	{
-		Point point;
+        Point* point = new Point();
         QString line = in.readLine();
         QTextStream inner(&line);
         while(!inner.atEnd())
 		{
             inner >> coordId >> separator >> tmp;
-			point.insert(coordId, tmp);
+            point->insert(coordId, tmp);
 		}
         points__.insert(counter++, point);
 	}
