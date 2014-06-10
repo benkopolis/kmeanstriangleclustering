@@ -552,6 +552,16 @@ void KMeans::run()
 /**
   *
   */
+void KMeans::move_point(PointId pid, ClusterId to_cluster)
+{
+    logall("KMeans::move_point(PointId pid, ClusterId to_cluster, bool* move)");
+    clusters_to_points__[points_to_clusters__[pid]]->remove(pid);
+    // insert
+    points_to_clusters__[pid] = to_cluster;
+    clusters_to_points__[to_cluster]->insert(pid);
+    logall(QString("Moving point %1 to center %2").arg(QString::number(pid), QString::number(to_cluster)));
+}
+
 void KMeans::executeAlgorithm()
 {
     logall("KMeans::executeAlgorithm()");
@@ -598,7 +608,6 @@ void KMeans::executeAlgorithm()
                                                                            QString::number(points_to_clusters__[pid]),
                                                                            QString::number(min)));
 			// foreach centroid
-			move = false;
             for(ClusterId cid=0; cid <  (unsigned)centroids__.size(); ++cid)
 			{
 				if(cid != points_to_clusters__[pid])
@@ -620,14 +629,8 @@ void KMeans::executeAlgorithm()
 				}
 			}
 			if (move)
-			{
-				(*log_stream__) << pid << ':' << points_to_clusters__[pid] << ':' << to_cluster << endl;
-                clusters_to_points__[points_to_clusters__[pid]]->remove(pid);
-				// insert
-				points_to_clusters__[pid] = to_cluster;
-                clusters_to_points__[to_cluster]->insert(pid);
-                logall(QString("Moving point %1 to center %2").arg(QString::number(pid), QString::number(to_cluster)));
-			}
+                move_point(pid, to_cluster);
+            move = false;
 		}
         _algorithmPosition = DistancesCounted;
         if(monitor__)

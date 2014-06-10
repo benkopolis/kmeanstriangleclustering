@@ -23,6 +23,10 @@ public:
 
 protected:
 
+    void count_centers_distances();
+
+    virtual void move_point(unsigned int pid, ClusterId to_cluster);
+
     virtual void storeCurrentIterationState();
 	//
 	// Zero centroids
@@ -34,6 +38,8 @@ protected:
 	void computeLowerAndUpperBounds();
 
 	bool computePointsAssignements(QTextStream& log);
+
+    void init_bounds();
 
 	//
 	// Initial partition points among available clusters

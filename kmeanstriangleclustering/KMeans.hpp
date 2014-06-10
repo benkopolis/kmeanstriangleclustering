@@ -179,6 +179,8 @@ public:
 
 protected:
 
+    virtual void move_point(PointId pid, ClusterId to_cluster);
+
     virtual void storeCurrentIterationState();
 
     Distance dotMatrixes(const Point& a, const Point& b) const;

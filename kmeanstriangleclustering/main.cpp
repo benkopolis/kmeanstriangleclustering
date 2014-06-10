@@ -76,8 +76,8 @@ void testClustering()
 //    ps->loadPointsSpace("small_test_point_space.txt");
     KMeans clusters(num_clusters, 10, ps, true);
     KMeansTriangle traingle(num_clusters, 10, ps, true);
-    KMeans hamming(num_clusters, 10, ps, true);
-	hamming.setDistanceType(KMeans::Hamming);
+//    KMeans hamming(num_clusters, 10, ps, true);
+//	hamming.setDistanceType(KMeans::Hamming);
 	clusters.setDistanceFunction(&cosinDist);
 
     executeAndPrintClusteringResults(&stream, out, clusters, "NORMAL KMEANS");
@@ -92,21 +92,21 @@ void testClustering()
     stream << endl << "TRAIANGLE STATES" << endl;
     traingle.printIterationStates(stream);
 
-	QElapsedTimer e2timer;
-	e2timer.start();
-	hamming.executeAlgorithm();
-	out << "elapsed: " << e2timer.elapsed() << "ms" << endl;
-	out << "distnace counter calls: " << hamming.getDistancesCallCount() << endl;
-	out << "used iterations: " << hamming.getUsedIterationsCount() << endl;
-	out << "distances calls per iteration: " << hamming.getDistancesCallCount() / hamming.getUsedIterationsCount() << endl;
-	out << "Error: " << hamming.meanSquareError() << endl;
-	out << "Moved: " << hamming.getMovedCount() << endl;
-	out << "Clusters: " << endl;
-	hamming.printClustersSize(out);
+//	QElapsedTimer e2timer;
+//	e2timer.start();
+//	hamming.executeAlgorithm();
+//	out << "elapsed: " << e2timer.elapsed() << "ms" << endl;
+//	out << "distnace counter calls: " << hamming.getDistancesCallCount() << endl;
+//	out << "used iterations: " << hamming.getUsedIterationsCount() << endl;
+//	out << "distances calls per iteration: " << hamming.getDistancesCallCount() / hamming.getUsedIterationsCount() << endl;
+//	out << "Error: " << hamming.meanSquareError() << endl;
+//	out << "Moved: " << hamming.getMovedCount() << endl;
+//	out << "Clusters: " << endl;
+//	hamming.printClustersSize(out);
 
 	clusters.storePreRandIndex("classicKMeansX.prtxt");
 	traingle.storePreRandIndex("traingleX.prtxt");
-	hamming.storePreRandIndex("hammingX.prtxt");
+//	hamming.storePreRandIndex("hammingX.prtxt");
 	out.flush();
 	stream.flush();
 	clustersData.close();
@@ -380,9 +380,12 @@ void testArgs()
 
 int main(int argc, char *argv[])
 {
-    QFile file("LOGS/full.log");
-    file.open(QFile::WriteOnly);
-    m_globalLogger = new QTextStream(&file);
+    QFile file("logs/full.log");
+    bool globalLogFileOpened = file.open(QFile::WriteOnly);
+    if(globalLogFileOpened)
+        m_globalLogger = new QTextStream(&file);
+    else
+        m_globalLogger = new QTextStream(stderr);
     QTime time = QTime::currentTime();
     qsrand((uint)time.msec());
 //    testArgs();

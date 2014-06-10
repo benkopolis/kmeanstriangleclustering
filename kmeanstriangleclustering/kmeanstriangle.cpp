@@ -49,25 +49,31 @@ void KMeansTriangle::compute_centroids()
 	}
 }
 
-void KMeansTriangle::assignDSVectors()
+void KMeansTriangle::count_centers_distances()
 {
-    logall("KMeansTriangle::assignDSVectors()");
-    for (unsigned int a = 0; a < (unsigned)centroids__.size() - 1; ++a)
-	{
-		centersToCenters__[a][a] = 0;
-        for (unsigned int b = a + 1; b < (unsigned)centroids__.size(); ++b)
+    logall("KMeansTriangle::count_centers_distances()");
+    for (unsigned int a = 0, total = (unsigned)new_centroids__.size() - 1; a < total; ++a)
+    {
+        centersToCenters__[a][a] = 0;
+        for (unsigned int b = a + 1; b < total; ++b)
         {
             centersToCenters__[a][b] = centersToCenters__[b][a] =
-                    countDistance(centroids__[a], centroids__[b]);
+                    countDistance(new_centroids__[a], new_centroids__[b]);
             logall(QString("Distance between center %1 and %2 is %3").arg(
                        QString::number(a), QString::number(b),
                        QString::number(centersToCenters__[a][b])));
         }
-	}
+    }
+}
+
+void KMeansTriangle::assignDSVectors()
+{
+    logall("KMeansTriangle::assignDSVectors()");
+    count_centers_distances();
     logall("SVector values for centers: ");
-    for (unsigned int a = 0; a < (unsigned)centroids__.size(); ++a)
+    for (unsigned int a = 0; a < (unsigned)new_centroids__.size(); ++a)
 	{
-        for (unsigned int b = 0; b < (unsigned)centroids__.size(); ++b)
+        for (unsigned int b = 0; b < (unsigned)new_centroids__.size(); ++b)
         {
             if(a == b)
                 continue;
@@ -76,6 +82,48 @@ void KMeansTriangle::assignDSVectors()
             logoneline(QString("%1:%2, ").arg(QString::number(a), QString::number(sVector__[a])));
         }
 	}
+}
+
+void KMeansTriangle::init_bounds()
+{
+    logall("KMeansTriangle::init_bounds()");
+    count_centers_distances();
+    for (unsigned int pid = 0, upperSize = (unsigned)upperBounds__.size(); pid < upperSize; ++pid)
+    {
+        upperBounds__[pid] = countDistance(ps__->getPoint(pid),
+                                           centroids__[points_to_clusters__[pid]]);
+        lowerBounds__[points_to_clusters__[pid]][pid] = upperBounds__[pid];
+        for(unsigned int cid = 0, clusters = (unsigned)centroids__.size(); cid < clusters; ++cid)
+        {
+            if(cid == points_to_clusters__[pid])
+            {
+                logall(QString("Lower bound of point %1 with center %2 is %3").arg(
+                           QString::number(pid),
+                           QString::number(cid),
+                           QString::number(lowerBounds__[cid][pid])));
+                continue;
+            }
+            if(centersToCenters__[points_to_clusters__[pid]][cid] < 2*upperBounds__[pid])
+            {
+                Distance d = countDistance(ps__->getPoint(pid),
+                                           centroids__[cid]);
+                lowerBounds__[cid][pid] = d;
+                if(upperBounds__[pid] > d)
+                {
+                    upperBounds__[pid] = d;
+                    clusters_to_points__[cid]->insert(pid);
+                    points_to_clusters__[pid] = cid;
+                }
+            }
+            else
+                lowerBounds__[cid][pid] = lowerBounds__[points_to_clusters__[pid]][pid];
+            logall(QString("Lower bound of point %1 with center %2 is %3").arg(
+                       QString::number(pid),
+                       QString::number(cid),
+                       QString::number(lowerBounds__[cid][pid])));
+        }
+        logall(QString("Upper bound of point %1 is %2").arg(QString::number(pid), QString::number(upperBounds__[pid])));
+    }
 }
 
 void KMeansTriangle::computeLowerAndUpperBounds()
@@ -89,20 +137,33 @@ void KMeansTriangle::computeLowerAndUpperBounds()
         logoneline(QString("%1:%2, ").arg(QString::number(cid), QString::number(delta[cid])));
     }
     logall("Lower and upper bouds!");
-    for (unsigned int pid = 0; pid < (unsigned)lowerBounds__.size(); ++pid)
+    for (unsigned int pid = 0; pid < (unsigned)upperBounds__.size(); ++pid)
 	{
         logall(QString("Lower bounds of point %1 per each center").arg(QString::number(pid)));
         for (unsigned int cid = 0; cid < (unsigned)centroids__.size(); ++cid)
 		{
-            lowerBounds__[pid][cid] = lowerBounds__[pid][cid] - delta[cid];
+            lowerBounds__[cid][pid] = lowerBounds__[cid][pid] - delta[cid];
 //                    fabs(lowerBounds__[pid][cid] - delta[cid]);
-            if (lowerBounds__[pid][cid] < 0)
-                lowerBounds__[pid][cid] = 0;
-            logoneline(QString("%1:%2, ").arg(QString::number(cid), QString::number(lowerBounds__[pid][cid])));
+            if (lowerBounds__[cid][pid] < 0)
+                lowerBounds__[cid][pid] = 0;
+            logoneline(QString("%1:%2, ").arg(QString::number(cid), QString::number(lowerBounds__[cid][pid])));
 		}
 		upperBounds__[pid] += delta[points_to_clusters__[pid]];
         logall(QString("Upper bound of point %1 is %2").arg(QString::number(pid), QString::number(upperBounds__[pid])));
 	}
+}
+
+void KMeansTriangle::move_point(unsigned int pid, ClusterId to_cluster)
+{
+    logall("KMeansTriangle::move_point(unsigned int pid, ClusterId to_cluster, bool* move)");
+    clusters_to_points__[to_cluster]->insert(pid);
+    points_to_clusters__[pid] = to_cluster;
+    upperBounds__[pid] = lowerBounds__[to_cluster][pid];
+    rVector__[pid].notCounted = false;
+    ++num_moved__;
+    logall(QString("Moving point %1 to center %2").arg(
+               QString::number(pid),
+               QString::number(to_cluster)));
 }
 
 bool KMeansTriangle::computePointsAssignements(QTextStream& log)
@@ -122,7 +183,7 @@ bool KMeansTriangle::computePointsAssignements(QTextStream& log)
                    QString::number(upperBounds__[pid] > sVector__[points_to_clusters__[pid]])));
 		if (upperBounds__[pid] > sVector__[points_to_clusters__[pid]])
 		{
-            for (unsigned int a = 0; a < (unsigned)centroids__.size(); ++a)
+            for (unsigned int a = 0, clusters = (unsigned)centroids__.size(); a < clusters; ++a)
 			{
                 logall(QString("upperBounds[%1](%2) < sVector[%3](%4) ---- condition is %5").arg(
                            QString::number(pid),
@@ -136,21 +197,21 @@ bool KMeansTriangle::computePointsAssignements(QTextStream& log)
                            QString::number(a),
                            QString::number(points_to_clusters__[pid]),
                            QString::number(upperBounds__[pid]),
-                           QString::number(lowerBounds__[pid][a]),
+                           QString::number(lowerBounds__[a][pid]),
                            QString::number(upperBounds__[pid]),
                            QString::number(centersToCenters__[points_to_clusters__[pid]][a]),
                            QString::number(a != points_to_clusters__[pid] &&
-                                upperBounds__[pid] > lowerBounds__[pid][a] &&
+                                upperBounds__[pid] > lowerBounds__[a][pid] &&
                                 upperBounds__[pid] > centersToCenters__[points_to_clusters__[pid]][a]/2.0)));
 				if (a != points_to_clusters__[pid] &&
-                        upperBounds__[pid] > lowerBounds__[pid][a] &&
+                        upperBounds__[pid] > lowerBounds__[a][pid] &&
                         upperBounds__[pid] > centersToCenters__[points_to_clusters__[pid]][a]/2.0)
 				{
                     if (rVector__[pid].notCounted)
 					{
                         rVector__[pid].distance =
                                 countDistance(ps__->getPoint(pid),
-                                              centroids__[points_to_clusters__[pid]]);
+                                              new_centroids__[points_to_clusters__[pid]]);
                         rVector__[pid].notCounted = false;
                         modifiedR.push(pid);
 					}
@@ -159,10 +220,10 @@ bool KMeansTriangle::computePointsAssignements(QTextStream& log)
                     logall(QString("rVector for point %1 is %2 and distance is %3").arg(
                                QString::number(pid),
                                QString::number(rVector__[pid].notCounted)));
-                    if(rVector__[pid].distance > lowerBounds__[pid][a]
+                    if(rVector__[pid].distance > lowerBounds__[a][pid]
                             || rVector__[pid].distance > sVector__[a])
                     {
-                        d = countDistance(ps__->getPoint(pid), centroids__[a]);
+                        d = countDistance(ps__->getPoint(pid), new_centroids__[a]);
                         logall(QString("Distance from point %1 to center %2 is %3").arg(
                                    QString::number(pid),
                                    QString::number(a),
@@ -179,18 +240,8 @@ bool KMeansTriangle::computePointsAssignements(QTextStream& log)
 				}
 			} // all centers checked
 			if(move)
-			{
-				log << pid << ':' << points_to_clusters__[pid] << '>' << to_cluster << endl;
-                clusters_to_points__[to_cluster]->insert(pid);
-				points_to_clusters__[pid] = to_cluster;
-                upperBounds__[pid] = lowerBounds__[pid][to_cluster];
-                rVector__[pid].notCounted = false;
-				move = false;
-				++num_moved__;
-                logall(QString("Moving point %1 to center %2").arg(
-                           QString::number(pid),
-                           QString::number(to_cluster)));
-			}
+                move_point(pid, to_cluster);
+            move = false;
 		}
 	}
 	return change;
@@ -227,10 +278,10 @@ void KMeansTriangle::executeAlgorithm()
 	// Initial partition of points
 	initial_partition_points();
     compute_centroids();
-//    assignDSVectors();
-//	firstLoop(*log_stream__);
-//    compute_centroids();
-//	this->computeLowerAndUpperBounds();
+    centroids__ = new_centroids__;
+    init_bounds();
+    compute_centroids();
+    this->computeLowerAndUpperBounds();
     num_iterations = 0;
     do
 	{
@@ -239,10 +290,10 @@ void KMeansTriangle::executeAlgorithm()
         for(int i=0; i<sVector__.size(); ++i)
             sVector__[i] = std::numeric_limits<Distance>::max();
 		++num_iterations;
-		this->assignDSVectors();
+        this->assignDSVectors();
 		some_point_is_moving = this->computePointsAssignements(*log_stream__);
         compute_centroids();
-		this->computeLowerAndUpperBounds();
+        this->computeLowerAndUpperBounds();
         while(!modifiedR.isEmpty())
             rVector__[modifiedR.pop()].reset();
         centroids__ = new_centroids__;
@@ -264,14 +315,14 @@ void KMeansTriangle::firstLoop(QTextStream& log)
 	{
         min = countDistance(centroids__[points_to_clusters__[pid]],
 			ps__->getPoint(pid));
-        lowerBounds__[pid][points_to_clusters__[pid]] = min;
+        lowerBounds__[points_to_clusters__[pid]][pid] = min;
 		upperBounds__[pid] = min;
 		for(ClusterId cid =0; cid < num_clusters__; ++cid)
 		{
 			if(cid != points_to_clusters__[pid])
 			{
                 d = countDistance(centroids__[cid], ps__->getPoint(pid));
-                lowerBounds__[pid][cid] = d;
+                lowerBounds__[cid][pid] = d;
 				if(d<min)
 				{
 					upperBounds__[pid] = d;

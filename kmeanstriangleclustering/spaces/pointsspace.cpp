@@ -23,6 +23,15 @@ PointsSpace::PointsSpace(PointId num_points, Dimensions num_dimensions) :
 	init_points();
 }
 
+PointsSpace::~PointsSpace()
+{
+    foreach(PointId index, points__.keys())
+    {
+        delete points__[index];
+        points__[index] = 0;
+    }
+}
+
 void PointsSpace::insertPoint(Point *p, PointId index)
 {
 	points__.insert(index, p);

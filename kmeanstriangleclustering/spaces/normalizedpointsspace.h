@@ -9,7 +9,7 @@ public:
     NormalizedPointsSpace();
     NormalizedPointsSpace(const NormalizedPointsSpace& another);
 
-    virtual ~NormalizedPointsSpace() {}
+    virtual ~NormalizedPointsSpace();
 
     virtual void insertPoint(Point *p, PointId index);
     virtual const Point &getPoint(PointId index) const;

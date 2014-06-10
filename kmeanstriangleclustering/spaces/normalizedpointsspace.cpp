@@ -17,6 +17,15 @@ NormalizedPointsSpace::NormalizedPointsSpace(const NormalizedPointsSpace& anothe
     }
 }
 
+NormalizedPointsSpace::~NormalizedPointsSpace()
+{
+    foreach(PointId index, points__.keys())
+    {
+        delete points__[index];
+        points__[index] = 0;
+    }
+}
+
 void NormalizedPointsSpace::insertPoint(Point* p, PointId index)
 {
 	points__.insert(index, p);
