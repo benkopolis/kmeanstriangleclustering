@@ -51,8 +51,6 @@ void executeAndPrintClusteringResults(QTextStream* stream, QTextStream& out, KMe
     out << "Error: " << clusters.meanSquareError() << endl;
     out << "Moved: " << clusters.getMovedCount() << endl;
     out << "Clusters: " << endl;
-    clusters.printClustersSize(out);
-    clusters.printClusters(stream != 0 ? *stream : out);
     out.flush();
     if(stream != 0)
         stream->flush();
@@ -84,9 +82,6 @@ void testClustering()
 
     executeAndPrintClusteringResults(&stream, out, traingle, "TRIANGLE KMEANS");
     out << "conditions counter: " << traingle.getConditionsUseCount() << endl;
-	traingle.printClustersSize(out);
-
-    clusters.printDifferences(&traingle, stream);
     stream << endl << "KMEANS STATES" << endl;
     clusters.printIterationStates(stream);
     stream << endl << "TRAIANGLE STATES" << endl;
@@ -104,8 +99,6 @@ void testClustering()
 //	out << "Clusters: " << endl;
 //	hamming.printClustersSize(out);
 
-	clusters.storePreRandIndex("classicKMeansX.prtxt");
-	traingle.storePreRandIndex("traingleX.prtxt");
 //	hamming.storePreRandIndex("hammingX.prtxt");
 	out.flush();
 	stream.flush();
@@ -174,8 +167,6 @@ void testThreadClustering()
 
     logs << comparer->logs();
 
-    traingle->wait();
-    clusters->wait();
     delete clusters;
     delete traingle;
     delete comparer;
@@ -324,11 +315,6 @@ void generateResults(int argc, char *argv[])
     clusters->executeAlgorithm();
     out << "Elapsed: " << e1timer.elapsed() << endl;
     out << "Mean square error: " << clusters->meanSquareError();
-
-    clusters->countPreRandIndex();
-    clusters->storePreRandIndex(getPreRandFileName(argv[2], num_clusters, num_iters));
-    clusters->printClusteringResults(getResultsFileName(argv[2], num_clusters, num_iters));
-    clusters->printCentroids(getCentroidsFileName(argv[2], num_clusters, num_iters));
 }
 
 void countMeanSquareErrorFromResultFile(int argc, char *argv[])
@@ -343,7 +329,6 @@ void countMeanSquareErrorFromResultFile(int argc, char *argv[])
     NormalizedPointsSpace* space = new NormalizedPointsSpace();
     space->loadPointsSpace(argv[2]);
     KMeans* clusters = new KMeans(10, 10, space, false);
-    clusters->fillWithResults(argv[3]);
     Distance d = clusters->meanSquareError();
     out << "Elapsed: " << e1timer.elapsed() << endl;
     out << "Mean Square error: " << d << endl;
@@ -375,7 +360,6 @@ void testArgs()
     e1timer.start();
     clusters->testInitialPartitioning(KMeans::MinimalNumberOfDimensions);
     out << "Elapsed: " << e1timer.elapsed() << endl;
-    clusters->printCentroids("data/r8-train-centroidsTEST-out.txt");
 }
 
 int main(int argc, char *argv[])

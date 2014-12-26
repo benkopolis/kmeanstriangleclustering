@@ -21,9 +21,10 @@ public:
 		return conditions_use_counter__;
 	}
 
+        void move_point_initial(unsigned int pid, Distance d, unsigned int cid);
 protected:
 
-    void count_centers_distances();
+    void count_centers_distances(const Centroids &centroids);
 
     virtual void move_point(unsigned int pid, ClusterId to_cluster);
 
@@ -45,8 +46,6 @@ protected:
 	// Initial partition points among available clusters
 	//
 	virtual void initial_partition_points();
-
-	void firstLoop(QTextStream& log);
 
 private:
 

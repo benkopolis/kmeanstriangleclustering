@@ -20,7 +20,7 @@
 
 class KMeansComparer;
 
-class KMeans : public QThread
+class KMeans
 {
 public:
 
@@ -58,7 +58,6 @@ public:
 
 protected:
 
-    volatile AlgorithmPosition _algorithmPosition;
 	distanceFunc distance__;
     unsigned int iterationsCount__;
     AbstractPointsSpace* ps__; // the point space
@@ -104,21 +103,11 @@ private:
 
 public:
 
-    inline void setInitialPartitionType(InitialPartitionType type) { _initial_partition_type = type; }
-
     void testInitialPartitioning(InitialPartitionType type);
 
     void printIterationStates(QTextStream& log);
 
 	virtual void executeAlgorithm();
-
-    virtual void run();
-
-    inline void setMonitor(KMeansComparer *comparer) { monitor__ = comparer; }
-
-    inline AlgorithmPosition getAlgorithmPosition() {
-        return _algorithmPosition;
-    }
 
 	inline void setDistanceType(DistanceType type) {
 		distance_type__ = type;
@@ -154,28 +143,10 @@ public:
 #endif
     }
 
-	void printClusters(QTextStream& stream) const;
-
-	void printDifferences(const KMeans* from, QTextStream& stream) const;
-
-	inline QList<QString> getIterationsStates() const
-	{
-		return this->iterations_states__;
-	}
-
-	inline unsigned int getMovedCount() const { return num_moved__; }
-
-	void countPreRandIndex();
-    bool storePreRandIndex(const QString& fileName) const;
-    void printClustersSize(QTextStream& stream) const;
-    bool printClusteringResults(const QString& fileName) const;
-    bool printCentroids(const QString& fileName) const;
-    bool fillWithResults(const QString& fileName);
+    inline unsigned int getMovedCount() const { return num_moved__; }
     Distance getWeightOfConnecting(PointId p, const QSet<PointId> *set) const;
     int getTemporaryGroupsSize() const;
-
-
-	Distance meanSquareError();
+    Distance meanSquareError();
 
 protected:
 

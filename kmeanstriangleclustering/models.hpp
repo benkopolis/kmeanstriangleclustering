@@ -49,7 +49,7 @@ typedef QSet<PointId> SetPoints; // set of points
 // ClusterId -> (PointId, PointId, PointId, .... )
 typedef QVector<SetPoints* > ClustersToPoints;
 // PointId -> ClusterId
-typedef QVector<ClusterId> PointsToClusters;
+typedef QHash<PointId, ClusterId> PointsToClusters;
 // coll of centroids
 typedef QVector<Point> Centroids;
 

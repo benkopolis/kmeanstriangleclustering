@@ -8,7 +8,6 @@
 #include "KMeans.hpp"
 #include "models.hpp"
 #include "kmeanscomparer.h"
-#include "commons/sequentialcenterspicker.h"
 
 //std::ostream& operator <<(std::ostream& os, PointsSpace & ps) {
 //
@@ -65,10 +64,9 @@ QTextStream& operator <<(QTextStream& os, ClustersToPoints & cp) {
 QTextStream& operator <<(QTextStream& os, PointsToClusters & pc) {
 	PointId pid = 0;
 	QTextStream cout(stdout);
-	foreach(PointsToClusters::value_type cid, pc)
+    foreach(PointId pid, pc.keys())
 	{
-		cout << "pid[" << pid << "]=" << cid << endl;
-		pid ++;
+        cout << "pid[" << pid << "]=" << pc[pid] << endl;
 	}
 	return os;
 }
@@ -84,7 +82,6 @@ QTextStream& operator <<(QTextStream& os, PointsToClusters & pc) {
 KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
                AbstractPointsSpace* ps, bool store,
                KMeansComparer *monitor) :
-    _algorithmPosition(None),
 	iterationsCount__(numIters),
 	ps__(ps),
 	distances_call_count__(0),
@@ -146,45 +143,6 @@ KMeans::~KMeans() {
     logall("KMEANS DESTRIOYED");
 }
 
-
-void KMeans::countPreRandIndex()
-{
-    logall("KMeans::countPreRandIndex()");
-	for(PointId i=0; i < ps__->getNumPoints()-1; ++i)
-	{
-		int tmp = ps__->getNumPoints()-1;
-        if(points_to_clusters__[i] == points_to_clusters__[tmp])
-            pre_rand_index__[QPair<PointId, PointId>(i, tmp)] = true;
-        for(PointId j= i+1; j < ps__->getNumPoints()-1; ++j)
-            if(points_to_clusters__[i] == points_to_clusters__[j])
-                pre_rand_index__[QPair<PointId, PointId>(i, j)] = true;
-	}
-}
-
-bool KMeans::storePreRandIndex(const QString& fileName) const
-{
-    logall("KMeans::storePreRandIndex(const QString& fileName) const");
-	QFile file(fileName);
-    if(pre_rand_index__.size() == 0)
-        return false;
-	if(!file.open(QFile::WriteOnly))
-		return false;
-	QTextStream out(&file);
-	out << ps__->getNumPoints() << ' ' << num_clusters__ << ' ' << ps__->getNumPoints() << endl;
-    QPair<PointId, PointId> p;
-    foreach(p, pre_rand_index__.keys())
-        out << p.first << ':' << p.second << endl; // write only those pairs that are in the same cluster - rest is in different clusters
-    out.flush();
-    file.close();
-	return true;
-}
-
-void KMeans::printClustersSize(QTextStream& stream) const
-{
-	for(ClusterId i=0; i < num_clusters__; ++i)
-        stream << i << ": " << clusters_to_points__[i]->size() << endl;
-}
-
 //
 // Zero centroids
 //
@@ -243,15 +201,6 @@ void KMeans::compute_centroids()
 	centroids__ = means;
 }
 
-void KMeans::testInitialPartitioning(InitialPartitionType type)
-{
-    logall("void KMeans::testInitialPartitioning(InitialPartitionType type)");
-    InitialPartitionType old = _initial_partition_type;
-    this->setInitialPartitionType(type);
-    this->initial_partition_points();
-    this->compute_centroids();
-    this->setInitialPartitionType(old);
-}
 
 //
 // Initial partition points among available clusters
@@ -270,13 +219,6 @@ void KMeans::initial_partition_points()
 void KMeans::sequential_partition_points()
 {
     logall("KMeans::sequential_partition_points()");
-    ClusterId cid;
-    for (PointId pid = 0; pid < ps__->getNumPoints(); pid++)
-    {
-        cid = pid % num_clusters__;
-        points_to_clusters__.push_back(cid);
-        clusters_to_points__[cid]->insert(pid);
-    }
 }
 
 void KMeans::fillPointsDistances()
@@ -543,12 +485,6 @@ Distance KMeans::cosineDistance(const Point& p, const Point& q) const
                 * sqrt(dotMatrixes(q, q)));
 }
 
-void KMeans::run()
-{
-    logall("KMeans::run()");
-    executeAlgorithm();
-}
-
 /**
   *
   */
@@ -565,7 +501,7 @@ void KMeans::move_point(PointId pid, ClusterId to_cluster)
 void KMeans::executeAlgorithm()
 {
     logall("KMeans::executeAlgorithm()");
-	bool move;
+    bool move=false;
 	bool some_point_is_moving = true;
 	unsigned int num_iterations = 0;
 	PointId pid;
@@ -582,21 +518,13 @@ void KMeans::executeAlgorithm()
 		log_stream__ = new QTextStream(stdout);
     logall("Before firs loop - preprocessing");
 
-	initial_partition_points();
-    _algorithmPosition = InitialClusters;
-    if(monitor__)
-        monitor__->waitOnComparer();
+    initial_partition_points();
 
     while (some_point_is_moving && num_iterations < iterationsCount__)
     {
         logall(QString("Iteration %1").arg(num_iterations));
 		some_point_is_moving = false;
         compute_centroids();
-        _algorithmPosition = CentersComputed;
-        if(monitor__)
-            monitor__->waitOnComparer();
-		if(store_states__)
-			this->storeCurrentIterationState();
         all_distances__.clear();
 		// for each point
 		for (pid = 0; pid < num_points__; pid++)
@@ -632,16 +560,8 @@ void KMeans::executeAlgorithm()
                 move_point(pid, to_cluster);
             move = false;
 		}
-        _algorithmPosition = DistancesCounted;
-        if(monitor__)
-            monitor__->waitOnComparer();
 		num_iterations++;
 	} // end while (some_point_is_moving)
-    _algorithmPosition = EndLoop;
-    if(monitor__)
-        monitor__->notifyAboutThreadEnd();
-	if(store_states__)
-		this->storeCurrentIterationState();
 	used_iterations__ = num_iterations;
 	(*log_stream__) << endl << endl << endl;
 	log_stream__->flush();
@@ -680,101 +600,11 @@ void KMeans::storeCurrentIterationState()
 	iterations_states__.push_back(status);
 }
 
-bool KMeans::printClusteringResults(const QString& fileName) const
-{
-    logall("KMeans::printClusteringResults(const QString& fileName) const");
-    QFile file(fileName);
-    if(!file.open(QFile::WriteOnly))
-        return false;
-    QTextStream stream(&file);
-    int i=0;
-    stream << num_clusters__ << ' ' << ps__->getNumPoints() << endl; // magic switch ;)
-    foreach(const SetPoints* set, clusters_to_points__)
-    {
-        foreach(const PointId point, *set)
-        {
-            stream << point << ':' << "1.0" << ' ';
-        }
-        stream << endl;
-        ++i;
-    }
-    stream.flush();
-    file.close();
-    return true;
-}
-
-
-void KMeans::printClusters(QTextStream& stream) const
-{
-    logall("KMeans::printClusters(QTextStream& stream) const");
-    int i=0;
-    foreach(const SetPoints* set, clusters_to_points__)
-    {
-        stream << i << ':';
-        foreach(const PointId point, *set)
-        {
-            stream << point << ',';
-        }
-        stream << endl;
-        ++i;
-    }
-}
-
 void KMeans::printIterationStates(QTextStream& log)
 {
     logall("KMeans::printIterationStates(QTextStream& log)");
     foreach(QString status, this->iterations_states__)
         log << status << endl;
-}
-
-void KMeans::printDifferences(const KMeans* from, QTextStream& stream) const
-{
-    logall("KMeans::printDifferences(const KMeans* from, QTextStream& stream) const");
-    int i=0, total = 0;
-    foreach(const SetPoints *set, clusters_to_points__)
-    {
-        stream << i << ": ";
-        int diffs = 0;
-        foreach(const PointId point, *set)
-        {
-            if(from->clusters_to_points__.at(i)->find(point) == from->clusters_to_points__.at(i)->end())
-                ++diffs;
-        }
-        stream << diffs << "/" << from->clusters_to_points__.at(i)->size() << endl;
-        total += diffs;
-        ++i;
-    }
-    stream << endl << "Points with various assignment: " << total << endl
-           << "Errors %: " << ((float)total / num_points__) *100.0 << endl;
-}
-
-bool KMeans::fillWithResults(const QString& fileName)
-{
-    logall("KMeans::fillWithResults(const QString& fileName)");
-    QFile file(fileName);
-    if(!file.open(QFile::ReadOnly))
-        return false;
-    QTextStream in(&file);
-    int nClusters=0, nDims = 0;
-    in >> nClusters >> nDims;
-    int pIndex=0, cIndex=0;
-    float coord=0.0;
-    char c;
-    while(!in.atEnd())
-    {
-        QString line = in.readLine();
-        QTextStream inner(&line);
-        while(!inner.atEnd())
-        {
-            inner >> pIndex >> c >> coord;
-            points_to_clusters__[pIndex] = cIndex;
-            clusters_to_points__[cIndex]->insert(pIndex);
-        }
-        ++cIndex;
-    }
-    compute_centroids();
-    file.close();
-    return true;
 }
 
 Distance KMeans::meanSquareError()
@@ -798,22 +628,5 @@ Distance KMeans::meanSquareError()
 	return sqrt(error);
 }
 
-bool KMeans::printCentroids(const QString& fileName) const
-{
-    logall("KMeans::printCentroids(const QString& fileName) const");
-    QFile file(fileName);
-    if(!file.open(QFile::WriteOnly))
-        return false;
-    QTextStream out(&file);
-    foreach(Point p, centroids__)
-    {
-        foreach(Coord c, p.keys())
-            out << c << ':' << p[c] << ' ';
-        out << endl;
-    }
-    out.flush();
-    file.close();
-    return true;
-}
 
 
