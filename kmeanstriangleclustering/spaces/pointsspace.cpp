@@ -32,23 +32,23 @@ PointsSpace::~PointsSpace()
     }
 }
 
-void PointsSpace::insertPoint(Point *p, PointId index)
+void PointsSpace::insertPoint(AbstractPoint *p, unsigned index)
 {
 	points__.insert(index, p);
 	++AbstractPointsSpace::num_points__;
 }
 
-const Point &PointsSpace::getPoint(PointId index) const
+const AbstractPoint &PointsSpace::getPoint(unsigned index) const
 {
     return *points__.value(index);
 }
 
-bool PointsSpace::contains(PointId index) const
+bool PointsSpace::contains(unsigned index) const
 {
 	return points__.contains(index);
 }
 
-QList<PointId> PointsSpace::getPointIds() const
+QList<unsigned> PointsSpace::getPointIds() const
 {
 	return points__.keys();
 }

@@ -34,15 +34,6 @@ public:
         HammingSimplified = 3
 	};
 
-    enum AlgorithmPosition
-    {
-        None = -1,
-        InitialClusters = 0,
-        CentersComputed = 1,
-        DistancesCounted = 2,
-        EndLoop = 3
-    };
-
     enum InitialPartitionType
     {
         Sequential = 0,
@@ -66,7 +57,6 @@ protected:
     unsigned used_iterations__;
     QList<QString> iterations_states__;
     bool store_states__;
-    QHash<QPair<PointId, PointId>, bool> pre_rand_index__;
     unsigned int num_moved__;
 	Dimensions num_dimensions__; // the dimensions of vectors
 	PointId num_points__; // total number of points

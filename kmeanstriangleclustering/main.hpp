@@ -7,15 +7,14 @@
 #include "kmeanstriangle.hpp"
 #include "spaces/pointsspace.h"
 #include "spaces/normalizedpointsspace.h"
-#include "kmeanscomparer.h"
 #include "tfidf/stemmedfileinmemoryparser.h"
 
 
-Distance dotMatrixes(Point a, Point b);
+Distance dotMatrixes(AbstractPoint *a, AbstractPoint *b);
 
-Distance cosinDist(Point p, Point q);
+Distance cosinDist(AbstractPoint *p, AbstractPoint *q);
 
-Distance euclideanDist(Point p, Point q);
+Distance euclideanDist(AbstractPoint *p, AbstractPoint *q);
 
 void produceClusteringData();
 

@@ -1,7 +1,7 @@
 #ifndef SEQUENTIALCENTERSPICKER_H
 #define SEQUENTIALCENTERSPICKER_H
 
-#include "commons/abstractcenterspicker.h"
+#include "abstractcenterspicker.h"
 
 class SequentialCentersPicker : public AbstractCentersPicker
 {

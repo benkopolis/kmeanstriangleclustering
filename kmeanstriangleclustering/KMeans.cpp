@@ -7,7 +7,6 @@
 
 #include "KMeans.hpp"
 #include "models.hpp"
-#include "kmeanscomparer.h"
 
 //std::ostream& operator <<(std::ostream& os, PointsSpace & ps) {
 //
@@ -99,9 +98,7 @@ KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
 	Dimensions dim;
 	num_dimensions__ = ps->getNumDimensions();
 	num_points__ = ps->getNumPoints();
-    if(monitor__ != 0)
-        monitor__->addAlgorithm(this);
-	for (; i < nclusters; i++) {
+    for (; i < nclusters; i++) {
 		Point point; // each centroid is a point
 		for (dim = 0; dim < num_dimensions__; dim++)
 			point.insert(i, 0.0);

@@ -4,12 +4,12 @@ BadIndex::BadIndex()
 {
 }
 
-BadIndex::~BadIndex()
+BadIndex::~BadIndex() throw()
 {
 
 }
 
-const char *BadIndex::what() const
+const char *BadIndex::what() const throw()
 {
     return "Given index is out of range";
 }

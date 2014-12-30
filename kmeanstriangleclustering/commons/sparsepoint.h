@@ -10,6 +10,15 @@
 class SparsePoint : public AbstractPoint
 {
 public:
+
+    friend std::ostream& operator <<(std::ostream& os, SparsePoint & dp) {
+        for(const unsigned i : dp.hash.keys()) {
+            os << i << ':' << dp.hash[i] << ',';
+        }
+        os << std::endl;
+        return os;
+    }
+
     SparsePoint();
 
     virtual double& operator [] (const unsigned& index) throw(BadIndex);

@@ -1,5 +1,10 @@
 #include "densepoint.h"
 
+unsigned DensePoint::dimensions = 0;
+QList<unsigned> DensePoint::KEYS;
+std::thread *DensePoint::keys_initializer = 0;
+std::mutex DensePoint::mutex;
+
 DensePoint::DensePoint()
 {
 }
@@ -29,3 +34,30 @@ void DensePoint::insert(unsigned key, double value)
         throw BadIndex();
     this->vector.push_back(value);
 }
+
+const QList<unsigned> &DensePoint::getKeys() const
+{
+    if(DensePoint::keys_initializer != 0 &&
+            DensePoint::keys_initializer->joinable())
+    {
+        DensePoint::keys_initializer->join();
+        delete DensePoint::keys_initializer;
+    }
+    return DensePoint::KEYS;
+}
+
+void DensePoint::InitializeKeys(unsigned dimensions)
+{
+    mutex.lock();
+    DensePoint::keys_initializer = new std::thread(DensePoint::initKeys);
+    mutex.unlock();
+}
+
+void DensePoint::initKeys()
+{
+    for(unsigned i = 0; i < DensePoint::dimensions; ++i)
+    {
+        DensePoint::KEYS.append(i);
+    }
+}
+

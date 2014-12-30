@@ -5,6 +5,7 @@
 #include <QHash>
 #include <QSet>
 #include <QTextStream>
+#include "spaces/abstractpointsspace.h"
 
 class PartitionData
 {
@@ -24,18 +25,19 @@ public:
     inline unsigned getNumberOfClusters() const throw() { return this->clustersData.size(); }
     inline void setNumberOfClusters(unsigned nclusters) throw() { this->clustersData.resize(nclusters); }
 
-    void printDifferences(const KMeans* from, QTextStream& stream) const;
-    void printClusters(QTextStream& stream) const;
+    void printDifferences(const PartitionData* from, QTextStream& stream) const;
+    bool printClusters(QTextStream& stream) const;
     void countPreRandIndex();
     bool storePreRandIndex(const QString& fileName) const;
     void printClustersSize(QTextStream& stream) const;
     bool printClusteringResults(const QString& fileName) const;
-    bool printCentroids(const QString& fileName) const;
+    bool printCentroids(const QString& fileName, AbstractPointSpace *ps) const;
 
 private:
 
     QHash<unsigned, unsigned> pointsData;
     std::vector<QSet<unsigned> > clustersData;
+    QHash<QPair<unsigned, unsigned>, bool> pre_rand_index__;
 };
 
 #endif // PARTITIONDATA_H

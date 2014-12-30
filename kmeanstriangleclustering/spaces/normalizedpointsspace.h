@@ -11,20 +11,20 @@ public:
 
     virtual ~NormalizedPointsSpace();
 
-    virtual void insertPoint(Point *p, PointId index);
-    virtual const Point &getPoint(PointId index) const;
-	virtual bool contains(PointId index) const;
+    virtual void insertPoint(AbstractPoint *p, unsigned index);
+    virtual const AbstractPoint &getPoint(unsigned index) const;
+    virtual bool contains(unsigned index) const;
 
 	virtual void savePointsSpace(QString fileName);
 	virtual void loadPointsSpace(QString fileName);
-	virtual QList<PointId> getPointIds() const;
+    virtual QList<unsigned> getPointIds() const;
 
     inline void setNumberOfDimensions(unsigned int numDim) { num_dimensions__ = numDim; }
     inline void setNumberOfPoints(unsigned int numPoints) { num_points__ = numPoints; }
 
 protected:
 
-    QHash<PointId, Point*> points__;
+    QHash<unsigned, AbstractPoint*> points__;
 	unsigned int lines__;
 
 

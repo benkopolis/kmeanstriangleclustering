@@ -9,8 +9,12 @@ QT       += core
 QT       += gui
 
 TARGET = clustering
-CONFIG   += console
-CONFIG   -= app_bundle
+CONFIG += console
+CONFIG -= app_bundle
+CONFIG += c++11
+
+QMAKE_CXXFLAGS += -std=c++11
+
 
 TEMPLATE = app
 

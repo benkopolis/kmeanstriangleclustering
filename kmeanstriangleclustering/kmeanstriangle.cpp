@@ -1,5 +1,4 @@
-  #include "kmeanstriangle.hpp"
-#include "kmeanscomparer.h"
+#include "kmeanstriangle.hpp"
 #include "models.hpp"
 #include <limits>
 #include <QtConcurrentMap>

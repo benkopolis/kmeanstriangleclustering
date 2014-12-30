@@ -26,17 +26,17 @@ NormalizedPointsSpace::~NormalizedPointsSpace()
     }
 }
 
-void NormalizedPointsSpace::insertPoint(Point* p, PointId index)
+void NormalizedPointsSpace::insertPoint(AbstractPoint *p, unsigned index)
 {
 	points__.insert(index, p);
 }
 
-const Point& NormalizedPointsSpace::getPoint(PointId index) const
+const AbstractPoint &NormalizedPointsSpace::getPoint(unsigned index) const
 {
     return *points__.value(index);
 }
 
-bool NormalizedPointsSpace::contains(PointId index) const
+bool NormalizedPointsSpace::contains(unsigned index) const
 {
 	return points__.contains(index);
 }
@@ -87,7 +87,7 @@ void NormalizedPointsSpace::loadPointsSpace(QString fileName)
 	file.close();
 }
 
-QList<PointId> NormalizedPointsSpace::getPointIds() const
+QList<unsigned> NormalizedPointsSpace::getPointIds() const
 {
 	return points__.keys();
 }

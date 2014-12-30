@@ -2,28 +2,30 @@
 
 QTextStream* m_globalLogger = 0;
 
-Distance dotMatrixes(Point a, Point b)
+double dotMatrixes(AbstractPoint* a, AbstractPoint* b)
 {
 	Distance result = 0;
-	foreach(Coord c, a)
+    for(const unsigned d1 : a->getKeys())
 	{
-		foreach(Coord i, b)
-			result = result + c*i;
+        for(const unsigned d2 : b->getKeys())
+        {
+            result = result + (*a)[d1] * (*b)[d2];
+        }
 	}
 	return result;
 }
 
-Distance cosinDist(Point p, Point q)
+Distance cosinDist(AbstractPoint* p, AbstractPoint* q)
 {
 	return 1.0 - (dotMatrixes(p, q) / sqrt(dotMatrixes(p, p)) * sqrt(dotMatrixes(q, q)));
 }
 
-Distance euclideanDist(Point p, Point q)
+Distance euclideanDist(AbstractPoint* p, AbstractPoint* q)
 {
 	long double sigma = 0.0;
-	for(int i=0; i<p.size() && i<q.size(); ++i)
+    for(int i=0; i<p->size() && i<q->size(); ++i)
 	{
-		sigma = sigma + (long double)((p[i] - q[i])*(p[i] - q[i]));
+        sigma = sigma + (long double)(((*p)[i] - (*q)[i])*((*p)[i] - (*q)[i]));
 	}
 	return sqrt((double)sigma);
 }
@@ -119,7 +121,7 @@ void testDistances()
 	QElapsedTimer etimer;
 	etimer.start();
 	for(int i=0; i<10; ++i)
-		cosinDist(ps.getPoint(2*i), ps.getPoint(2*i+1));
+        cosinDist(&ps.getPoint(2*i), &ps.getPoint(2*i+1));
 
 	out << "elapsed 1000 cosin: " << etimer.elapsed() << "ms" << endl;
 	out.flush();
@@ -127,51 +129,10 @@ void testDistances()
 	QElapsedTimer e1timer;
 	e1timer.start();
 	for(int i=0; i<10; ++i)
-		euclideanDist(ps.getPoint(2*i), ps.getPoint(2*i+1));
+        euclideanDist(&ps.getPoint(2*i), &ps.getPoint(2*i+1));
 
 	out << "elapsed 1000 euclidean: " << e1timer.elapsed() << "ms" << endl;
 	out.flush();
-}
-
-void testThreadClustering()
-{
-    QFile outputData("output.data");
-    outputData.open(QFile::WriteOnly | QFile::Append);
-    QTextStream logs(&outputData);
-    QTextStream out(stdout);
-    QFile clustersData("clusters.log");
-    clustersData.open(QFile::WriteOnly);
-    QTextStream stream(&clustersData);
-    ClusterId num_clusters = 4;
-    PointId num_points = 30;
-    Dimensions num_dimensions = 100;
-
-    AbstractPointsSpace *ps = 0, *ps1;//, *ps2;
-    //ps = new NormalizedPointsSpace();
-    ps = new PointsSpace(num_points, num_dimensions);//
-    //ps->loadPointsSpace("D:/korpusy/classic_data/docbyterm.tfidf.norm.txt");
-//    ps->loadPointsSpace("points.data");
-    ps1 = new PointsSpace(*(PointsSpace*)ps);
-//    ps2 = new PointsSpace(*(PointsSpace*)ps);
-
-    KMeansComparer* comparer = new KMeansComparer();
-    KMeans * clusters = new KMeans(num_clusters, 10, ps, true);
-    KMeansTriangle *traingle = new KMeansTriangle(num_clusters, 10, ps1, true);
-    comparer->addAlgorithm(clusters);
-    comparer->addAlgorithm(traingle);
-
-    out << "Start" << endl;
-
-    comparer->start();
-    comparer->wait();
-
-    logs << comparer->logs();
-
-    delete clusters;
-    delete traingle;
-    delete comparer;
-
-    out << "Done" << endl;
 }
 
 void createTfIdfFile(int argc, char *argv[])
