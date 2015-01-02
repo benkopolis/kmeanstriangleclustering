@@ -12,6 +12,7 @@ PartitionData *SequentialCentersPicker::performInitialPartition(unsigned cluster
     {
         cid = pid % clusters;
         data->assign_unsafe(pid, cid);
+
     }
 
     return data;

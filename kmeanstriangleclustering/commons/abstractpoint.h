@@ -22,4 +22,6 @@ public:
     virtual const QList<unsigned>& getKeys() const throw() = 0;
 };
 
+typedef AbstractPoint const * const PConstAbstractPoint;
+
 #endif // ABSTRACTPOINT_H

@@ -49,7 +49,10 @@ SOURCES += main.cpp \
     exceptions/notsparsepoint.cpp \
     distances/cosinedistance.cpp \
     commons/utils.cpp \
-    exceptions/notimplemented.cpp
+    exceptions/notimplemented.cpp \
+    commons/centersdata.cpp \
+    algorithms/abstractalgorithm.cpp \
+    algorithms/kmeansalgorithm.cpp
 
 HEADERS += \
     models.hpp \
@@ -82,7 +85,10 @@ HEADERS += \
     exceptions/notsparsepoint.h \
     distances/cosinedistance.h \
     commons/utils.h \
-    exceptions/notimplemented.h
+    exceptions/notimplemented.h \
+    commons/centersdata.h \
+    algorithms/abstractalgorithm.h \
+    algorithms/kmeansalgorithm.h
 
 FORMS += \
     ui/clusteringview.ui

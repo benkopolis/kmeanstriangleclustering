@@ -19,7 +19,7 @@ public:
 	}
 
     virtual void insertPoint(AbstractPoint* p, unsigned index) = 0;
-    virtual const AbstractPoint& getPoint(unsigned index) const = 0;
+    virtual const AbstractPoint *getPoint(unsigned index) const = 0;
     virtual bool contains(unsigned index) const = 0;
 
 	virtual void savePointsSpace(QString fileName) = 0;

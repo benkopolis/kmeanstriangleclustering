@@ -9,18 +9,24 @@ DensePoint::DensePoint()
 {
 }
 
+DensePoint::DensePoint(unsigned nDims) :
+    vector(nDims, 0)
+{
+
+}
+
 double & DensePoint::operator [](const unsigned& index)
 {
-    if(!this->hash.contains(index))
+    if(this->vector.size() <= index)
         throw BadIndex();
-    return this->values[index];
+    return this->vector[index];
 }
 
 double DensePoint::operator [](const unsigned &index) const
 {
-    if(!this->hash.contains(index))
+    if(this->vector.size() <= index)
         throw BadIndex();
-    return this->values[index];
+    return this->vector[index];
 }
 
 unsigned DensePoint::diff(const AbstractPoint *another) const
@@ -30,7 +36,7 @@ unsigned DensePoint::diff(const AbstractPoint *another) const
 
 void DensePoint::insert(unsigned key, double value)
 {
-    if(key != this->vector.size()) // insert must be called for every key form 0 to max
+    if(key != this->vector.size()) // insert must be called for every key from 0 to max
         throw BadIndex();
     this->vector.push_back(value);
 }

@@ -24,6 +24,7 @@ public:
     }
 
     DensePoint();
+    DensePoint(unsigned nDims);
 
     virtual double& operator [] (const unsigned& index) throw(BadIndex);
     virtual double operator [] (const unsigned& index) const throw(BadIndex);

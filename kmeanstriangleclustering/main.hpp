@@ -10,11 +10,11 @@
 #include "tfidf/stemmedfileinmemoryparser.h"
 
 
-Distance dotMatrixes(AbstractPoint *a, AbstractPoint *b);
+Distance dotMatrixes(AbstractPoint const * const a, AbstractPoint const * const b);
 
-Distance cosinDist(AbstractPoint *p, AbstractPoint *q);
+Distance cosinDist(const AbstractPoint * const p, const AbstractPoint * const q);
 
-Distance euclideanDist(AbstractPoint *p, AbstractPoint *q);
+Distance euclideanDist(AbstractPoint const * const p, AbstractPoint const * const q);
 
 void produceClusteringData();
 

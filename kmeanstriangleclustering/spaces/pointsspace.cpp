@@ -38,9 +38,9 @@ void PointsSpace::insertPoint(AbstractPoint *p, unsigned index)
 	++AbstractPointsSpace::num_points__;
 }
 
-const AbstractPoint &PointsSpace::getPoint(unsigned index) const
+const AbstractPoint *PointsSpace::getPoint(unsigned index) const
 {
-    return *points__.value(index);
+    return points__.value(index);
 }
 
 bool PointsSpace::contains(unsigned index) const

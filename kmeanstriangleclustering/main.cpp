@@ -2,7 +2,7 @@
 
 QTextStream* m_globalLogger = 0;
 
-double dotMatrixes(AbstractPoint* a, AbstractPoint* b)
+double dotMatrixes(AbstractPoint const * const a, AbstractPoint const * const b)
 {
 	Distance result = 0;
     for(const unsigned d1 : a->getKeys())
@@ -15,7 +15,7 @@ double dotMatrixes(AbstractPoint* a, AbstractPoint* b)
 	return result;
 }
 
-Distance cosinDist(AbstractPoint* p, AbstractPoint* q)
+Distance cosinDist(AbstractPoint const * const p, AbstractPoint const * const q)
 {
 	return 1.0 - (dotMatrixes(p, q) / sqrt(dotMatrixes(p, p)) * sqrt(dotMatrixes(q, q)));
 }
@@ -58,56 +58,6 @@ void executeAndPrintClusteringResults(QTextStream* stream, QTextStream& out, KMe
         stream->flush();
 }
 
-void testClustering()
-{
-//	QFile outputData("output.data");
-//	outputData.open(QFile::WriteOnly | QFile::Append);
-	QTextStream out(stdout);
-	QFile clustersData("clusters.log");
-	clustersData.open(QFile::WriteOnly);
-	QTextStream stream(&clustersData);
-    ClusterId num_clusters = 4;
-
-	AbstractPointsSpace *ps = 0, *ps1, *ps2;
-//	ps = new NormalizedPointsSpace();
-    ps = new PointsSpace();//(num_points, num_dimensions);//
-    ps->loadPointsSpace("smaller_point.txt");
-//	ps->loadPointsSpace("points.data");
-//    ps->loadPointsSpace("small_test_point_space.txt");
-    KMeans clusters(num_clusters, 10, ps, true);
-    KMeansTriangle traingle(num_clusters, 10, ps, true);
-//    KMeans hamming(num_clusters, 10, ps, true);
-//	hamming.setDistanceType(KMeans::Hamming);
-	clusters.setDistanceFunction(&cosinDist);
-
-    executeAndPrintClusteringResults(&stream, out, clusters, "NORMAL KMEANS");
-
-    executeAndPrintClusteringResults(&stream, out, traingle, "TRIANGLE KMEANS");
-    out << "conditions counter: " << traingle.getConditionsUseCount() << endl;
-    stream << endl << "KMEANS STATES" << endl;
-    clusters.printIterationStates(stream);
-    stream << endl << "TRAIANGLE STATES" << endl;
-    traingle.printIterationStates(stream);
-
-//	QElapsedTimer e2timer;
-//	e2timer.start();
-//	hamming.executeAlgorithm();
-//	out << "elapsed: " << e2timer.elapsed() << "ms" << endl;
-//	out << "distnace counter calls: " << hamming.getDistancesCallCount() << endl;
-//	out << "used iterations: " << hamming.getUsedIterationsCount() << endl;
-//	out << "distances calls per iteration: " << hamming.getDistancesCallCount() / hamming.getUsedIterationsCount() << endl;
-//	out << "Error: " << hamming.meanSquareError() << endl;
-//	out << "Moved: " << hamming.getMovedCount() << endl;
-//	out << "Clusters: " << endl;
-//	hamming.printClustersSize(out);
-
-//	hamming.storePreRandIndex("hammingX.prtxt");
-	out.flush();
-	stream.flush();
-	clustersData.close();
-    delete ps;
-	//outputData.close();
-}
 
 void testDistances()
 {
@@ -121,7 +71,7 @@ void testDistances()
 	QElapsedTimer etimer;
 	etimer.start();
 	for(int i=0; i<10; ++i)
-        cosinDist(&ps.getPoint(2*i), &ps.getPoint(2*i+1));
+        cosinDist(ps.getPoint(2*i), ps.getPoint(2*i+1));
 
 	out << "elapsed 1000 cosin: " << etimer.elapsed() << "ms" << endl;
 	out.flush();
@@ -129,7 +79,7 @@ void testDistances()
 	QElapsedTimer e1timer;
 	e1timer.start();
 	for(int i=0; i<10; ++i)
-        euclideanDist(&ps.getPoint(2*i), &ps.getPoint(2*i+1));
+        euclideanDist(ps.getPoint(2*i), ps.getPoint(2*i+1));
 
 	out << "elapsed 1000 euclidean: " << e1timer.elapsed() << "ms" << endl;
 	out.flush();
@@ -216,87 +166,6 @@ AbstractPointsSpace* generateProperPointSpace(char *argv[], QTextStream& out)
     return ps;
 }
 
-void comapareDifferentKmeans(int argc, char *argv[])
-{
-    QTextStream out(stdout);
-    if(argc < 3 || (!qstrcmp(argv[3], "-f") && argc < 4)
-            || (!qstrcmp(argv[3], "-random") && argc < 5))
-    {
-        printManForComparsion(out);
-        return;
-    }
-
-    AbstractPointsSpace *ps = 0;
-    unsigned int num_clusters = 10, numIters = 10;
-    if((ps = generateProperPointSpace(argv, out)) == 0)
-        return;
-
-    KMeans * clusters = new KMeans(num_clusters, numIters, ps, true);
-    KMeansTriangle *traingle = new KMeansTriangle(num_clusters, numIters, ps, true);
-
-    executeAndPrintClusteringResults(0, out, clusters, "DEFAULT KMEANS");
-    executeAndPrintClusteringResults(0, out, traingle, "KMEANS TRIANGLE");
-}
-
-void generateResults(int argc, char *argv[])
-{
-    QTextStream out(stdout);
-    if(argc < 4)
-    {
-        out << "Please give 2 or 3 more args:" << endl <<
-               "input-data-file max-iterations num_of_clusters [optional, def:10]" << endl
-            << "input file must contains 'tfidf' and 'out' strings in its name" << endl;
-        return;
-    }
-    QElapsedTimer e1timer;
-    NormalizedPointsSpace* space = new NormalizedPointsSpace();
-    space->loadPointsSpace(argv[2]);
-    bool ok = false;
-    QString iters(argv[3]);
-    int num_iters = iters.toInt(&ok);
-    if(!ok)
-    {
-        out << "Parameter max-iterations must have an integer value!" << endl;
-        return;
-    }
-    int num_clusters = 0;
-    if(argc == 5)
-    {
-        QString clustersStr(argv[4]);
-        num_clusters = clustersStr.toInt(&ok);
-        if(!ok)
-        {
-            out << "Parameter num_of_clusters must have an integer value!" << endl;
-            num_clusters = 10;
-            return;
-        }
-    }
-    KMeans* clusters = new KMeans(num_clusters, num_iters, space, false);
-    e1timer.start();
-    clusters->executeAlgorithm();
-    out << "Elapsed: " << e1timer.elapsed() << endl;
-    out << "Mean square error: " << clusters->meanSquareError();
-}
-
-void countMeanSquareErrorFromResultFile(int argc, char *argv[])
-{
-    QTextStream out(stdout);
-    if(argc != 4)
-    {
-        out << "Please give 3 more args: tfidf file, and input results file name" << endl;
-        return;
-    }
-    QElapsedTimer e1timer;
-    NormalizedPointsSpace* space = new NormalizedPointsSpace();
-    space->loadPointsSpace(argv[2]);
-    KMeans* clusters = new KMeans(10, 10, space, false);
-    Distance d = clusters->meanSquareError();
-    out << "Elapsed: " << e1timer.elapsed() << endl;
-    out << "Mean Square error: " << d << endl;
-    delete clusters;
-    delete space;
-}
-
 void man()
 {
     QTextStream out(stdout);
@@ -307,20 +176,6 @@ void man()
         << "\t for generating results of clustering, pre rand indexes and mean square error." << endl;
     out << "-mse tfidf_file exisitng_results_file" << endl
         << "\t for generating mean square error base on tfidf file and results of clustering tfidf vectors from this file." << endl;
-}
-
-void testArgs()
-{
-    QTextStream out(stdout);
-    QElapsedTimer e1timer;
-    //PointsSpace* space = new PointsSpace(200, 3000);
-    //space->savePointsSpace("test_space.txt");
-    NormalizedPointsSpace* space = new NormalizedPointsSpace();
-    space->loadPointsSpace("data/r8-train-tfidf-out.txt"); //  "data/r8-train-tfidf-out.txt" "small_norm_point_space.txt"
-    KMeans* clusters = new KMeans(10, 10, space, false);
-    e1timer.start();
-    clusters->testInitialPartitioning(KMeans::MinimalNumberOfDimensions);
-    out << "Elapsed: " << e1timer.elapsed() << endl;
 }
 
 int main(int argc, char *argv[])

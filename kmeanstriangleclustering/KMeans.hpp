@@ -13,12 +13,11 @@
 #include <QDateTime>
 #include <QList>
 #include <QMultiMap>
-#include <QThread>
-#include <QMutex>
 #include "models.hpp"
 #include "spaces/abstractpointsspace.h"
-
-class KMeansComparer;
+#include "distances/abstractdistance.h"
+#include "commons/partitiondata.h"
+#include "commons/abstractpoint.h"
 
 class KMeans
 {
@@ -26,30 +25,15 @@ public:
 
     friend class KMeansComparer;
 
-	enum DistanceType
-	{
-		Euclidean = 0,
-		Cosin = 1,
-        Hamming = 2,
-        HammingSimplified = 3
-	};
-
-    enum InitialPartitionType
-    {
-        Sequential = 0,
-        MinimalNumberOfDimensions = 1,
-        DeterminigNumberOfClusters = 2
-    };
-
     KMeans(ClusterId nclusters, unsigned int numIters,
-           AbstractPointsSpace* ps, bool store=false,
-           KMeansComparer *monitor=0);
+           AbstractPointsSpace* ps);
 
 	~KMeans();
 
 protected:
 
-	distanceFunc distance__;
+    PartitionData* partitionData;
+
     unsigned int iterationsCount__;
     AbstractPointsSpace* ps__; // the point space
     mutable unsigned distances_call_count__;
@@ -60,13 +44,8 @@ protected:
     unsigned int num_moved__;
 	Dimensions num_dimensions__; // the dimensions of vectors
 	PointId num_points__; // total number of points
-	ClustersToPoints clusters_to_points__;
-	PointsToClusters points_to_clusters__;
-	Centroids centroids__;
-	DistanceType distance_type__;
-    KMeansComparer* monitor__;
-    InitialPartitionType _initial_partition_type;
-    unsigned int dimensions_delta__;
+
+    Centroids centroids__;
     QMutex mutex;
     QHash<PointId, QHash<PointId, Distance>* > points_distances__;
     //QMultiMap<Distance, QPair<PointId, PointId>* > sorted_edges__;
@@ -93,22 +72,9 @@ private:
 
 public:
 
-    void testInitialPartitioning(InitialPartitionType type);
-
     void printIterationStates(QTextStream& log);
 
 	virtual void executeAlgorithm();
-
-	inline void setDistanceType(DistanceType type) {
-		distance_type__ = type;
-	}
-
-	inline void setDistanceFunction(distanceFunc f) {
-		distance__ = f;
-	}
-	inline distanceFunc getDistanceFunction() const {
-		return distance__;
-	}
 
 	inline unsigned getDistancesCallCount() const {
 		return distances_call_count__;
@@ -117,14 +83,6 @@ public:
 	inline unsigned getUsedIterationsCount() const {
 		return used_iterations__;
 	}
-
-    inline void setDimensionsDelta(unsigned int delta) {
-        dimensions_delta__ = delta;
-    }
-
-    inline unsigned int getDimensionsDelta() const {
-        return dimensions_delta__;
-    }
 
     static inline void setGlobarLoger(QTextStream* globalLogger)
     {

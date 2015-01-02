@@ -9,9 +9,13 @@
 
 class PartitionData
 {
-public:
+private:
+
     PartitionData();
     PartitionData(unsigned clusters);
+
+public:
+
     PartitionData(unsigned clusters, unsigned points);
 
     void assign(unsigned point, unsigned cluster) throw();
@@ -31,13 +35,14 @@ public:
     bool storePreRandIndex(const QString& fileName) const;
     void printClustersSize(QTextStream& stream) const;
     bool printClusteringResults(const QString& fileName) const;
-    bool printCentroids(const QString& fileName, AbstractPointSpace *ps) const;
+    bool printCentroids(const QString& fileName, AbstractPointsSpace *ps) const;
 
 private:
 
     QHash<unsigned, unsigned> pointsData;
     std::vector<QSet<unsigned> > clustersData;
     QHash<QPair<unsigned, unsigned>, bool> pre_rand_index__;
+
 };
 
 #endif // PARTITIONDATA_H

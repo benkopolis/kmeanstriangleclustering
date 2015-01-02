@@ -12,7 +12,7 @@ public:
     virtual ~NormalizedPointsSpace();
 
     virtual void insertPoint(AbstractPoint *p, unsigned index);
-    virtual const AbstractPoint &getPoint(unsigned index) const;
+    virtual const AbstractPoint *getPoint(unsigned index) const;
     virtual bool contains(unsigned index) const;
 
 	virtual void savePointsSpace(QString fileName);

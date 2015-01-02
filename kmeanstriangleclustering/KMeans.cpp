@@ -79,19 +79,13 @@ QTextStream& operator <<(QTextStream& os, PointsToClusters & pc) {
 
 
 KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
-               AbstractPointsSpace* ps, bool store,
-               KMeansComparer *monitor) :
+               AbstractPointsSpace* ps) :
 	iterationsCount__(numIters),
 	ps__(ps),
 	distances_call_count__(0),
     num_clusters__(nclusters),
-	used_iterations__(0),
-	store_states__(store),
-	num_moved__(0),
-    distance_type__(Euclidean),
-    monitor__(monitor),
-    _initial_partition_type(Sequential),
-    dimensions_delta__(0)
+    used_iterations__(0),
+    num_moved__(0)
 {
     //logall(KMeans::KMeans);
 	ClusterId i = 0;
@@ -110,8 +104,8 @@ KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
 		all_distances__.insert(i, hash);
 
 		// init clusterId -> set of points
-		clusters_to_points__.push_back(set_of_points);
-		// init point <- cluster
+        clusters_to_points__.push_back(set_of_points);
+        // init point <- cluster
 
 	}
 }

@@ -31,7 +31,7 @@ void NormalizedPointsSpace::insertPoint(AbstractPoint *p, unsigned index)
 	points__.insert(index, p);
 }
 
-const AbstractPoint &NormalizedPointsSpace::getPoint(unsigned index) const
+const AbstractPoint *NormalizedPointsSpace::getPoint(unsigned index) const
 {
     return *points__.value(index);
 }
