@@ -1,9 +1,11 @@
 #include "normalizedpointsspace.h"
 
+template<typename T>
 NormalizedPointsSpace::NormalizedPointsSpace()
 {
 }
 
+template<typename T>
 NormalizedPointsSpace::NormalizedPointsSpace(const NormalizedPointsSpace& another) :
     AbstractPointsSpace(another.num_points__, another.num_dimensions__)
 {
@@ -17,6 +19,7 @@ NormalizedPointsSpace::NormalizedPointsSpace(const NormalizedPointsSpace& anothe
     }
 }
 
+template<typename T>
 NormalizedPointsSpace::~NormalizedPointsSpace()
 {
     foreach(PointId index, points__.keys())
@@ -26,21 +29,40 @@ NormalizedPointsSpace::~NormalizedPointsSpace()
     }
 }
 
-void NormalizedPointsSpace::insertPoint(AbstractPoint *p, unsigned index)
+template<typename T>
+AbstractPoint *NormalizedPointsSpace::operator [](const unsigned &pid) throw(BadIndex)
+{
+    if(!this->points__.contains(pid))
+        throw BadIndex();
+    return this->points__[pid];
+}
+
+const AbstractPoint *NormalizedPointsSpace::operator [](const unsigned &pid) const throw(BadIndex)
+{
+    if(!this->points__.contains(pid))
+        throw BadIndex();
+    return this->points__[pid];
+}
+
+template<typename T>
+void NormalizedPointsSpace::insertPoint(T *p, unsigned index)
 {
 	points__.insert(index, p);
 }
 
+template<typename T>
 const AbstractPoint *NormalizedPointsSpace::getPoint(unsigned index) const
 {
     return *points__.value(index);
 }
 
+template<typename T>
 bool NormalizedPointsSpace::contains(unsigned index) const
 {
 	return points__.contains(index);
 }
 
+template<typename T>
 void NormalizedPointsSpace::savePointsSpace(QString fileName)
 {
 	QFile file(fileName);
@@ -57,6 +79,7 @@ void NormalizedPointsSpace::savePointsSpace(QString fileName)
 	file.close();
 }
 
+template<typename T>
 void NormalizedPointsSpace::loadPointsSpace(QString fileName)
 {
 	QFile file(fileName);
@@ -87,6 +110,7 @@ void NormalizedPointsSpace::loadPointsSpace(QString fileName)
 	file.close();
 }
 
+template<typename T>
 QList<unsigned> NormalizedPointsSpace::getPointIds() const
 {
 	return points__.keys();

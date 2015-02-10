@@ -1,4 +1,5 @@
 #include "main.hpp"
+#include "commons/sparsepoint.h"
 
 QTextStream* m_globalLogger = 0;
 
@@ -58,33 +59,6 @@ void executeAndPrintClusteringResults(QTextStream* stream, QTextStream& out, KMe
         stream->flush();
 }
 
-
-void testDistances()
-{
-	QTextStream out(stdout);
-	out << endl;
-	PointId num_points = 20;
-	Dimensions num_dimensions = 5;
-
-	PointsSpace ps(num_points, num_dimensions);
-
-	QElapsedTimer etimer;
-	etimer.start();
-	for(int i=0; i<10; ++i)
-        cosinDist(ps.getPoint(2*i), ps.getPoint(2*i+1));
-
-	out << "elapsed 1000 cosin: " << etimer.elapsed() << "ms" << endl;
-	out.flush();
-
-	QElapsedTimer e1timer;
-	e1timer.start();
-	for(int i=0; i<10; ++i)
-        euclideanDist(ps.getPoint(2*i), ps.getPoint(2*i+1));
-
-	out << "elapsed 1000 euclidean: " << e1timer.elapsed() << "ms" << endl;
-	out.flush();
-}
-
 void createTfIdfFile(int argc, char *argv[])
 {
     StemmedFileInMemoryParser parser;
@@ -140,13 +114,15 @@ void printManForComparsion(QTextStream& out)
            "Second option: -random num-dimensions num-points" << endl;
 }
 
-AbstractPointsSpace* generateProperPointSpace(char *argv[], QTextStream& out)
+template<typename T>
+AbstractPointsSpace<T> *generateProperPointSpace(char *argv[], QTextStream& out)
 {
-    AbstractPointsSpace* ps = 0;
+    Utils::Derived_from<T, AbstractPoint> d;
+    AbstractPointsSpace<T>* ps = 0;
     if(!qstrcmp(argv[3], "-f"))
     {
         QString dataFile(argv[4]);
-        ps = new PointsSpace();
+        ps = new PointsSpace<T>();
         ps->loadPointsSpace(dataFile);
     }
     else if(!qstrcmp(argv[3], "-random"))
@@ -161,7 +137,7 @@ AbstractPointsSpace* generateProperPointSpace(char *argv[], QTextStream& out)
                    return 0;
         }
 
-        ps = new PointsSpace(num_points, num_dimensions);
+        ps = new PointsSpace<T>(num_points, num_dimensions);
     }
     return ps;
 }

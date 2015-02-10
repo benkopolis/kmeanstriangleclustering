@@ -44,7 +44,8 @@ QString getCentroidsFileName(QString input, int num_clusters,
 
 void printManForComparsion(QTextStream& out);
 
-AbstractPointsSpace* generateProperPointSpace(char *argv[], QTextStream& out);
+template<typename T>
+AbstractPointsSpace<T> *generateProperPointSpace(char *argv[], QTextStream& out);
 
 void comapareDifferentKmeans(int argc, char *argv[]);
 

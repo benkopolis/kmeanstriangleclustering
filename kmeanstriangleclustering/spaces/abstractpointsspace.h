@@ -3,12 +3,17 @@
 
 #include "models.hpp"
 #include "commons/abstractpoint.h"
+#include "commons/utils.h"
 
-class AbstractPointsSpace
+template<typename T>
+class AbstractPointsSpace : private Utils::Where<T, AbstractPoint>
 {
 public:
 
     virtual ~AbstractPointsSpace() {}
+
+    virtual AbstractPoint *operator [] (const unsigned& pid) throw(BadIndex) = 0;
+    virtual AbstractPoint const *operator [] (const unsigned& pid) const throw(BadIndex) = 0;
 
     inline unsigned getNumPoints() const {
 		return num_points__;
@@ -18,7 +23,7 @@ public:
 		return num_dimensions__;
 	}
 
-    virtual void insertPoint(AbstractPoint* p, unsigned index) = 0;
+    virtual void insertPoint(T* p, unsigned index) = 0;
     virtual const AbstractPoint *getPoint(unsigned index) const = 0;
     virtual bool contains(unsigned index) const = 0;
 

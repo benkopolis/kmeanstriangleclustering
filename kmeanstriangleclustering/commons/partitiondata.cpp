@@ -147,7 +147,7 @@ bool PartitionData::printClusteringResults(const QString &fileName) const
     return true;
 }
 
-bool PartitionData::printCentroids(const QString &fileName, AbstractPointsSpace *ps) const
+bool PartitionData::printCentroids(const QString &fileName, AbstractPointsSpace<AbstractPoint> *ps) const
 {
     QFile file(fileName);
     if(!file.open(QFile::WriteOnly))

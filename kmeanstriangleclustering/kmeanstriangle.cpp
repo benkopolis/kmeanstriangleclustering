@@ -3,7 +3,7 @@
 #include <limits>
 #include <QtConcurrentMap>
 
-KMeansTriangle::KMeansTriangle(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store) :
+KMeansTriangle::KMeansTriangle(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace<AbstractPoint> *ps, bool store) :
 	KMeans(nclusters, numIters, ps, store),
 	conditions_use_counter__(0),
 	sVector__(nclusters, std::numeric_limits<Distance>::max()),

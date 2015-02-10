@@ -1,10 +1,12 @@
 #include "pointsspace.h"
 
+template<typename T>
 PointsSpace::PointsSpace()
 {
 
 }
 
+template<typename T>
 PointsSpace::PointsSpace(const PointsSpace& another) :
     AbstractPointsSpace(another.num_points__, another.num_dimensions__)
 {
@@ -18,11 +20,13 @@ PointsSpace::PointsSpace(const PointsSpace& another) :
     }
 }
 
+template<typename T>
 PointsSpace::PointsSpace(PointId num_points, Dimensions num_dimensions) :
 		AbstractPointsSpace(num_points, num_dimensions) {
 	init_points();
 }
 
+template<typename T>
 PointsSpace::~PointsSpace()
 {
     foreach(PointId index, points__.keys())
@@ -32,27 +36,46 @@ PointsSpace::~PointsSpace()
     }
 }
 
-void PointsSpace::insertPoint(AbstractPoint *p, unsigned index)
+AbstractPoint *PointsSpace::operator [](const unsigned &pid) throw(BadIndex)
+{
+    if(!this->points__.contains(pid))
+        throw BadIndex();
+    return this->points__[pid];
+}
+
+const AbstractPoint *PointsSpace::operator [](const unsigned &pid) const throw(BadIndex)
+{
+    if(!this->points__.contains(pid))
+        throw BadIndex();
+    return this->points__[pid];
+}
+
+template<typename T>
+void PointsSpace::insertPoint(T *p, unsigned index)
 {
 	points__.insert(index, p);
 	++AbstractPointsSpace::num_points__;
 }
 
+template<typename T>
 const AbstractPoint *PointsSpace::getPoint(unsigned index) const
 {
     return points__.value(index);
 }
 
+template<typename T>
 bool PointsSpace::contains(unsigned index) const
 {
 	return points__.contains(index);
 }
 
+template<typename T>
 QList<unsigned> PointsSpace::getPointIds() const
 {
 	return points__.keys();
 }
 
+template<typename T>
 void PointsSpace::init_points() {
 	srand(QDateTime::currentMSecsSinceEpoch());
 	for (PointId i = 0; i < num_points__; i++) {
@@ -66,6 +89,7 @@ void PointsSpace::init_points() {
 	}
 }
 
+template<typename T>
 void PointsSpace::savePointsSpace(QString fileName)
 {
 	QFile file(fileName);
@@ -82,6 +106,7 @@ void PointsSpace::savePointsSpace(QString fileName)
     file.close();
 }
 
+template<typename T>
 void PointsSpace::loadPointsSpace(QString fileName)
 {
 	QFile file(fileName);
@@ -103,5 +128,3 @@ void PointsSpace::loadPointsSpace(QString fileName)
 	}
     file.close();
 }
-
-

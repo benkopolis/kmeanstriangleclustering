@@ -13,7 +13,7 @@
 class KMeansTriangle : public KMeans
 {
 public:
-	KMeansTriangle(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace* ps, bool store=false);
+    KMeansTriangle(ClusterId nclusters, unsigned int numIters, AbstractPointsSpace<AbstractPoint>* ps, bool store=false);
 
 	virtual void executeAlgorithm();
 

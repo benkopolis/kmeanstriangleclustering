@@ -26,7 +26,7 @@ public:
     friend class KMeansComparer;
 
     KMeans(ClusterId nclusters, unsigned int numIters,
-           AbstractPointsSpace* ps);
+           AbstractPointsSpace<AbstractPoint>* ps);
 
 	~KMeans();
 
@@ -35,7 +35,7 @@ protected:
     PartitionData* partitionData;
 
     unsigned int iterationsCount__;
-    AbstractPointsSpace* ps__; // the point space
+    AbstractPointsSpace<AbstractPoint>* ps__; // the point space
     mutable unsigned distances_call_count__;
 	ClusterId num_clusters__; // number of clusters
     unsigned used_iterations__;

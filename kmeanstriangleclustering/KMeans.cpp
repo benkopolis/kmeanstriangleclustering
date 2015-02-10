@@ -79,7 +79,7 @@ QTextStream& operator <<(QTextStream& os, PointsToClusters & pc) {
 
 
 KMeans::KMeans(ClusterId nclusters, unsigned int numIters,
-               AbstractPointsSpace* ps) :
+               AbstractPointsSpace<AbstractPoint> *ps) :
 	iterationsCount__(numIters),
 	ps__(ps),
 	distances_call_count__(0),

@@ -4,34 +4,32 @@
 #include "abstractpointsspace.h"
 
 // This class stores all the points available in the model
-//
-class PointsSpace : public AbstractPointsSpace {
+template<typename T>
+class PointsSpace : public AbstractPointsSpace<T> {
 public:
 
     PointsSpace();
-
     PointsSpace(const PointsSpace& another);
-
+    PointsSpace(PointId num_points, Dimensions num_dimensions);
     virtual ~PointsSpace();
 
-	PointsSpace(PointId num_points, Dimensions num_dimensions);
+    virtual AbstractPoint *operator [] (const unsigned& pid) throw(BadIndex);
+    virtual AbstractPoint const *operator [] (const unsigned& pid) const throw(BadIndex);
 
-//	void dumpToFile(QString fileName);
-
-    virtual void insertPoint(AbstractPoint* p, unsigned index);
+    virtual void insertPoint(T* p, unsigned index);
     virtual const AbstractPoint *getPoint(unsigned index) const;
     virtual bool contains(unsigned index) const;
 
-	virtual void savePointsSpace(QString fileName);
-	virtual void loadPointsSpace(QString fileName);
+    virtual void savePointsSpace(QString fileName);
+    virtual void loadPointsSpace(QString fileName);
     virtual QList<unsigned> getPointIds() const;
 
 
 protected:
-	//
-	// Init collection of points
-	//
-	void init_points();
+    //
+    // Init collection of points
+    //
+    void init_points();
 
     QHash<unsigned int, AbstractPoint*> points__;
 };

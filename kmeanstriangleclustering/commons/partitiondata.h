@@ -35,7 +35,7 @@ public:
     bool storePreRandIndex(const QString& fileName) const;
     void printClustersSize(QTextStream& stream) const;
     bool printClusteringResults(const QString& fileName) const;
-    bool printCentroids(const QString& fileName, AbstractPointsSpace *ps) const;
+    bool printCentroids(const QString& fileName, AbstractPointsSpace<AbstractPoint> *ps) const;
 
 private:
 

@@ -5,7 +5,6 @@
 #-------------------------------------------------
 
 QT       += core
-
 QT       += gui
 
 TARGET = clustering
@@ -52,7 +51,20 @@ SOURCES += main.cpp \
     exceptions/notimplemented.cpp \
     commons/centersdata.cpp \
     algorithms/abstractalgorithm.cpp \
-    algorithms/kmeansalgorithm.cpp
+    algorithms/kmeansalgorithm.cpp \
+    algorithms/test/kmeansalgorithmut.cpp \
+    commons/test/centersdataut.cpp \
+    commons/test/densepointut.cpp \
+    commons/test/partitiondataut.cpp \
+    commons/test/sparsepointut.cpp \
+    commons/test/utilsut.cpp \
+    distances/hamiltondistance.cpp \
+    distances/euclideandistance.cpp \
+    distances/test/cosinedistanceut.cpp \
+    distances/test/euclideandistanceut.cpp \
+    distances/test/hamiltondistanceut.cpp \
+    pickers/test/randomcenterpickerut.cpp \
+    pickers/test/sequentialcenterspickerut.cpp
 
 HEADERS += \
     models.hpp \
@@ -88,7 +100,20 @@ HEADERS += \
     exceptions/notimplemented.h \
     commons/centersdata.h \
     algorithms/abstractalgorithm.h \
-    algorithms/kmeansalgorithm.h
+    algorithms/kmeansalgorithm.h \
+    algorithms/test/kmeansalgorithmut.h \
+    commons/test/centersdataut.h \
+    commons/test/densepointut.h \
+    commons/test/partitiondataut.h \
+    commons/test/sparsepointut.h \
+    commons/test/utilsut.h \
+    distances/hamiltondistance.h \
+    distances/euclideandistance.h \
+    distances/test/cosinedistanceut.h \
+    distances/test/euclideandistanceut.h \
+    distances/test/hamiltondistanceut.h \
+    pickers/test/randomcenterpickerut.h \
+    pickers/test/sequentialcenterspickerut.h
 
 FORMS += \
     ui/clusteringview.ui
