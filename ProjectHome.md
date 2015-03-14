@@ -1,0 +1,1 @@
+Implementation of kmeans clustering algorithm with use of traingle inequality. This project is part of my Master Of Science work.
