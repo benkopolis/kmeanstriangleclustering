@@ -50,3 +50,7 @@ void ReadersUT::testNormalizedDataReaderWrongFormat()
 
 }
 
+QTEST_MAIN(ReadersUT)
+//#include "moc_fulldatareaderut.cpp"
+//#include "moc_normalizedformatdatareaderut.cpp"
+//#include "moc_readersut.cpp"

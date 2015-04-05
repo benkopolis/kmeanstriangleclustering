@@ -19,7 +19,7 @@ public:
     virtual unsigned diff(const AbstractPoint* another) const throw() = 0;
     virtual void insert(unsigned key, double value) throw(BadIndex) = 0;
     virtual unsigned size() const throw() = 0;
-    virtual const QList<unsigned>& getKeys() const throw() = 0;
+    virtual const QList<unsigned> getKeys() const throw() = 0;
 };
 
 typedef AbstractPoint const * const PConstAbstractPoint;

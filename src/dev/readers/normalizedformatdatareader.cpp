@@ -1,5 +1,5 @@
 #include "normalizedformatdatareader.h"
-
+#include "commons/sparsepoint.h"
 
 #include <QTextStream>
 #include <QFile>
@@ -10,12 +10,12 @@ NormalizedFormatDataReader::NormalizedFormatDataReader()
 {
 }
 
-AbstractPointsSpace * NormalizedFormatDataReader::parseFile(QTextStream *in)
+AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(QTextStream *in) throw (InvalidFileFormat)
 {
     if(in->atEnd())
         return 0;
 
-    NormalizedPointsSpace * space = new NormalizedPointsSpace();
+    NormalizedPointsSpace<SparsePoint> * space = new NormalizedPointsSpace<SparsePoint>();
     PointId pointIndex = 0;
     unsigned int coordtIndex = 0;
     unsigned int numP=0, numD=0;
@@ -28,7 +28,7 @@ AbstractPointsSpace * NormalizedFormatDataReader::parseFile(QTextStream *in)
     {
         QString line = in->readLine();
         QTextStream line_in(&line);
-        Point* p = new Point();
+        Point* p = new SparsePoint();
         while(!line_in.atEnd())
         {
             line_in >> coordtIndex >> separator >> c;
@@ -38,6 +38,7 @@ AbstractPointsSpace * NormalizedFormatDataReader::parseFile(QTextStream *in)
         space->insertPoint(p, pointIndex);
         ++pointIndex;
     }
+    if(pointIndex != numP) throw new InvalidFileFormat;
 
     return space;
 }

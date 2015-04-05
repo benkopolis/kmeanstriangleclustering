@@ -1,7 +1,7 @@
 #ifndef CLUSTERINGVIEW_H
 #define CLUSTERINGVIEW_H
 
-#include <QMainWindow>
+#include <QWi>
 
 namespace Ui {
     class ClusteringView;

@@ -1,7 +1,9 @@
 #ifndef NORMALIZEDFORMATDATAREADERUT_H
 #define NORMALIZEDFORMATDATAREADERUT_H
 
-#include <QObject>
+#include <QtTest/QtTest>
+#include "readers/fulldatareader.h"
+#include "readers/normalizedformatdatareader.h"
 
 class ReadersUT : public QObject
 {

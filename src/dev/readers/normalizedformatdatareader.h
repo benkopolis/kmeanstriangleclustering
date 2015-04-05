@@ -3,8 +3,9 @@
 
 #include "models.hpp"
 #include "abstractdatareader.h"
+#include "commons/sparsepoint.h"
 
-class NormalizedFormatDataReader : public AbstractDataReader
+class NormalizedFormatDataReader : public AbstractDataReader<SparsePoint>
 {
 public:
     NormalizedFormatDataReader();
@@ -15,10 +16,10 @@ public:
      * @return The points' space filled with points read from the opened file.
      *
      * The format of the file is defined as:
-     * <integer:number of points> <integer:number of dimensions> \n
-     * <integer:dimension ordinate number>:<double:coordinate value>{1,dimensions} \n
+     * <integer:number of points> <integer:number of dimensions> \n(white space separated)
+     * <integer:dimension ordinate number>:<double:coordinate value>{1,dimensions} \n(white space separated)
      */
-    AbstractPointsSpace *parseFile(QTextStream *in);
+    AbstractPointsSpace<SparsePoint> *parseFile(QTextStream *in) throw (InvalidFileFormat);
 };
 
 #endif // DEFAULTNORMALIZEDFORMATDATAREADER_H

@@ -11,6 +11,7 @@ TARGET = clustering
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG += c++11
+INCLUDEPATH += src/dev/
 
 QMAKE_CXXFLAGS += -std=c++11
 
@@ -19,8 +20,6 @@ TEMPLATE = app
 
 
 SOURCES += src/dev/main.cpp \
-    src/dev/KMeans.cpp \
-    src/dev/kmeanstriangle.cpp \
     src/dev/ui/clusteringview.cpp \
     src/dev/readers/abstractdatareader.cpp \
     src/dev/spaces/abstractpointsspace.cpp \
@@ -38,7 +37,6 @@ SOURCES += src/dev/main.cpp \
     src/dev/commons/sparsepoint.cpp \
     src/dev/distances/abstractdistance.cpp \
     src/dev/debug/moc_clusteringview.cpp \
-    src/dev/clustering.cpp \
     src/dev/moc_clusteringview.cpp \
     src/dev/simpdist.cpp \
     src/dev/test.cpp \
@@ -55,11 +53,10 @@ SOURCES += src/dev/main.cpp \
     src/dev/distances/euclideandistance.cpp \
     src/dev/readers/fulldatareader.cpp \
     src/dev/readers/normalizedformatdatareader.cpp \
+    src/dev/exceptions/invalidfileformat.cpp
 
 HEADERS += \
     src/dev/models.hpp \
-    src/dev/KMeans.hpp \
-    src/dev/kmeanstriangle.hpp \
     src/dev/ui/clusteringview.h \
     src/dev/readers/abstractdatareader.h \
     src/dev/spaces/abstractpointsspace.h \
@@ -94,6 +91,7 @@ HEADERS += \
     src/dev/distances/euclideandistance.h \
     src/dev/readers/fulldatareader.h \
     src/dev/readers/normalizedformatdatareader.h \
+    src/dev/exceptions/invalidfileformat.h
 
 FORMS += \
     src/dev/ui/clusteringview.ui

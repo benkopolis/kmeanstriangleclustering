@@ -6,11 +6,13 @@
 
 #include "models.hpp"
 #include "spaces/abstractpointsspace.h"
+#include "exceptions/invalidfileformat.h"
 
 /**
  * @brief The abstract AbstractDataReader class
  */
-class AbstractDataReader
+template<typename T>
+class AbstractDataReader : private Utils::Where<T, AbstractPoint>
 {
 public:
 
@@ -21,9 +23,9 @@ public:
      * @param container - the points' space object.
      * @return The points' space filled with points read from the opened file.
      */
-    AbstractPointsSpace* readPointSpaceFromFile(QString fileName);
+    AbstractPointsSpace<T> * readPointSpaceFromFile(QString fileName);
 
-    virtual AbstractPointsSpace * parseFile(QTextStream *in) = 0;
+    virtual AbstractPointsSpace<T> * parseFile(QTextStream *in) throw (InvalidFileFormat) = 0;
 \
 	virtual ~AbstractDataReader() {}
 

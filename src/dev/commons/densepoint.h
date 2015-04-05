@@ -32,7 +32,7 @@ public:
     virtual unsigned diff(const AbstractPoint* another) const throw();
     virtual void insert(unsigned key, double value) throw(BadIndex);
     inline virtual unsigned size() const throw() { return this->vector.size(); }
-    inline virtual const QList<unsigned>& getKeys() const throw();
+    inline virtual const QList<unsigned> getKeys() const throw();
 
     static void InitializeKeys(unsigned dimensions);
 

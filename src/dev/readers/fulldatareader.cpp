@@ -1,5 +1,6 @@
 #include "fulldatareader.h"
 #include "spaces/pointsspace.h"
+#include "commons/densepoint.h"
 
 FullDataReader::FullDataReader()
 {
@@ -11,12 +12,12 @@ FullDataReader::~FullDataReader()
 
 }
 
-AbstractPointsSpace *FullDataReader::parseFile(QTextStream *in)
+AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(QTextStream *in) throw (InvalidFileFormat)
 {
     if(in->atEnd())
         return 0;
 
-    NormalizedPointsSpace *space = new NormalizedPointsSpace();
+    PointsSpace<DensePoint> *space = new PointsSpace<DensePoint>();
     PointId pointIndex = 0;
     unsigned numP=0, numD=0;
     *in >> numP >> numD;
@@ -27,16 +28,18 @@ AbstractPointsSpace *FullDataReader::parseFile(QTextStream *in)
     {
         QString line = in->readLine();
         QTextStream line_in(&line);
-        Point* p = new Point();
+        Point* p = new DensePoint();
         unsigned coordtIndex = 0;
         while(!line_in.atEnd() && coordtIndex < numD)
         {
             line_in >> c;
             p->insert(coordtIndex++, c);
         }
+        if(coordtIndex != numD) throw new InvalidFileFormat();
         space->insertPoint(p, pointIndex);
         ++pointIndex;
     }
+    if(pointIndex != numP) throw new InvalidFileFormat;
 
     return space;
 }

@@ -2,8 +2,9 @@
 #define FULLDATAREADER_H
 
 #include "abstractdatareader.h"
+#include "commons/densepoint.h"
 
-class FullDataReader : public AbstractDataReader
+class FullDataReader : public AbstractDataReader<DensePoint>
 {
 public:
     FullDataReader();
@@ -15,10 +16,10 @@ public:
      * @return The points' space filled with points read from the opened file.
      *
      * The format of the stream is defined as:
-     * <integer:number of points> <integer:number of dimensions> \n
-     * <double:coordinate value>{dimensions,dimensions} \n
+     * <integer:number of points> <integer:number of dimensions> \n(white space separated)
+     * <double:coordinate value>{dimensions,dimensions} \n(white space separated)
      */
-    virtual AbstractPointsSpace * parseFile(QTextStream *in);
+    virtual AbstractPointsSpace<DensePoint> * parseFile(QTextStream *in) throw (InvalidFileFormat);
 };
 
 #endif // FULLDATAREADER_H
