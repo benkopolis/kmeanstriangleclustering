@@ -4,3 +4,4 @@ debug/*
 Makefile*
 *.o
 MGR/*
+*.pro.user.*
