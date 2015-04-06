@@ -1,4 +1,4 @@
-include(../../defaults.pri)
+include(../defaults.pri)
 
 QT += gui
 

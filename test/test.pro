@@ -1,7 +1,7 @@
- include(../../defaults.pri)
+ include(../defaults.pri)
 
 CONFIG   -= app_bundle
-LIBS += -lunittest++ -L../src -lclustering
+LIBS += -lunittest++ -L../dev -lclustering
 
 TARGET = test
 TEMPLATE = app

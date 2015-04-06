@@ -15,9 +15,9 @@ TARGET = all
 TEMPLATE = subdirs
 
 SUBDIRS = \
-    src/app \
-    src/dev \
-    src/test
+    dev \
+    test \
+    app
 
-src/app.DEPENDPATH = src/dev
-src/test.DEPENDPATH = src/dev
+app.depends = dev
+test.depends = dev
