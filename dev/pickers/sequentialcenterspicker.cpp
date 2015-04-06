@@ -1,10 +1,12 @@
 #include "sequentialcenterspicker.h"
 
-SequentialCentersPicker::SequentialCentersPicker()
+template<class PointType>
+SequentialCentersPicker<PointType>::SequentialCentersPicker()
 {
 }
 
-PartitionData *SequentialCentersPicker::performInitialPartition(unsigned clusters, AbstractPointsSpace *ps)
+template<class PointType>
+PartitionData *SequentialCentersPicker<PointType>::performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType> *ps)
 {
     PartitionData *data = new PartitionData(clusters, ps->getNumPoints());
     unsigned cid;

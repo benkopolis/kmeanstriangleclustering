@@ -1,7 +1,8 @@
 #include "pointsspace.h"
 
 template<typename T>
-PointsSpace::PointsSpace()
+PointsSpace::PointsSpace(unsigned num_points, unsigned num_dimensions) :
+    AbstractPointsSpace(num_points, num_dimensions)
 {
 
 }
@@ -18,12 +19,6 @@ PointsSpace::PointsSpace(const PointsSpace& another) :
             point->insert(j, src.value(j));
         points__.insert(i, point);
     }
-}
-
-template<typename T>
-PointsSpace::PointsSpace(PointId num_points, Dimensions num_dimensions) :
-		AbstractPointsSpace(num_points, num_dimensions) {
-	init_points();
 }
 
 template<typename T>

@@ -8,9 +8,9 @@ template<typename T>
 class PointsSpace : public AbstractPointsSpace<T> {
 public:
 
-    PointsSpace();
+    PointsSpace(unsigned num_points, unsigned num_dimensions);
     PointsSpace(const PointsSpace& another);
-    PointsSpace(PointId num_points, Dimensions num_dimensions);
+
     virtual ~PointsSpace();
 
     virtual AbstractPoint *operator [] (const unsigned& pid) throw(BadIndex);

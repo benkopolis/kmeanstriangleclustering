@@ -21,6 +21,16 @@ public:
     virtual unsigned diff(const AbstractPoint* another) const throw(NotSparsePoint, NotDensePoint) = 0;
     virtual void insert(unsigned key, double value) throw(BadIndex) = 0;
     virtual unsigned size() const throw() = 0;
+    virtual bool contains(unsigned pid) const throw() = 0;
+
+    /**
+     * @brief getKeys method returns list of unsigned values representing indexes of point coordinates.
+     * @param fileName is the name of the text file with point space in a proper format.
+     * @param container - the points' space object.
+     * @return Sorted list of point's coordinates' indexes.
+     *
+     * The list is always sorted! From smaller to bigger.
+     */
     virtual const QList<unsigned> getKeys() const throw() = 0;
 };
 

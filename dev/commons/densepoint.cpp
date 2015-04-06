@@ -54,6 +54,11 @@ const QList<unsigned> DensePoint::getKeys() const throw()
     return *((QList<unsigned>*)&DensePoint::KEYS);
 }
 
+bool DensePoint::contains(unsigned pid) const throw()
+{
+    return this->vector.size() > pid;
+}
+
 void DensePoint::InitializeKeys(unsigned dimensions)
 {
     mutex.lock();

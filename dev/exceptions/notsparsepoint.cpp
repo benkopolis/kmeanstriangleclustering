@@ -4,7 +4,7 @@ NotSparsePoint::NotSparsePoint()
 {
 }
 
-const char *NotSparsePoint::what()
+const char *NotSparsePoint::what() const throw()
 {
     return "At this point excpected an instance of SparsePoint class.";
 }

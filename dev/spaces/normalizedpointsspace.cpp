@@ -1,12 +1,13 @@
 #include "normalizedpointsspace.h"
 
 template<typename T>
-NormalizedPointsSpace::NormalizedPointsSpace()
+NormalizedPointsSpace<T>::NormalizedPointsSpace(unsigned num_points, unsigned num_dimensions) :
+    AbstractPointsSpace(num_points, num_dimensions)
 {
 }
 
 template<typename T>
-NormalizedPointsSpace::NormalizedPointsSpace(const NormalizedPointsSpace& another) :
+NormalizedPointsSpace<T>::NormalizedPointsSpace(const NormalizedPointsSpace& another) :
     AbstractPointsSpace(another.num_points__, another.num_dimensions__)
 {
     for(unsigned int i=0; i<num_points__; ++i)
@@ -20,7 +21,7 @@ NormalizedPointsSpace::NormalizedPointsSpace(const NormalizedPointsSpace& anothe
 }
 
 template<typename T>
-NormalizedPointsSpace::~NormalizedPointsSpace()
+NormalizedPointsSpace<T>::~NormalizedPointsSpace()
 {
     foreach(PointId index, points__.keys())
     {
@@ -30,14 +31,14 @@ NormalizedPointsSpace::~NormalizedPointsSpace()
 }
 
 template<typename T>
-AbstractPoint *NormalizedPointsSpace::operator [](const unsigned &pid) throw(BadIndex)
+AbstractPoint *NormalizedPointsSpace<T>::operator [](const unsigned &pid) throw(BadIndex)
 {
     if(!this->points__.contains(pid))
         throw BadIndex();
     return this->points__[pid];
 }
 
-const AbstractPoint *NormalizedPointsSpace::operator [](const unsigned &pid) const throw(BadIndex)
+const AbstractPoint *NormalizedPointsSpace<T>::operator [](const unsigned &pid) const throw(BadIndex)
 {
     if(!this->points__.contains(pid))
         throw BadIndex();
@@ -45,25 +46,25 @@ const AbstractPoint *NormalizedPointsSpace::operator [](const unsigned &pid) con
 }
 
 template<typename T>
-void NormalizedPointsSpace::insertPoint(T *p, unsigned index)
+void NormalizedPointsSpace<T>::insertPoint(T *p, unsigned index)
 {
 	points__.insert(index, p);
 }
 
 template<typename T>
-const AbstractPoint *NormalizedPointsSpace::getPoint(unsigned index) const
+const AbstractPoint *NormalizedPointsSpace<T>::getPoint(unsigned index) const
 {
     return *points__.value(index);
 }
 
 template<typename T>
-bool NormalizedPointsSpace::contains(unsigned index) const
+bool NormalizedPointsSpace<T>::contains(unsigned index) const
 {
 	return points__.contains(index);
 }
 
 template<typename T>
-void NormalizedPointsSpace::savePointsSpace(QString fileName)
+void NormalizedPointsSpace<T>::savePointsSpace(QString fileName)
 {
 	QFile file(fileName);
 	if(!file.open(QFile::WriteOnly))
@@ -80,7 +81,7 @@ void NormalizedPointsSpace::savePointsSpace(QString fileName)
 }
 
 template<typename T>
-void NormalizedPointsSpace::loadPointsSpace(QString fileName)
+void NormalizedPointsSpace<T>::loadPointsSpace(QString fileName)
 {
 	QFile file(fileName);
 	if(!file.open(QFile::ReadOnly))
@@ -111,7 +112,7 @@ void NormalizedPointsSpace::loadPointsSpace(QString fileName)
 }
 
 template<typename T>
-QList<unsigned> NormalizedPointsSpace::getPointIds() const
+QList<unsigned> NormalizedPointsSpace<T>::getPointIds() const
 {
 	return points__.keys();
 }

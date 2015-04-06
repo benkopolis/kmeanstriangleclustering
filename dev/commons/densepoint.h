@@ -33,6 +33,7 @@ public:
     virtual void insert(unsigned key, double value) throw(BadIndex);
     inline virtual unsigned size() const throw() { return this->vector.size(); }
     inline virtual const QList<unsigned> getKeys() const throw();
+    virtual bool contains(unsigned pid) const throw();
 
     static void InitializeKeys(unsigned dimensions);
 

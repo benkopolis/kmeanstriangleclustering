@@ -28,7 +28,8 @@ public:
     virtual unsigned diff(const AbstractPoint* another) const throw(NotSparsePoint, NotDensePoint);
     virtual void insert(unsigned key, double value) throw(BadIndex);
     inline virtual unsigned size() const throw() { return this->hash->size(); }
-    inline virtual const QList<unsigned> getKeys() const throw() { return this->hash->keys(); }
+    inline virtual const QList<unsigned> getKeys() const throw();
+    virtual bool contains(unsigned pid) const throw();
 
 private:
 

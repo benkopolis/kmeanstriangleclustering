@@ -1,11 +1,13 @@
 #include "randomcenterpicker.h"
 #include <QtGlobal>
 
-RandomCenterPicker::RandomCenterPicker()
+template<class PointType>
+RandomCenterPicker<PointType>::RandomCenterPicker()
 {
 }
 
-PartitionData *RandomCenterPicker::performInitialPartition(unsigned clusters, AbstractPointsSpace *ps)
+template<class PointType>
+PartitionData *RandomCenterPicker<PointType>::performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType> *ps)
 {
     PartitionData* data = new PartitionData(clusters, ps->getNumPoints());
     this->initialData = new CentersData(clusters, ps->getNumDimensions());

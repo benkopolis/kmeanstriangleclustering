@@ -4,7 +4,6 @@
 #include "abstractdistance.h"
 #include "exceptions/notimplemented.h"
 
-template<typename T>
 class CosineDistance : public AbstractDistance
 {
 public:
@@ -14,7 +13,7 @@ public:
 
 private:
 
-    double dotMatrixes(AbstractPoint *one, AbstractPoint *two) throw(NotImplemented);
+    double dotMatrixes(AbstractPoint *one, AbstractPoint *two) throw();
 };
 
 #endif // COSINEDISTANCE_H

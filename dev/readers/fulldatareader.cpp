@@ -17,18 +17,16 @@ AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(QTextStream *in) thro
     if(in->atEnd())
         return 0;
 
-    PointsSpace<DensePoint> *space = new PointsSpace<DensePoint>();
     PointId pointIndex = 0;
     unsigned numP=0, numD=0;
     *in >> numP >> numD;
-    space->setNumberOfDimensions(numD);
-    space->setNumberOfPoints(numP);
+    PointsSpace<DensePoint> *space = new PointsSpace<DensePoint>(numP, numD);
     Coord c = 0.0;
     while(!in->atEnd())
     {
         QString line = in->readLine();
         QTextStream line_in(&line);
-        Point* p = new DensePoint();
+        DensePoint* p = new DensePoint(pointIndex, numD);
         unsigned coordtIndex = 0;
         while(!line_in.atEnd() && coordtIndex < numD)
         {

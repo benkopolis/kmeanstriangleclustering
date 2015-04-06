@@ -13,6 +13,9 @@ protected:
 
     AbstractDistance();
 
+    template<class T>
+    T getIntersectedIndexes(AbstractPoint *one, AbstractPoint *two);
+
 };
 
 #endif // ABSTRACTDISTANCE_H

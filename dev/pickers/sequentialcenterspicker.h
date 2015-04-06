@@ -3,12 +3,13 @@
 
 #include "abstractcenterspicker.h"
 
-class SequentialCentersPicker : public AbstractCentersPicker
+template<class PointType>
+class SequentialCentersPicker : public AbstractCentersPicker<PointType>
 {
 public:
     SequentialCentersPicker();
 
-    virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace* ps);
+    virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType>* ps);
 };
 
 #endif // SEQUENTIALCENTERSPICKER_H

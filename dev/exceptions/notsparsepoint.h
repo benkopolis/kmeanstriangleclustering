@@ -8,7 +8,7 @@ class NotSparsePoint : public std::exception
 public:
     NotSparsePoint();
 
-    virtual const char *what() throw();
+    virtual const char *what() const throw();
 };
 
 #endif // NOTSPARSEPOINT_H

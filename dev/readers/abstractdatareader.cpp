@@ -1,12 +1,12 @@
 #include "abstractdatareader.h"
 
 template<typename T>
-AbstractDataReader::AbstractDataReader()
+AbstractDataReader<T>::AbstractDataReader()
 {
 }
 
 template<typename T>
-AbstractPointsSpace<T> *AbstractDataReader::readPointSpaceFromFile(QString fileName)
+AbstractPointsSpace<T> *AbstractDataReader<T>::readPointSpaceFromFile(QString fileName)
 {
     QFile file(fileName);
     QTextStream *in;

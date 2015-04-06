@@ -34,8 +34,6 @@ public:
 
 protected:
 
-
-	AbstractPointsSpace();
     AbstractPointsSpace(unsigned num_points, unsigned num_dimensions);
 
 

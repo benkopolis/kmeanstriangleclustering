@@ -15,20 +15,18 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(QTextSt
     if(in->atEnd())
         return 0;
 
-    NormalizedPointsSpace<SparsePoint> * space = new NormalizedPointsSpace<SparsePoint>();
     PointId pointIndex = 0;
     unsigned int coordtIndex = 0;
     unsigned int numP=0, numD=0;
     *in >> numP >> numD;
-    space->setNumberOfDimensions(numD);
-    space->setNumberOfPoints(numP);
+    NormalizedPointsSpace<SparsePoint> * space = new NormalizedPointsSpace<SparsePoint>(numP, numD);
     Coord c = 0.0;
     char separator;
     while(!in->atEnd())
     {
         QString line = in->readLine();
         QTextStream line_in(&line);
-        Point* p = new SparsePoint();
+        SparsePoint* p = new SparsePoint(pointIndex);
         while(!line_in.atEnd())
         {
             line_in >> coordtIndex >> separator >> c;

@@ -10,8 +10,8 @@ InvalidFileFormat::~InvalidFileFormat()
 
 }
 
-const char *InvalidFileFormat::what() const
+const char *InvalidFileFormat::what() const throw()
 {
-    return "File being read by AbstractDataReader contains data in invalid format"
+    return "File being read by AbstractDataReader contains data in invalid format";
 }
 

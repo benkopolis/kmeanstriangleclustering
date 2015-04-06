@@ -3,12 +3,13 @@
 
 #include "abstractcenterspicker.h"
 
-class RandomCenterPicker : public AbstractCentersPicker
+template<typename PointType>
+class RandomCenterPicker : public AbstractCentersPicker<PointType>
 {
 public:
     RandomCenterPicker();
 
-    virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace* ps);
+    virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType>* ps);
 };
 
 #endif // RANDOMCENTERPICKER_H

@@ -1,19 +1,19 @@
 #include "abstractcenterspicker.h"
 
 template<typename PointType>
-CentersData *AbstractCentersPicker::getInitialCentersData()
+CentersData *AbstractCentersPicker<PointType>::getInitialCentersData()
 {
     return this->initialData;
 }
 
 template<typename PointType>
-AbstractCentersPicker::AbstractCentersPicker():
+AbstractCentersPicker<PointType>::AbstractCentersPicker():
     initialData(0)
 {
 }
 
 template<typename PointType>
-void AbstractCentersPicker::divideCentersCoords(PartitionData *data)
+void AbstractCentersPicker<PointType>::divideCentersCoords(PartitionData *data)
 {
     for(unsigned cid : this->initialData)
     {
@@ -26,11 +26,11 @@ void AbstractCentersPicker::divideCentersCoords(PartitionData *data)
 }
 
 template<typename PointType>
-void AbstractCentersPicker::addCoordsToCenter(PointType *p, unsigned center)
+void AbstractCentersPicker<PointType>::addCoordsToCenter(PointType *p, unsigned center)
 {
-    AbstractPoint* p = ps->getPoint(pid);
-    for(unsigned d : p->getKeys())
+    AbstractPoint* q = dynamic_cast<AbstractPoint*>(p);
+    for(unsigned d : q->getKeys())
     {
-        this->initialData[cid][d] += (*p)[d];
+        this->initialData[center][d] += (*q)[d];
     }
 }

@@ -1,5 +1,7 @@
 #include <QList>
 #include <typeinfo>
+#include <algorithm>
+#include <functional>
 #include <typeindex>
 #include "sparsepoint.h"
 
@@ -52,5 +54,17 @@ unsigned SparsePoint::diff(const AbstractPoint* another) const throw(NotSparsePo
 void SparsePoint::insert(unsigned key, double value) throw(BadIndex)
 {
     this->hash->insert(key, value);
+}
+
+const QList<unsigned> SparsePoint::getKeys() const throw()
+{
+    QList<unsigned> list = this->hash->keys();
+    std::sort(list.begin(), list.end(), std::less<unsigned>());
+    return list;
+}
+
+bool SparsePoint::contains(unsigned pid) const throw()
+{
+    return this->hash->contains(pid);
 }
 

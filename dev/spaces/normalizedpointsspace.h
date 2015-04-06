@@ -7,7 +7,7 @@ template<typename T>
 class NormalizedPointsSpace : public AbstractPointsSpace<T>
 {
 public:
-    NormalizedPointsSpace();
+    NormalizedPointsSpace(unsigned num_points, unsigned num_dimensions);
     NormalizedPointsSpace(const NormalizedPointsSpace& another);
 
     virtual ~NormalizedPointsSpace();
