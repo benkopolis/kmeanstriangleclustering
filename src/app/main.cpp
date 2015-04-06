@@ -36,29 +36,6 @@ void produceClusteringData()
     throw 1;
 }
 
-void executeAndPrintClusteringResults(QTextStream* stream, QTextStream& out, KMeans* clusters, QString message)
-{
-    executeAndPrintClusteringResults(stream, out, *clusters, message);
-}
-
-void executeAndPrintClusteringResults(QTextStream* stream, QTextStream& out, KMeans& clusters, QString message)
-{
-    QElapsedTimer etimer;
-    out << endl << message << endl;
-    etimer.start();
-    clusters.executeAlgorithm();
-    out << "elapsed: " << etimer.elapsed() << "ms" << endl;
-    out << "distnace counter calls: " << clusters.getDistancesCallCount() << endl;
-    out << "used iterations: " << clusters.getUsedIterationsCount() << endl;
-    out << "distances calls per iteration: " << clusters.getDistancesCallCount() / clusters.getUsedIterationsCount() << endl;
-    out << "Error: " << clusters.meanSquareError() << endl;
-    out << "Moved: " << clusters.getMovedCount() << endl;
-    out << "Clusters: " << endl;
-    out.flush();
-    if(stream != 0)
-        stream->flush();
-}
-
 void createTfIdfFile(int argc, char *argv[])
 {
     StemmedFileInMemoryParser parser;

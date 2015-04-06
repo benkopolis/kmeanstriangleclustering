@@ -3,8 +3,6 @@
 
 #include <QtCore/QCoreApplication>
 #include "models.hpp"
-#include "KMeans.hpp"
-#include "kmeanstriangle.hpp"
 #include "spaces/pointsspace.h"
 #include "spaces/normalizedpointsspace.h"
 #include "tfidf/stemmedfileinmemoryparser.h"
@@ -17,10 +15,6 @@ Distance cosinDist(const AbstractPoint * const p, const AbstractPoint * const q)
 Distance euclideanDist(AbstractPoint const * const p, AbstractPoint const * const q);
 
 void produceClusteringData();
-
-void executeAndPrintClusteringResults(QTextStream* stream, QTextStream& out, KMeans* clusters, QString message);
-
-void executeAndPrintClusteringResults(QTextStream* stream, QTextStream& out, KMeans &clusters, QString message);
 
 void testClustering();
 
