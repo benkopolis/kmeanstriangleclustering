@@ -2,21 +2,21 @@
 
 template<typename T>
 NormalizedPointsSpace<T>::NormalizedPointsSpace(unsigned num_points, unsigned num_dimensions) :
-    AbstractPointsSpace(num_points, num_dimensions)
+    AbstractPointsSpace<T>(num_points, num_dimensions)
 {
 }
 
 template<typename T>
 NormalizedPointsSpace<T>::NormalizedPointsSpace(const NormalizedPointsSpace& another) :
-    AbstractPointsSpace(another.num_points__, another.num_dimensions__)
+    AbstractPointsSpace<T>(another.num_points__, another.num_dimensions__)
 {
-    for(unsigned int i=0; i<num_points__; ++i)
+    for(unsigned int i=0; i<this->num_points__; ++i)
     {
-        Point* point = new Point();
-        const Point& src = another.getPoint(i);
-        for(unsigned int j=0; j<num_dimensions__; ++j)
+        T* point = new T(i);
+        const T* src = another.getPoint(i);
+        for(unsigned int j=0; j<this->num_dimensions__; ++j)
             point->insert(j, src.value(j));
-        points__.insert(i, point);
+        points__.insert(i, dynamic_cast<AbstractPoint*>(point));
     }
 }
 
@@ -38,6 +38,7 @@ AbstractPoint *NormalizedPointsSpace<T>::operator [](const unsigned &pid) throw(
     return this->points__[pid];
 }
 
+template<typename T>
 const AbstractPoint *NormalizedPointsSpace<T>::operator [](const unsigned &pid) const throw(BadIndex)
 {
     if(!this->points__.contains(pid))
@@ -70,10 +71,10 @@ void NormalizedPointsSpace<T>::savePointsSpace(QString fileName)
 	if(!file.open(QFile::WriteOnly))
 		return;
 	QTextStream out(&file);
-    out << num_points__ << ' ' << num_dimensions__ << ' ' << endl;
+    out << this->num_points__ << ' ' << this->num_dimensions__ << ' ' << endl;
 	foreach(PointId key, points__.keys())
 	{
-        foreach(unsigned int dim, points__[key]->keys())
+        for(unsigned dim : points__[key]->getKeys())
             out << dim << ':' << (*points__[key])[dim] << endl;
 	}
 	out.flush();
@@ -98,7 +99,7 @@ void NormalizedPointsSpace<T>::loadPointsSpace(QString fileName)
     char separator;
     while(!in.atEnd())
 	{
-        Point* point = new Point();
+        T* point = new T(counter);
         QString line = in.readLine();
         QTextStream inner(&line);
         while(!inner.atEnd())
@@ -106,7 +107,7 @@ void NormalizedPointsSpace<T>::loadPointsSpace(QString fileName)
             inner >> coordId >> separator >> tmp;
             point->insert(coordId, tmp);
 		}
-        points__.insert(counter++, point);
+        points__.insert(counter++, dynamic_cast<AbstractPoint*>(point));
 	}
 	file.close();
 }
