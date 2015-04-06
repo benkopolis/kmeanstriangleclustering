@@ -23,13 +23,13 @@ public:
         return os;
     }
 
-    DensePoint();
-    DensePoint(unsigned nDims);
+    DensePoint(unsigned pid);
+    DensePoint(unsigned pid, unsigned nDims);
 
     virtual double& operator [] (const unsigned& index) throw(BadIndex);
     virtual double operator [] (const unsigned& index) const throw(BadIndex);
 
-    virtual unsigned diff(const AbstractPoint* another) const throw();
+    virtual unsigned diff(const AbstractPoint* another) const throw(NotSparsePoint, NotDensePoint);
     virtual void insert(unsigned key, double value) throw(BadIndex);
     inline virtual unsigned size() const throw() { return this->vector.size(); }
     inline virtual const QList<unsigned> getKeys() const throw();

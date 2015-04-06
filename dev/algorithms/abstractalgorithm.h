@@ -11,9 +11,9 @@
 
 template<class Point, class Distance, class Picker, class Space>
 class AbstractAlgorithm : private Utils::Where<Point, AbstractPoint>,
-        private utils::Where<Distance, AbstractDistance>,
-        private Utils::Where<Picker, AbstractCentersPicker>,
-        private Utils::Where<Space, AbstractPointsSpace>
+        private Utils::Where<Distance, AbstractDistance>,
+        private Utils::Where<Picker, AbstractCentersPicker<Point>>,
+        private Utils::Where<Space, AbstractPointsSpace<Point>>
 {
 public:
 

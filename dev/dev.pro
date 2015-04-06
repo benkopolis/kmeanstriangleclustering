@@ -1,13 +1,9 @@
 include(../defaults.pri)
 
-QT += gui
-
 TARGET = clustering
 TEMPLATE = lib
 
-SOURCES += myclass.cpp \
-    main.cpp \
-    ui/clusteringview.cpp \
+SOURCES += \
     algorithms/abstractalgorithm.cpp \
     algorithms/kmeansalgorithm.cpp \
     commons/abstractpoint.cpp \
@@ -36,9 +32,9 @@ SOURCES += myclass.cpp \
     spaces/pointsspace.cpp \
     tfidf/stemmedfileinmemoryparser.cpp \
     triangle/abstractaccountingcontainer.cpp \
-    triangle/upperbounds.cpp
-HEADERS += myclass.h \
-    ui/clusteringview.h \
+    triangle/upperbounds.cpp \
+    exceptions/notdensepoint.cpp
+HEADERS += \
     algorithms/abstractalgorithm.h \
     algorithms/kmeansalgorithm.h \
     commons/abstractpoint.h \
@@ -68,8 +64,7 @@ HEADERS += myclass.h \
     tfidf/stemmedfileinmemoryparser.h \
     triangle/abstractaccountingcontainer.h \
     triangle/upperbounds.h \
-    main.hpp \
-    models.hpp
+    models.hpp \
+    exceptions/notdensepoint.h
 
-FORMS += \
-    ui/clusteringview.ui
+FORMS +=

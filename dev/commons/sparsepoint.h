@@ -19,13 +19,13 @@ public:
         return os;
     }
 
-    SparsePoint();
+    SparsePoint(unsigned pid);
     virtual ~SparsePoint();
 
     virtual double& operator [] (const unsigned& index) throw(BadIndex);
     virtual double operator [] (const unsigned& index) const throw(BadIndex);
 
-    virtual unsigned diff(const AbstractPoint* another) const throw();
+    virtual unsigned diff(const AbstractPoint* another) const throw(NotSparsePoint, NotDensePoint);
     virtual void insert(unsigned key, double value) throw(BadIndex);
     inline virtual unsigned size() const throw() { return this->hash->size(); }
     inline virtual const QList<unsigned> getKeys() const throw() { return this->hash->keys(); }

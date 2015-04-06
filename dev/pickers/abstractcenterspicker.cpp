@@ -1,16 +1,19 @@
 #include "abstractcenterspicker.h"
 
+template<typename PointType>
 CentersData *AbstractCentersPicker::getInitialCentersData()
 {
     return this->initialData;
 }
 
+template<typename PointType>
 AbstractCentersPicker::AbstractCentersPicker():
     initialData(0)
 {
 }
 
-AbstractCentersPicker::divideCentersCoords(PartitionData *data)
+template<typename PointType>
+void AbstractCentersPicker::divideCentersCoords(PartitionData *data)
 {
     for(unsigned cid : this->initialData)
     {
@@ -22,7 +25,8 @@ AbstractCentersPicker::divideCentersCoords(PartitionData *data)
     }
 }
 
-AbstractCentersPicker::addCoordsToCenter(AbstractPoint* p, unsigned center)
+template<typename PointType>
+void AbstractCentersPicker::addCoordsToCenter(PointType *p, unsigned center)
 {
     AbstractPoint* p = ps->getPoint(pid);
     for(unsigned d : p->getKeys())

@@ -5,20 +5,21 @@
 #include "commons/partitiondata.h"
 #include "commons/centersdata.h"
 
-class AbstractCentersPicker
+template<typename PointType>
+class AbstractCentersPicker : private Utils::Where<PointType, AbstractPoint>
 {
 public:
 
-    virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace* ps) = 0;
+    virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType>* ps) = 0;
     CentersData *getInitialCentersData();
 
 protected:
 
     AbstractCentersPicker();
 
-    divideCentersCoords(PartitionData* data);
+    void divideCentersCoords(PartitionData* data);
 
-    addCoordsToCenter(AbstractPoint *p, unsigned center);
+    void addCoordsToCenter(PointType *p, unsigned center);
 
 private:
 

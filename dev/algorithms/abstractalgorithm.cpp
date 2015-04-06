@@ -1,5 +1,6 @@
 #include "abstractalgorithm.h"
 
-AbstractAlgorithm::AbstractAlgorithm()
+template<class Point, class Distance, class Picker, class Space>
+AbstractAlgorithm<Point, Distance, Picker, Space>::AbstractAlgorithm()
 {
 }

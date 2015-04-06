@@ -122,7 +122,7 @@ bool PartitionData::storePreRandIndex(const QString &fileName) const
 void PartitionData::printClustersSize(QTextStream &stream) const
 {
     for(unsigned i=0; i < this->clustersData.size(); ++i)
-        stream << i << ": " << this->clustersData[i]->size() << endl;
+        stream << i << ": " << this->clustersData[i].size() << endl;
 }
 
 bool PartitionData::printClusteringResults(const QString &fileName) const
@@ -132,7 +132,7 @@ bool PartitionData::printClusteringResults(const QString &fileName) const
         return false;
     QTextStream stream(&file);
     int i=0;
-    stream << num_clusters__ << ' ' << this->pointsData.size() << endl; // magic switch ;)
+    stream << this->clustersData.size() << ' ' << this->pointsData.size() << endl; // magic switch ;)
     for(const QSet<unsigned>& set : this->clustersData)
     {
         for(const unsigned point : set)
@@ -158,11 +158,10 @@ bool PartitionData::printCentroids(const QString &fileName, AbstractPointsSpace<
     {
         for(const unsigned pindex : set)
         {
-
-            foreach(double c, p.keys())
-                out << c << ':' << p[c] << ' ';
+            out << i << ':' << pindex << ' ';
         }
         out << endl;
+        ++i;
     }
     out.flush();
     file.close();
