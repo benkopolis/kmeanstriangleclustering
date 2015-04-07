@@ -7,7 +7,7 @@ class SparsePointUT : public QObject
 {
     Q_OBJECT
 public:
-    explicit SparsePointUT(QObject *parent = 0);
+    explicit SparsePointUT();
 
 signals:
 

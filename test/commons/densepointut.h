@@ -7,7 +7,7 @@ class DensePointUT : public QObject
 {
     Q_OBJECT
 public:
-    explicit DensePointUT(QObject *parent = 0);
+    explicit DensePointUT();
 
 signals:
 

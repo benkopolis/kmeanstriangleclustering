@@ -7,7 +7,7 @@ class PartitionDataUT : public QObject
 {
     Q_OBJECT
 public:
-    explicit PartitionDataUT(QObject *parent = 0);
+    explicit PartitionDataUT();
 
 signals:
 

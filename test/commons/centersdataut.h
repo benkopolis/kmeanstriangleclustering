@@ -7,7 +7,7 @@ class CentersDataUT : public QObject
 {
     Q_OBJECT
 public:
-    explicit CentersDataUT(QObject *parent = 0);
+    explicit CentersDataUT();
 
 signals:
 

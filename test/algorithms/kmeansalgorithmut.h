@@ -1,13 +1,10 @@
 #ifndef KMEANSALGORITHMUT_H
 #define KMEANSALGORITHMUT_H
 
-#include <QObject>
-
-class KMeansAlgorithmUT : public QObject
+class KMeansAlgorithmUT
 {
-    Q_OBJECT
 public:
-    explicit KMeansAlgorithmUT(QObject *parent = 0);
+    explicit KMeansAlgorithmUT();
 
 signals:
 
