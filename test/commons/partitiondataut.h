@@ -1,17 +1,10 @@
 #ifndef PARTITIONDATAUT_H
 #define PARTITIONDATAUT_H
 
-#include <QObject>
-
-class PartitionDataUT : public QObject
+class PartitionDataUT
 {
-    Q_OBJECT
 public:
-    explicit PartitionDataUT();
-
-signals:
-
-public slots:
+    PartitionDataUT();
 
 };
 

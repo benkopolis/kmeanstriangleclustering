@@ -1,20 +1,14 @@
 #ifndef NORMALIZEDFORMATDATAREADERUT_H
 #define NORMALIZEDFORMATDATAREADERUT_H
 
-#include <QtTest/QtTest>
 #include "readers/fulldatareader.h"
 #include "readers/normalizedformatdatareader.h"
 
-class ReadersUT : public QObject
+class ReadersUT
 {
-    Q_OBJECT
 public:
-    explicit ReadersUT(QObject *parent = 0);
+    ReadersUT();
     ~ReadersUT();
-
-signals:
-
-private slots:
 
     void testFullDataReader();
     void testFullDataReader_data();

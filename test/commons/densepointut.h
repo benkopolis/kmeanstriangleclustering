@@ -1,17 +1,11 @@
 #ifndef DENSEPOINTUT_H
 #define DENSEPOINTUT_H
 
-#include <QObject>
-
-class DensePointUT : public QObject
+class DensePointUT
 {
-    Q_OBJECT
 public:
-    explicit DensePointUT();
+    DensePointUT();
 
-signals:
-
-public slots:
 
 };
 

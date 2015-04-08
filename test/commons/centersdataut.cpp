@@ -1,5 +1,5 @@
 #include "centersdataut.h"
 
-CentersDataUT::CentersDataUT() :
+CentersDataUT::CentersDataUT()
 {
 }

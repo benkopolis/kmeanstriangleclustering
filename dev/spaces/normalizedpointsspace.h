@@ -25,7 +25,7 @@ public:
 
 protected:
 
-    QHash<unsigned, AbstractPoint*> points__;
+    QHash<unsigned, CPtrCAbstractPoint> points__;
 	unsigned int lines__;
 
 

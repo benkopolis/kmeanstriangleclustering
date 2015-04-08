@@ -36,4 +36,6 @@ private:
     QHash<unsigned, double> * hash;
 };
 
+Q_DECLARE_TYPEINFO(SparsePoint, Q_MOVABLE_TYPE);
+
 #endif // VECTOR_H

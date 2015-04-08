@@ -1,5 +1,5 @@
 
-INCLUDEPATH += $$PWD/src/dev
+INCLUDEPATH += $$PWD/dev
 SRC_DIR = $$PWD
 
 QT       += core

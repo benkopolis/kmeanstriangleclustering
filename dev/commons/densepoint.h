@@ -15,7 +15,7 @@ public:
     friend std::ostream& operator <<(std::ostream& os, DensePoint & dp) {
 
         unsigned i = 0;
-        for(const double coord : dp.vector) {
+        for(const double coord : *dp.vector) {
             os << i << ':' << coord << ',';
             ++i;
         }
@@ -25,13 +25,14 @@ public:
 
     DensePoint(unsigned pid);
     DensePoint(unsigned pid, unsigned nDims);
+    virtual ~DensePoint();
 
     virtual double& operator [] (const unsigned& index) throw(BadIndex);
     virtual double operator [] (const unsigned& index) const throw(BadIndex);
 
     virtual unsigned diff(const AbstractPoint* another) const throw(NotSparsePoint, NotDensePoint);
     virtual void insert(unsigned key, double value) throw(BadIndex);
-    inline virtual unsigned size() const throw() { return this->vector.size(); }
+    inline virtual unsigned size() const throw() { return this->vector->size(); }
     inline virtual const QList<unsigned> getKeys() const throw();
     virtual bool contains(unsigned pid) const throw();
 
@@ -39,7 +40,7 @@ public:
 
 private:
 
-    std::vector<double> vector;
+    std::vector<double>* vector;
 
     static volatile unsigned dimensions;
     static volatile QList<unsigned> KEYS;
@@ -48,5 +49,7 @@ private:
 
     static void initKeys();
 };
+
+Q_DECLARE_TYPEINFO(DensePoint, Q_MOVABLE_TYPE);
 
 #endif // DENSEPOINT_H

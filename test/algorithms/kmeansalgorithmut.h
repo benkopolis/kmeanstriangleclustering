@@ -4,11 +4,8 @@
 class KMeansAlgorithmUT
 {
 public:
-    explicit KMeansAlgorithmUT();
+    KMeansAlgorithmUT();
 
-signals:
-
-public slots:
 
 };
 

@@ -31,7 +31,7 @@ protected:
     //
     void init_points();
 
-    QHash<unsigned int, AbstractPoint*> points__;
+    QHash<unsigned int, CPtrCAbstractPoint> points__;
 };
 
 #endif // POINTSSPACE_H

@@ -34,6 +34,10 @@ public:
     virtual const QList<unsigned> getKeys() const throw() = 0;
 };
 
-typedef AbstractPoint const * const PConstAbstractPoint;
+Q_DECLARE_TYPEINFO(AbstractPoint, Q_MOVABLE_TYPE);
+
+typedef AbstractPoint const * const CPtrCAbstractPoint;
+
+typedef AbstractPoint const * PtrCAbstractPoint;
 
 #endif // ABSTRACTPOINT_H

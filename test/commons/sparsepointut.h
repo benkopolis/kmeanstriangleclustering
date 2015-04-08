@@ -1,17 +1,10 @@
 #ifndef SPARSEPOINTUT_H
 #define SPARSEPOINTUT_H
 
-#include <QObject>
-
-class SparsePointUT : public QObject
+class SparsePointUT
 {
-    Q_OBJECT
 public:
-    explicit SparsePointUT();
-
-signals:
-
-public slots:
+    SparsePointUT();
 
 };
 

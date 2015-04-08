@@ -1,5 +1,5 @@
 #include "kmeansalgorithmut.h"
 
-KMeansAlgorithmUT::KMeansAlgorithmUT() :
+KMeansAlgorithmUT::KMeansAlgorithmUT()
 {
 }

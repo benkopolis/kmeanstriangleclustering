@@ -8,27 +8,33 @@ std::mutex DensePoint::mutex;
 DensePoint::DensePoint(unsigned pid) :
     AbstractPoint(pid)
 {
+    this->vector = new std::vector<double>();
 }
 
 DensePoint::DensePoint(unsigned pid, unsigned nDims) :
-    AbstractPoint(0),
-    vector(nDims, 0)
+    AbstractPoint(0)
 {
+    this->vector = new std::vector<double>(nDims);
+}
 
+DensePoint::~DensePoint()
+{
+    delete this->vector;
+    this->vector = 0;
 }
 
 double & DensePoint::operator [](const unsigned& index) throw(BadIndex)
 {
-    if(this->vector.size() <= index)
+    if(this->vector->size() <= index)
         throw BadIndex();
-    return this->vector[index];
+    return (*this->vector)[index];
 }
 
 double DensePoint::operator [](const unsigned &index) const throw(BadIndex)
 {
-    if(this->vector.size() <= index)
+    if(this->vector->size() <= index)
         throw BadIndex();
-    return this->vector[index];
+    return (*this->vector)[index];
 }
 
 unsigned DensePoint::diff(const AbstractPoint *another) const throw(NotSparsePoint, NotDensePoint)
@@ -38,9 +44,9 @@ unsigned DensePoint::diff(const AbstractPoint *another) const throw(NotSparsePoi
 
 void DensePoint::insert(unsigned key, double value) throw(BadIndex)
 {
-    if(key != this->vector.size()) // insert must be called for every key from 0 to max
+    if(key != this->vector->size()) // insert must be called for every key from 0 to max
         throw BadIndex();
-    this->vector.push_back(value);
+    this->vector->push_back(value);
 }
 
 const QList<unsigned> DensePoint::getKeys() const throw()
@@ -56,7 +62,7 @@ const QList<unsigned> DensePoint::getKeys() const throw()
 
 bool DensePoint::contains(unsigned pid) const throw()
 {
-    return this->vector.size() > pid;
+    return this->vector->size() > pid;
 }
 
 void DensePoint::InitializeKeys(unsigned dimensions)
