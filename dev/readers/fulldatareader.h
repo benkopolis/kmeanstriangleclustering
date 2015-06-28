@@ -20,6 +20,12 @@ public:
      * <double:coordinate value>{dimensions,dimensions} \n(white space separated)
      */
     virtual AbstractPointsSpace<DensePoint> * parseFile(QTextStream *in) throw (InvalidFileFormat);
+
+private:
+
+    static FullDataReader _instance;
 };
+
+#include "fulldatareader.cpp"
 
 #endif // FULLDATAREADER_H

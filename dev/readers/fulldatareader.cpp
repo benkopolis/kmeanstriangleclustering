@@ -1,6 +1,12 @@
 #include "fulldatareader.h"
+
+#ifndef FULLDATAREADER_CPP
+#define FULLDATAREADER_CPP
+
 #include "spaces/pointsspace.h"
 #include "commons/densepoint.h"
+
+FullDataReader FullDataReader::_instance;
 
 FullDataReader::FullDataReader()
 {
@@ -41,3 +47,5 @@ AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(QTextStream *in) thro
 
     return space;
 }
+
+#endif //FULLDATAREADER_CPP

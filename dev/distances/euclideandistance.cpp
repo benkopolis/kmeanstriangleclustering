@@ -1,4 +1,5 @@
 #include "euclideandistance.h"
+#include <unordered_set>
 
 EuclideanDistance::EuclideanDistance()
 {
@@ -18,7 +19,7 @@ double EuclideanDistance::distance(AbstractPoint *one, AbstractPoint *two)
     return sqrt(result);
 }
 
-double EuclideanDistance::addResultsFromSingleVector(AbstractPoint *one, const std::unordered_set<unsigned>& v, double result)
+double EuclideanDistance::addResultsFromSingleVector(AbstractPoint *one, const std::unordered_set<unsigned> &v, double result)
 {
     for(unsigned i : one->getKeys()) {
         if(v.find(i) == v.end())

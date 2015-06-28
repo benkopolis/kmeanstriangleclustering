@@ -1,6 +1,7 @@
 #include "abstractpoint.h"
 
-AbstractPoint::AbstractPoint(unsigned pid) :
-    pointId(pid)
-{
-}
+//#ifndef ABSTRACTPOINT_CPP
+//#define ABSTRACTPOINT_CPP
+
+
+//#endif // ABSTRACTPOINT_CPP

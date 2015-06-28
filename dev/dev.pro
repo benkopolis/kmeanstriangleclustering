@@ -33,7 +33,9 @@ SOURCES += \
     tfidf/stemmedfileinmemoryparser.cpp \
     triangle/abstractaccountingcontainer.cpp \
     triangle/upperbounds.cpp \
-    exceptions/notdensepoint.cpp
+    exceptions/notdensepoint.cpp \
+    generators/sequencegenerator.cpp \
+    generators/pointgenerator.cpp
 HEADERS += \
     algorithms/abstractalgorithm.h \
     algorithms/kmeansalgorithm.h \
@@ -65,6 +67,8 @@ HEADERS += \
     triangle/abstractaccountingcontainer.h \
     triangle/upperbounds.h \
     models.hpp \
-    exceptions/notdensepoint.h
+    exceptions/notdensepoint.h \
+    generators/sequencegenerator.h \
+    generators/pointgenerator.h
 
 FORMS +=

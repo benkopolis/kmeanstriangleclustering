@@ -20,6 +20,12 @@ public:
      * <integer:dimension ordinate number>:<double:coordinate value>{1,dimensions} \n(white space separated)
      */
     AbstractPointsSpace<SparsePoint> *parseFile(QTextStream *in) throw (InvalidFileFormat);
+
+private:
+
+    static NormalizedFormatDataReader _instance;
 };
+
+#include "normalizedformatdatareader.cpp"
 
 #endif // DEFAULTNORMALIZEDFORMATDATAREADER_H

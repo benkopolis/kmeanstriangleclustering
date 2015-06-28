@@ -12,11 +12,11 @@ public:
 
     virtual ~NormalizedPointsSpace();
 
-    virtual AbstractPoint *operator [] (const unsigned& pid) throw(BadIndex);
-    virtual AbstractPoint const *operator [] (const unsigned& pid) const throw(BadIndex);
+    virtual PtrCAbstractPoint operator [](const unsigned& pid) throw(BadIndex);
+    virtual PtrCAbstractPoint operator [](const unsigned& pid) const throw(BadIndex);
 
     virtual void insertPoint(T *p, unsigned index);
-    virtual const AbstractPoint *getPoint(unsigned index) const;
+    virtual PtrCAbstractPoint getPoint(unsigned index) const;
     virtual bool contains(unsigned index) const;
 
 	virtual void savePointsSpace(QString fileName);
@@ -25,10 +25,13 @@ public:
 
 protected:
 
-    QHash<unsigned, CPtrCAbstractPoint> points__;
+    QHash<unsigned, PtrCAbstractPoint> points__;
 	unsigned int lines__;
 
+private:
 
 };
+
+#include "normalizedpointsspace.cpp"
 
 #endif // NORMALIZEDPOINTSSPACE_H

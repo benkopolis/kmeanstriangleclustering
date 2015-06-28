@@ -4,12 +4,14 @@
 #include "exceptions/badindex.h"
 #include "exceptions/notdensepoint.h"
 #include "exceptions/notsparsepoint.h"
+
+#include <iterator>
 #include <QList>
 
 class AbstractPoint
 {
 protected:
-    AbstractPoint(unsigned pid);
+    AbstractPoint(unsigned int pid) : pointId(pid) {}
 
     unsigned pointId;
 
@@ -41,3 +43,47 @@ typedef AbstractPoint const * const CPtrCAbstractPoint;
 typedef AbstractPoint const * PtrCAbstractPoint;
 
 #endif // ABSTRACTPOINT_H
+
+
+
+//    class const_iterator : public std::iterator<std::input_iterator_tag, double>
+//    {
+//    public:
+
+//        const_iterator() {}
+//        const_iterator(const const_iterator& another) {}
+//        virtual ~const_iterator() {}
+
+//        const_iterator& operator=(const const_iterator& another) {}
+//        bool operator==(const const_iterator& another) const;
+//        bool operator!=(const const_iterator& another) const;
+//        const_iterator& operator++() {}
+
+//        const double & operator*() const;
+//        const double * operator->() const;
+//    };
+
+//    class iterator : public std::iterator<std::output_iterator_tag, double>
+//    {
+//    public:
+
+//        iterator() {}
+//        iterator(const iterator& another) {}
+//        virtual ~iterator() {}
+
+//        iterator& operator=(const iterator& another) {}
+//        bool operator==(const iterator& another) const;
+//        bool operator!=(const iterator& another) const;
+//        iterator& operator++() {}
+
+//        double & operator*() const;
+//        double * operator->() const;
+//    };
+
+//    virtual AbstractPoint::const_iterator begin() const = 0;
+
+//    virtual AbstractPoint::iterator begin() = 0;
+
+//    virtual AbstractPoint::const_iterator end() const = 0;
+
+//    virtual AbstractPoint::iterator end() = 0;

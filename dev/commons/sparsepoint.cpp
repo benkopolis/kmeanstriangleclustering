@@ -8,25 +8,28 @@
 SparsePoint::SparsePoint(unsigned pid) :
     AbstractPoint(pid)
 {
-    this->hash = new QHash<unsigned, double>();
+    this->hash = new std::unordered_map<unsigned, double>();
+    this->keys = new QList<unsigned>();
 }
 
 SparsePoint::~SparsePoint()
 {
     delete this->hash;
     this->hash = 0;
+    delete this->keys;
+    this->keys = 0;
 }
 
 double& SparsePoint::operator [](const unsigned& index) throw(BadIndex)
 {
-    if(!this->hash->contains(index))
+    if(this->hash->find(index) == this->hash->end())
         throw BadIndex();
     return (*this->hash)[index];
 }
 
 double SparsePoint::operator [](const unsigned &index) const throw(BadIndex)
 {
-    if(!this->hash->contains(index))
+    if(this->hash->find(index) == this->hash->end())
         throw BadIndex();
     return (*this->hash)[index];
 }
@@ -38,13 +41,13 @@ unsigned SparsePoint::diff(const AbstractPoint* another) const throw(NotSparsePo
     const SparsePoint* p = dynamic_cast<const SparsePoint*>(another);
     unsigned diff = 0;
     bool itBigger = this->hash->size() > p->hash->size();
-    QList<unsigned> keys = itBigger ?
-                this->hash->keys() : p->hash->keys();
-    QHash<unsigned, double>* local = itBigger ?
+    std::unordered_map<unsigned, double> *bigger = itBigger ?
+                this->hash : p->hash;
+    std::unordered_map<unsigned, double>* local = itBigger ?
                 p->hash : this->hash;
-    for(const unsigned& i: keys)
+    for(auto i: *bigger)
     {
-        if(!local->contains(i))
+        if(local->find(i.first) == local->end())
             ++diff;
     }
     return itBigger ? diff + this->hash->size() - p->hash->size() :
@@ -53,18 +56,18 @@ unsigned SparsePoint::diff(const AbstractPoint* another) const throw(NotSparsePo
 
 void SparsePoint::insert(unsigned key, double value) throw(BadIndex)
 {
-    this->hash->insert(key, value);
+    this->hash->insert({key, value});
+    this->keys->append(key);
 }
 
 const QList<unsigned> SparsePoint::getKeys() const throw()
 {
-    QList<unsigned> list = this->hash->keys();
-    std::sort(list.begin(), list.end(), std::less<unsigned>());
-    return list;
+    std::sort(this->keys->begin(), this->keys->end(), std::less<unsigned>());
+    return *(this->keys);
 }
 
 bool SparsePoint::contains(unsigned pid) const throw()
 {
-    return this->hash->contains(pid);
+    return this->hash->count(pid) > 0;
 }
 

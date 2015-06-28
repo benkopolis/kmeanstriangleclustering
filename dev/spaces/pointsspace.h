@@ -13,11 +13,11 @@ public:
 
     virtual ~PointsSpace();
 
-    virtual AbstractPoint *operator [] (const unsigned& pid) throw(BadIndex);
-    virtual AbstractPoint const *operator [] (const unsigned& pid) const throw(BadIndex);
+    virtual PtrCAbstractPoint operator [] (const unsigned& pid) throw(BadIndex);
+    virtual PtrCAbstractPoint operator [] (const unsigned& pid) const throw(BadIndex);
 
     virtual void insertPoint(T* p, unsigned index);
-    virtual const AbstractPoint *getPoint(unsigned index) const;
+    virtual PtrCAbstractPoint getPoint(unsigned index) const;
     virtual bool contains(unsigned index) const;
 
     virtual void savePointsSpace(QString fileName);
@@ -31,7 +31,9 @@ protected:
     //
     void init_points();
 
-    QHash<unsigned int, CPtrCAbstractPoint> points__;
+    QHash<unsigned int, PtrCAbstractPoint> points__;
 };
+
+#include "pointsspace.cpp"
 
 #endif // POINTSSPACE_H

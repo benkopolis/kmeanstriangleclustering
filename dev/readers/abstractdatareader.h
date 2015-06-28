@@ -26,12 +26,16 @@ public:
     AbstractPointsSpace<T> * readPointSpaceFromFile(QString fileName);
 
     virtual AbstractPointsSpace<T> * parseFile(QTextStream *in) throw (InvalidFileFormat) = 0;
-\
+
 	virtual ~AbstractDataReader() {}
 
 protected:
     AbstractDataReader();
 
+private:
+
 };
+
+#include "abstractdatareader.cpp"
 
 #endif // ABSTRACTDATAREADER_H

@@ -4,6 +4,8 @@
 #include "models.hpp"
 #include "commons/abstractpoint.h"
 #include "commons/utils.h"
+#include "commons/sparsepoint.h"
+#include "commons/densepoint.h"
 
 template<typename T>
 class AbstractPointsSpace : private Utils::Where<T, AbstractPoint>
@@ -12,8 +14,8 @@ public:
 
     virtual ~AbstractPointsSpace() {}
 
-    virtual AbstractPoint *operator [] (const unsigned& pid) throw(BadIndex) = 0;
-    virtual AbstractPoint const *operator [] (const unsigned& pid) const throw(BadIndex) = 0;
+    virtual PtrCAbstractPoint operator [] (const unsigned& pid) throw(BadIndex) = 0;
+    virtual PtrCAbstractPoint operator [] (const unsigned& pid) const throw(BadIndex) = 0;
 
     inline unsigned getNumPoints() const {
 		return num_points__;
@@ -24,7 +26,7 @@ public:
 	}
 
     virtual void insertPoint(T* p, unsigned index) = 0;
-    virtual const AbstractPoint *getPoint(unsigned index) const = 0;
+    virtual PtrCAbstractPoint getPoint(unsigned index) const = 0;
     virtual bool contains(unsigned index) const = 0;
 
 	virtual void savePointsSpace(QString fileName) = 0;
@@ -36,9 +38,12 @@ protected:
 
     AbstractPointsSpace(unsigned num_points, unsigned num_dimensions);
 
-
 	unsigned int num_points__;
 	unsigned int num_dimensions__;
+
+private:
 };
+
+#include "abstractpointsspace.cpp"
 
 #endif // ABSTRACTPOINTSSPACE_H

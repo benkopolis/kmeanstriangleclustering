@@ -1,5 +1,8 @@
 #include "abstractdatareader.h"
 
+#ifndef ABSTRACTDATAREADER_CPP
+#define ABSTRACTDATAREADER_CPP
+
 template<typename T>
 AbstractDataReader<T>::AbstractDataReader()
 {
@@ -20,3 +23,5 @@ AbstractPointsSpace<T> *AbstractDataReader<T>::readPointSpaceFromFile(QString fi
     }
     return parseFile(in);
 }
+
+#endif //ABSTRACTDATAREADER_CPP

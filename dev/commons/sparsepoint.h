@@ -1,19 +1,19 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <QVector>
-#include <QHash>
 #include "abstractpoint.h"
 #include "exceptions/badindex.h"
 #include "exceptions/notsparsepoint.h"
+
+#include <unordered_map>
 
 class SparsePoint : public AbstractPoint
 {
 public:
 
     friend std::ostream& operator <<(std::ostream& os, SparsePoint & dp) {
-        for(const unsigned i : dp.hash->keys()) {
-            os << i << ':' << (*dp.hash)[i] << ',';
+        for(auto i : *dp.hash) {
+            os << i.first << ':' << i.second << ',';
         }
         os << std::endl;
         return os;
@@ -33,7 +33,8 @@ public:
 
 private:
 
-    QHash<unsigned, double> * hash;
+    std::unordered_map<unsigned, double> * hash;
+    QList<unsigned> * keys;
 };
 
 Q_DECLARE_TYPEINFO(SparsePoint, Q_MOVABLE_TYPE);

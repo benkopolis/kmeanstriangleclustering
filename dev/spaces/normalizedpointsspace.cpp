@@ -1,5 +1,8 @@
 #include "normalizedpointsspace.h"
 
+#ifndef NORMALIZEDPOINTSPACE_CPP
+#define NORMALIZEDPOINTSPACE_CPP
+
 template<typename T>
 NormalizedPointsSpace<T>::NormalizedPointsSpace(unsigned num_points, unsigned num_dimensions) :
     AbstractPointsSpace<T>(num_points, num_dimensions)
@@ -31,7 +34,7 @@ NormalizedPointsSpace<T>::~NormalizedPointsSpace()
 }
 
 template<typename T>
-AbstractPoint *NormalizedPointsSpace<T>::operator [](const unsigned &pid) throw(BadIndex)
+PtrCAbstractPoint NormalizedPointsSpace<T>::operator [](const unsigned &pid) throw(BadIndex)
 {
     if(!this->points__.contains(pid))
         throw BadIndex();
@@ -39,7 +42,7 @@ AbstractPoint *NormalizedPointsSpace<T>::operator [](const unsigned &pid) throw(
 }
 
 template<typename T>
-const AbstractPoint *NormalizedPointsSpace<T>::operator [](const unsigned &pid) const throw(BadIndex)
+PtrCAbstractPoint NormalizedPointsSpace<T>::operator [](const unsigned &pid) const throw(BadIndex)
 {
     if(!this->points__.contains(pid))
         throw BadIndex();
@@ -53,9 +56,9 @@ void NormalizedPointsSpace<T>::insertPoint(T *p, unsigned index)
 }
 
 template<typename T>
-const AbstractPoint *NormalizedPointsSpace<T>::getPoint(unsigned index) const
+PtrCAbstractPoint NormalizedPointsSpace<T>::getPoint(unsigned index) const
 {
-    return *points__.value(index);
+    return points__.value(index);
 }
 
 template<typename T>
@@ -117,3 +120,5 @@ QList<unsigned> NormalizedPointsSpace<T>::getPointIds() const
 {
 	return points__.keys();
 }
+
+#endif //NORMALIZEDPOINTSPACE_CPP

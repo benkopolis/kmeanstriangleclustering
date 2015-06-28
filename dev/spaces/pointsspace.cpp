@@ -1,5 +1,8 @@
 #include "pointsspace.h"
 
+#ifndef POINTSPACE_CPP
+#define POINTSPACE_CPP
+
 template<typename T>
 PointsSpace<T>::PointsSpace(unsigned num_points, unsigned num_dimensions) :
     AbstractPointsSpace<T>(num_points, num_dimensions)
@@ -17,7 +20,7 @@ PointsSpace<T>::PointsSpace(const PointsSpace& another) :
         const T& src = another.getPoint(i);
         for(unsigned int j=0; j < this->num_dimensions__; ++j)
             point->insert(j, src.value(j));
-        points__.insert(i, dynamic_cast<AbstractPoint*>(point));
+        points__.insert(i, dynamic_cast<PtrCAbstractPoint>(point));
     }
 }
 
@@ -32,7 +35,7 @@ PointsSpace<T>::~PointsSpace()
 }
 
 template<typename T>
-AbstractPoint *PointsSpace<T>::operator [](const unsigned &pid) throw(BadIndex)
+PtrCAbstractPoint PointsSpace<T>::operator [](const unsigned &pid) throw(BadIndex)
 {
     if(!this->points__.contains(pid))
         throw BadIndex();
@@ -40,7 +43,7 @@ AbstractPoint *PointsSpace<T>::operator [](const unsigned &pid) throw(BadIndex)
 }
 
 template<typename T>
-const AbstractPoint *PointsSpace<T>::operator [](const unsigned &pid) const throw(BadIndex)
+PtrCAbstractPoint PointsSpace<T>::operator [](const unsigned &pid) const throw(BadIndex)
 {
     if(!this->points__.contains(pid))
         throw BadIndex();
@@ -55,7 +58,7 @@ void PointsSpace<T>::insertPoint(T *p, unsigned index)
 }
 
 template<typename T>
-const AbstractPoint *PointsSpace<T>::getPoint(unsigned index) const
+PtrCAbstractPoint PointsSpace<T>::getPoint(unsigned index) const
 {
     return points__.value(index);
 }
@@ -80,7 +83,7 @@ void PointsSpace<T>::init_points() {
         for (Dimensions d = 0; d < this->num_dimensions__; d++) {
             p->insert(d, (double)(rand() % 10)/10.0);
 		}
-        points__.insert(i, dynamic_cast<AbstractPoint*>(p));
+        points__.insert(i, dynamic_cast<PtrCAbstractPoint>(p));
 
 		//std::cout << "pid[" << i << "]= (" << p << ")" << std::endl;
 	}
@@ -94,10 +97,10 @@ void PointsSpace<T>::savePointsSpace(QString fileName)
 		return;
 	QTextStream out(&file);
     out << this->num_points__ << " " << this->num_dimensions__ << endl;
-    foreach(Point* p, points__)
+    for(PtrCAbstractPoint p : points__.values())
 	{
-        foreach(Coord c, *p)
-            out << c << ' ';
+        for(unsigned i : p->getKeys())
+            out << (*p)[i] << ' ';
 		out << endl;
 	}
     file.close();
@@ -115,13 +118,15 @@ void PointsSpace<T>::loadPointsSpace(QString fileName)
     for(unsigned int i=0; i<this->num_points__; ++i)
 	{
 		Coord tmp =0;
-        T* point = new T();
+        T* point = new T(i);
         for(unsigned int j=0; j<this->num_dimensions__; ++j)
 		{
 			in >> tmp;
             point->insert(j, tmp);
 		}
-        points__.insert(i, dynamic_cast<AbstractPoint*>(point));
+        points__.insert(i, dynamic_cast<PtrCAbstractPoint>(point));
 	}
     file.close();
 }
+
+#endif //POINTSPACE_CPP

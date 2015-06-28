@@ -1,10 +1,15 @@
+#include "spaces/normalizedpointsspace.h"
+
+#ifndef NORMALIZEDFORMATDATAREADER_CPP
+#define NORMALIZEDFORMATDATAREADER_CPP
+
 #include "normalizedformatdatareader.h"
 #include "commons/sparsepoint.h"
 
 #include <QTextStream>
 #include <QFile>
 
-#include "spaces/normalizedpointsspace.h"
+NormalizedFormatDataReader NormalizedFormatDataReader::_instance;
 
 NormalizedFormatDataReader::NormalizedFormatDataReader()
 {
@@ -40,3 +45,5 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(QTextSt
 
     return space;
 }
+
+#endif //NORMALIZEDFORMATDATAREADER_CPP
