@@ -142,17 +142,17 @@ int main(int argc, char *argv[])
     QTime time = QTime::currentTime();
     qsrand((uint)time.msec());
 //    testArgs();
-    testClustering();
+//    testClustering();
     if(argc < 2)
         man();
     else if(!qstrcmp(argv[1], "-tfidf"))
         createTfIdfFile(argc, argv);
-    else if(!qstrcmp(argv[1], "-res"))
-        generateResults(argc, argv);
-    else if(!qstrcmp(argv[1], "-mse"))
-        countMeanSquareErrorFromResultFile(argc, argv);
-    else if(!qstrcmp(argv[1], "-cmp"))
-        comapareDifferentKmeans(argc, argv);
+//    else if(!qstrcmp(argv[1], "-res"))
+//        generateResults(argc, argv);
+//    else if(!qstrcmp(argv[1], "-mse"))
+//        countMeanSquareErrorFromResultFile(argc, argv);
+//    else if(!qstrcmp(argv[1], "-cmp"))
+//        comapareDifferentKmeans(argc, argv);
     else
         man();
     m_globalLogger->flush();
