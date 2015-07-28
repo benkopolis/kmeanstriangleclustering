@@ -12,7 +12,9 @@ public:
 
     T* operator ()();
 
-    static unsigned GENERATED_DIMENSIONS;
+protected:
+
+    virtual void generateData(AbstractPoint* point) const throw() = 0;
 
 private:
 

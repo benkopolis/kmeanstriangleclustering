@@ -7,9 +7,14 @@ class BadIndex : public std::exception
 {
 public:
     BadIndex();
-    virtual ~BadIndex() throw();
+    BadIndex(const char* msg);
+    virtual ~BadIndex() throw() {}
 
     virtual const char* what() const throw();
+
+private:
+
+    const char* message;
 };
 
 #endif // BADINDEX_H

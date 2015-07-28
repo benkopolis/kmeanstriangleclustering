@@ -25,11 +25,12 @@ public:
     virtual double& operator [] (const unsigned& index) throw(BadIndex);
     virtual double operator [] (const unsigned& index) const throw(BadIndex);
 
-    virtual unsigned diff(const AbstractPoint* another) const throw(NotSparsePoint, NotDensePoint);
+    virtual unsigned diff(const AbstractPoint* another, bool exact) const throw(NotSparsePoint, NotDensePoint);
     virtual void insert(unsigned key, double value) throw(BadIndex);
     inline virtual unsigned size() const throw() { return this->hash->size(); }
-    inline virtual const QList<unsigned> getKeys() const throw();
     virtual bool contains(unsigned pid) const throw();
+
+    inline virtual const QList<unsigned> getKeys() const throw(DimensionsNotSet);
 
 private:
 

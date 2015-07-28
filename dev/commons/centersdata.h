@@ -9,7 +9,7 @@
 class CentersData
 {
 public:
-    CentersData(unsigned nClusters, unsigned nDims);
+    CentersData(unsigned nClusters);
 
     static CentersData* countCenters(PartitionData* data);
 

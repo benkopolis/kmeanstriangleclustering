@@ -4,6 +4,7 @@
 #include "exceptions/badindex.h"
 #include "exceptions/notdensepoint.h"
 #include "exceptions/notsparsepoint.h"
+#include "exceptions/dimensionsnotset.h"
 
 #include <iterator>
 #include <QList>
@@ -11,16 +12,18 @@
 class AbstractPoint
 {
 protected:
-    AbstractPoint(unsigned int pid) : pointId(pid) {}
+    AbstractPoint(unsigned pid) : pointId(pid) {}
 
     unsigned pointId;
 
 public:
 
+    inline unsigned getPointId() { return this->pointId; }
+
     virtual double& operator [] (const unsigned& index) throw(BadIndex) = 0;
     virtual double operator [] (const unsigned& index) const throw(BadIndex) = 0;
 
-    virtual unsigned diff(const AbstractPoint* another) const throw(NotSparsePoint, NotDensePoint) = 0;
+    virtual unsigned diff(const AbstractPoint* another, bool exact) const throw(NotSparsePoint, NotDensePoint) = 0;
     virtual void insert(unsigned key, double value) throw(BadIndex) = 0;
     virtual unsigned size() const throw() = 0;
     virtual bool contains(unsigned pid) const throw() = 0;
@@ -33,7 +36,7 @@ public:
      *
      * The list is always sorted! From smaller to bigger.
      */
-    virtual const QList<unsigned> getKeys() const throw() = 0;
+    virtual const QList<unsigned> getKeys() const throw(DimensionsNotSet) = 0;
 };
 
 Q_DECLARE_TYPEINFO(AbstractPoint, Q_MOVABLE_TYPE);

@@ -1,7 +1,8 @@
 #ifndef STEMMEDFILEINMEMORYPARSER_H
 #define STEMMEDFILEINMEMORYPARSER_H
 
-#include <QHash>
+#include <unordered_map>
+#include <list>
 #include <QString>
 
 class StemmedFileInMemoryParser
@@ -13,11 +14,9 @@ public:
 
     bool fillWithData(QString fileName);
 
-    bool countTfidfAndStoreInFile(QString fileName);
+    void countTfidf();
 
-    bool countKeyWordsTfidfAndStoreInFile(QString fileName);
-
-
+    bool storeTfidfInFile(QString fileName);
 
 protected:
 
@@ -26,12 +25,18 @@ protected:
     double idf(uint word);
 
     unsigned int _nextCoord;
-    QHash<uint, unsigned int> _wordsToCoords;
-    QHash<unsigned int, uint> _coordsToWords;
-    QHash<uint, unsigned int> _globalWordsCount;
-    QHash<unsigned int, unsigned int> _docsLens;
-    QHash<uint, unsigned int> _numberOfDocumentsWithGivenWords;
-    QHash<unsigned int, QHash<uint, unsigned int>* > _wordsCountPerDocument;
+    double minimalValue;
+    double quant;
+    std::unordered_map<uint, unsigned int> _wordsToCoords;
+    std::unordered_map<unsigned int, uint> _coordsToWords;
+    std::unordered_map<uint, unsigned int> _globalWordsCount;
+    std::unordered_map<unsigned int, unsigned int> _docsLens;
+    std::unordered_map<uint, unsigned int> _numberOfDocumentsWithGivenWords;
+    std::unordered_map<unsigned int, std::unordered_map<uint, unsigned int>* > _wordsCountPerDocument;
+    std::list<std::unordered_map<unsigned, double>*> tfIdfResults;
+
+    static double MinimalValueLowerBound;
+
 };
 
 #endif // STEMMEDFILEINMEMORYPARSER_H

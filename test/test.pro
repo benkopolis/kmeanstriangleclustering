@@ -12,7 +12,6 @@ HEADERS += \
     commons/densepointut.h \
     commons/partitiondataut.h \
     commons/sparsepointut.h \
-    commons/utilsut.h \
     distances/cosinedistanceut.h \
     distances/euclideandistanceut.h \
     distances/hamiltondistanceut.h \
@@ -23,10 +22,7 @@ HEADERS += \
 SOURCES += \
     algorithms/kmeansalgorithmut.cpp \
     commons/centersdataut.cpp \
-    commons/densepointut.cpp \
     commons/partitiondataut.cpp \
-    commons/sparsepointut.cpp \
-    commons/utilsut.cpp \
     distances/cosinedistanceut.cpp \
     distances/euclideandistanceut.cpp \
     distances/hamiltondistanceut.cpp \

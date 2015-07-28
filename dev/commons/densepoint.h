@@ -3,8 +3,10 @@
 
 #include "abstractpoint.h"
 #include "exceptions/badindex.h"
+#include "exceptions/dimensionsnotset.h"
 #include <vector>
 #include <iostream>
+#include <future>
 #include <thread>
 #include <mutex>
 
@@ -23,35 +25,35 @@ public:
         return os;
     }
 
-    DensePoint(unsigned pid);
-    DensePoint(unsigned pid, unsigned nDims);
+    DensePoint(unsigned pid) throw(DimensionsNotSet);
+    DensePoint(unsigned pid, unsigned nDims) throw(DimensionsNotSet, BadIndex);
     virtual ~DensePoint();
 
     virtual double& operator [] (const unsigned& index) throw(BadIndex);
     virtual double operator [] (const unsigned& index) const throw(BadIndex);
 
-    virtual unsigned diff(const AbstractPoint* another) const throw(NotSparsePoint, NotDensePoint);
+    virtual unsigned diff(const AbstractPoint* another, bool exact) const throw(NotSparsePoint, NotDensePoint);
 
     virtual void insert(unsigned key, double value) throw(BadIndex);
 
     inline virtual unsigned size() const throw() { return this->vector->size(); }
 
-    inline virtual const QList<unsigned> getKeys() const throw();
+    inline virtual const QList<unsigned> getKeys() const throw(DimensionsNotSet);
 
     virtual bool contains(unsigned pid) const throw();
 
-    static void InitializeKeys(unsigned dimensions);
+    static void InitializeKeys(unsigned numD);
 
 private:
 
     std::vector<double>* vector;
 
-    static volatile unsigned dimensions;
-    static volatile QList<unsigned> KEYS;
+    static unsigned dimensions;
+    static std::future<QList<unsigned>*> KEYS;
     static std::thread *keys_initializer;
-    static std::mutex mutex;
+    static bool initialized;
 
-    static void initKeys();
+    static QList<unsigned> *initKeys();
 };
 
 Q_DECLARE_TYPEINFO(DensePoint, Q_MOVABLE_TYPE);

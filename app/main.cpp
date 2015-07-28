@@ -1,5 +1,8 @@
 #include "main.hpp"
 #include "commons/sparsepoint.h"
+#include "mainwindow.h"
+
+#include <QApplication>
 
 QTextStream* m_globalLogger = 0;
 
@@ -48,10 +51,12 @@ void createTfIdfFile(int argc, char *argv[])
     QElapsedTimer e1timer;
     e1timer.start();
     parser.fillWithData(argv[2]);
-    parser.countTfidfAndStoreInFile(argv[3]);
+    parser.countTfidf();
+    parser.storeTfidfInFile(argv[3]);
     QString kwFile(argv[3]);
     kwFile = kwFile.replace("tfidf", "tfidfKW");
-    parser.countKeyWordsTfidfAndStoreInFile(kwFile);
+    parser.countTfidf();
+    parser.storeTfidfInFile(kwFile);
     out << "Elapsed: " << e1timer.elapsed() << endl;
 }
 
@@ -131,33 +136,41 @@ void man()
         << "\t for generating mean square error base on tfidf file and results of clustering tfidf vectors from this file." << endl;
 }
 
-int main(int argc, char *argv[])
-{
-    QFile file("logs/full.log");
-    bool globalLogFileOpened = file.open(QFile::WriteOnly);
-    if(globalLogFileOpened)
-        m_globalLogger = new QTextStream(&file);
-    else
-        m_globalLogger = new QTextStream(stderr);
-    QTime time = QTime::currentTime();
-    qsrand((uint)time.msec());
-//    testArgs();
-//    testClustering();
-    if(argc < 2)
-        man();
-    else if(!qstrcmp(argv[1], "-tfidf"))
-        createTfIdfFile(argc, argv);
-//    else if(!qstrcmp(argv[1], "-res"))
-//        generateResults(argc, argv);
-//    else if(!qstrcmp(argv[1], "-mse"))
-//        countMeanSquareErrorFromResultFile(argc, argv);
-//    else if(!qstrcmp(argv[1], "-cmp"))
-//        comapareDifferentKmeans(argc, argv);
-    else
-        man();
-    m_globalLogger->flush();
-    delete m_globalLogger;
-    file.close();
-	return EXIT_SUCCESS;
+//int main(int argc, char *argv[])
+//{
+//    QFile file("logs/full.log");
+//    bool globalLogFileOpened = file.open(QFile::WriteOnly);
+//    if(globalLogFileOpened)
+//        m_globalLogger = new QTextStream(&file);
+//    else
+//        m_globalLogger = new QTextStream(stderr);
+//    QTime time = QTime::currentTime();
+//    qsrand((uint)time.msec());
+////    testArgs();
+////    testClustering();
+//    if(argc < 2)
+//        man();
+//    else if(!qstrcmp(argv[1], "-tfidf"))
+//        createTfIdfFile(argc, argv);
+////    else if(!qstrcmp(argv[1], "-res"))
+////        generateResults(argc, argv);
+////    else if(!qstrcmp(argv[1], "-mse"))
+////        countMeanSquareErrorFromResultFile(argc, argv);
+////    else if(!qstrcmp(argv[1], "-cmp"))
+////        comapareDifferentKmeans(argc, argv);
+//    else
+//        man();
+//    m_globalLogger->flush();
+//    delete m_globalLogger;
+//    file.close();
+//	return EXIT_SUCCESS;
 
+//}
+
+int main(int argc, char **argv)
+{
+    QApplication a(argc, argv);
+    MainWindow mainWindow;
+    mainWindow.show();
+    return a.exec();
 }

@@ -1,19 +1,27 @@
 #include "densepoint.h"
+#include <typeinfo>
+#include <typeindex>
 
-volatile unsigned DensePoint::dimensions = 0;
-volatile QList<unsigned> DensePoint::KEYS;
+unsigned DensePoint::dimensions = 0;
+std::future<QList<unsigned>*> DensePoint::KEYS;
 std::thread *DensePoint::keys_initializer = 0;
-std::mutex DensePoint::mutex;
+bool DensePoint::initialized = false;
 
-DensePoint::DensePoint(unsigned pid) :
+DensePoint::DensePoint(unsigned pid) throw(DimensionsNotSet) :
     AbstractPoint(pid)
 {
-    this->vector = new std::vector<double>();
+    if(dimensions == 0)
+        throw DimensionsNotSet();
+    this->vector = new std::vector<double>(dimensions);
 }
 
-DensePoint::DensePoint(unsigned pid, unsigned nDims) :
-    AbstractPoint(0)
+DensePoint::DensePoint(unsigned pid, unsigned nDims) throw(DimensionsNotSet, BadIndex) :
+    AbstractPoint(pid)
 {
+    if(dimensions == 0)
+        throw DimensionsNotSet();
+    if(nDims != dimensions)
+        throw BadIndex("You're trying to create DensePoint with different dimensions then set globally");
     this->vector = new std::vector<double>(nDims);
 }
 
@@ -37,27 +45,43 @@ double DensePoint::operator [](const unsigned &index) const throw(BadIndex)
     return (*this->vector)[index];
 }
 
-unsigned DensePoint::diff(const AbstractPoint *another) const throw(NotSparsePoint, NotDensePoint)
+unsigned DensePoint::diff(const AbstractPoint *another, bool exact = false) const throw(NotSparsePoint, NotDensePoint)
 {
-    return 0;
+    if(!exact)
+        return 0;
+
+    if(another == 0 || std::type_index(typeid(*another)) != std::type_index(typeid(DensePoint)))
+        throw NotDensePoint();
+
+    unsigned difference = 0;
+    for(int i = 0; i < this->vector->size(); ++i)
+    {
+        if(this->vector->at(i) != (*another)[i])
+            ++difference;
+    }
+    return difference;
 }
 
 void DensePoint::insert(unsigned key, double value) throw(BadIndex)
 {
-    if(key != this->vector->size()) // insert must be called for every key from 0 to max
-        throw BadIndex();
-    this->vector->push_back(value);
+    if(key != this->vector->size() && this->vector->size() < dimensions) // insert must be called for every key from 0 to max
+        throw BadIndex("Dimension was skipped while inserting values into DensPoint.");
+    if(key >= dimensions)
+        throw BadIndex("Given key to insert coordinate value exceeds DensePoint:dimensions.");
+    if(this->vector->size() < dimensions)
+        this->vector->push_back(value);
+    else if(key < this->vector->size())
+        (*this->vector)[key] = value;
+    else
+        throw BadIndex("This is not supported way of inserting a value for given index.");
 }
 
-const QList<unsigned> DensePoint::getKeys() const throw()
+const QList<unsigned> DensePoint::getKeys() const throw(DimensionsNotSet)
 {
-    if(DensePoint::keys_initializer != 0 &&
-            DensePoint::keys_initializer->joinable())
-    {
-        DensePoint::keys_initializer->join();
-        delete DensePoint::keys_initializer;
-    }
-    return *((QList<unsigned>*)&DensePoint::KEYS);
+    if(!initialized)
+        throw new DimensionsNotSet("GetKeys can't be called before initilizing all keys!");
+    KEYS.wait();
+    return *KEYS.get();
 }
 
 bool DensePoint::contains(unsigned pid) const throw()
@@ -65,18 +89,21 @@ bool DensePoint::contains(unsigned pid) const throw()
     return this->vector->size() > pid;
 }
 
-void DensePoint::InitializeKeys(unsigned dimensions)
+void DensePoint::InitializeKeys(unsigned numD)
 {
-    mutex.lock();
-    DensePoint::keys_initializer = new std::thread(DensePoint::initKeys);
-    mutex.unlock();
+    dimensions = numD;
+    initialized = true;
+    KEYS = std::async(std::launch::async, initKeys);
 }
 
-void DensePoint::initKeys()
+QList<unsigned>* DensePoint::initKeys()
 {
-    for(unsigned i = 0; i < DensePoint::dimensions; ++i)
+    QList<unsigned>* result = new QList<unsigned>();
+    for(unsigned i = 0; i < dimensions; ++i)
     {
-        ((QList<unsigned>*)&DensePoint::KEYS)->append(i);
+        result->append(i);
     }
+
+    return result;
 }
 

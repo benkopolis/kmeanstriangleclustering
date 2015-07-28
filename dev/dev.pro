@@ -35,7 +35,11 @@ SOURCES += \
     triangle/upperbounds.cpp \
     exceptions/notdensepoint.cpp \
     generators/sequencegenerator.cpp \
-    generators/pointgenerator.cpp
+    generators/pointgenerator.cpp \
+    exceptions/dimensionsnotset.cpp \
+    generators/sparsepointgenerator.cpp \
+    commons/globals.cpp \
+    generators/densepointgenerator.cpp
 HEADERS += \
     algorithms/abstractalgorithm.h \
     algorithms/kmeansalgorithm.h \
@@ -69,6 +73,10 @@ HEADERS += \
     models.hpp \
     exceptions/notdensepoint.h \
     generators/sequencegenerator.h \
-    generators/pointgenerator.h
+    generators/pointgenerator.h \
+    exceptions/dimensionsnotset.h \
+    generators/sparsepointgenerator.h \
+    commons/globals.h \
+    generators/densepointgenerator.h
 
 FORMS +=

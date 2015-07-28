@@ -34,24 +34,28 @@ double SparsePoint::operator [](const unsigned &index) const throw(BadIndex)
     return (*this->hash)[index];
 }
 
-unsigned SparsePoint::diff(const AbstractPoint* another) const throw(NotSparsePoint, NotDensePoint)
+unsigned SparsePoint::diff(const AbstractPoint* another, bool exact = false) const throw(NotSparsePoint, NotDensePoint)
 {
-    if(std::type_index(typeid(*another)) != std::type_index(typeid(SparsePoint)))
+    if(another == 0 || std::type_index(typeid(*another)) != std::type_index(typeid(SparsePoint)))
         throw NotSparsePoint();
     const SparsePoint* p = dynamic_cast<const SparsePoint*>(another);
-    unsigned diff = 0;
+    unsigned difference = 0;
     bool itBigger = this->hash->size() > p->hash->size();
     std::unordered_map<unsigned, double> *bigger = itBigger ?
                 this->hash : p->hash;
     std::unordered_map<unsigned, double>* local = itBigger ?
                 p->hash : this->hash;
+    typename std::unordered_map<unsigned, double>::const_iterator foundValue;
     for(auto i: *bigger)
     {
-        if(local->find(i.first) == local->end())
-            ++diff;
+        if((foundValue = local->find(i.first)) == local->end())
+            ++difference;
+        else if(exact && foundValue->second != i.second)
+            ++difference;
     }
-    return itBigger ? diff + this->hash->size() - p->hash->size() :
-                      diff + p->hash->size() - this->hash->size();
+
+    return itBigger ? difference + this->hash->size() - p->hash->size() :
+                      difference + p->hash->size() - this->hash->size();
 }
 
 void SparsePoint::insert(unsigned key, double value) throw(BadIndex)
@@ -60,7 +64,7 @@ void SparsePoint::insert(unsigned key, double value) throw(BadIndex)
     this->keys->append(key);
 }
 
-const QList<unsigned> SparsePoint::getKeys() const throw()
+const QList<unsigned> SparsePoint::getKeys() const throw(DimensionsNotSet)
 {
     std::sort(this->keys->begin(), this->keys->end(), std::less<unsigned>());
     return *(this->keys);

@@ -1,15 +1,14 @@
 #include "badindex.h"
 
-BadIndex::BadIndex()
+BadIndex::BadIndex() : message("Given index is out of range")
 {
 }
 
-BadIndex::~BadIndex() throw()
+BadIndex::BadIndex(const char * msg) : message(msg)
 {
-
 }
 
 const char *BadIndex::what() const throw()
 {
-    return "Given index is out of range";
+    return this->message;
 }
