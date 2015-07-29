@@ -1,4 +1,4 @@
-#include <QList>
+#include <list>
 #include <typeinfo>
 #include <algorithm>
 #include <functional>
@@ -9,7 +9,7 @@ SparsePoint::SparsePoint(unsigned pid) :
     AbstractPoint(pid)
 {
     this->hash = new std::unordered_map<unsigned, double>();
-    this->keys = new QList<unsigned>();
+    this->keys = new std::list<unsigned>();
 }
 
 SparsePoint::~SparsePoint()
@@ -61,12 +61,12 @@ unsigned SparsePoint::diff(const AbstractPoint* another, bool exact = false) con
 void SparsePoint::insert(unsigned key, double value) throw(BadIndex)
 {
     this->hash->insert({key, value});
-    this->keys->append(key);
+    this->keys->push_back(key);
 }
 
-const QList<unsigned> SparsePoint::getKeys() const throw(DimensionsNotSet)
+const std::list<unsigned>& SparsePoint::getKeys() const throw(DimensionsNotSet)
 {
-    std::sort(this->keys->begin(), this->keys->end(), std::less<unsigned>());
+    this->keys->sort(std::less<unsigned>());
     return *(this->keys);
 }
 

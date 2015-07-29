@@ -3,6 +3,11 @@
 #ifndef NORMALIZEDPOINTSPACE_CPP
 #define NORMALIZEDPOINTSPACE_CPP
 
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+
 template<typename T>
 NormalizedPointsSpace<T>::NormalizedPointsSpace(unsigned num_points, unsigned num_dimensions) :
     AbstractPointsSpace<T>(num_points, num_dimensions)
@@ -18,25 +23,25 @@ NormalizedPointsSpace<T>::NormalizedPointsSpace(const NormalizedPointsSpace& ano
         T* point = new T(i);
         const T* src = another.getPoint(i);
         for(unsigned int j=0; j<this->num_dimensions__; ++j)
-            point->insert(j, src.value(j));
-        points__.insert(i, dynamic_cast<AbstractPoint*>(point));
+            point->insert({j, src.value(j)});
+        points__.insert({i, dynamic_cast<AbstractPoint*>(point)});
     }
 }
 
 template<typename T>
 NormalizedPointsSpace<T>::~NormalizedPointsSpace()
 {
-    foreach(PointId index, points__.keys())
+    for(auto pair : points__)
     {
-        delete points__[index];
-        points__[index] = 0;
+        delete points__[pair.first];
+        points__[pair.first] = 0;
     }
 }
 
 template<typename T>
 PtrCAbstractPoint NormalizedPointsSpace<T>::operator [](const unsigned &pid) throw(BadIndex)
 {
-    if(!this->points__.contains(pid))
+    if(this->points__.count(pid) == 0)
         throw BadIndex();
     return this->points__[pid];
 }
@@ -44,81 +49,75 @@ PtrCAbstractPoint NormalizedPointsSpace<T>::operator [](const unsigned &pid) thr
 template<typename T>
 PtrCAbstractPoint NormalizedPointsSpace<T>::operator [](const unsigned &pid) const throw(BadIndex)
 {
-    if(!this->points__.contains(pid))
+    if(!this->points__.count(pid) == 0)
         throw BadIndex();
-    return this->points__[pid];
+    return this->points__.at(pid);
 }
 
 template<typename T>
 void NormalizedPointsSpace<T>::insertPoint(T *p, unsigned index)
 {
-	points__.insert(index, p);
+    points__.insert({index, p});
 }
 
 template<typename T>
 PtrCAbstractPoint NormalizedPointsSpace<T>::getPoint(unsigned index) const
 {
-    return points__.value(index);
+    return this->points__.at(index);
 }
 
 template<typename T>
 bool NormalizedPointsSpace<T>::contains(unsigned index) const
 {
-	return points__.contains(index);
+    return points__.count(index) > 0;
 }
 
 template<typename T>
-void NormalizedPointsSpace<T>::savePointsSpace(QString fileName)
+void NormalizedPointsSpace<T>::savePointsSpace(const char* fileName)
 {
-	QFile file(fileName);
-	if(!file.open(QFile::WriteOnly))
+    std::ofstream out(fileName, std::ios::out | std::ios::trunc);
+    if(!out.is_open())
 		return;
-	QTextStream out(&file);
-    out << this->num_points__ << ' ' << this->num_dimensions__ << ' ' << endl;
-	foreach(PointId key, points__.keys())
+    out << this->num_points__ << ' ' << this->num_dimensions__ << ' ' << std::endl;
+    for(auto point : this->points__)
 	{
-        for(unsigned dim : points__[key]->getKeys())
-            out << dim << ':' << (*points__[key])[dim] << endl;
+        for(unsigned dim : points__[point.first]->getKeys())
+            out << dim << ':' << (*points__[point.first])[dim] << std::endl;
 	}
+
 	out.flush();
-	file.close();
+    out.close();
 }
 
 template<typename T>
-void NormalizedPointsSpace<T>::loadPointsSpace(QString fileName)
+void NormalizedPointsSpace<T>::loadPointsSpace(const char* fileName)
 {
-	QFile file(fileName);
-	if(!file.open(QFile::ReadOnly))
+    std::ifstream in(fileName);
+    if(!in.is_open())
 		return;
-	QTextStream in(&file);
-    int points=0, dimensions=0;
-    in >> points >> dimensions;
-	this->num_points__ = points;
-	this->num_dimensions__ = dimensions;
-    this->lines__ = points;
+    in >> this->num_points__ >> this->num_dimensions__ >> this->quant;
+    this->lines__ = this->num_points__;
     int counter = 0, coordId=0, pointId=0;
 	Coord tmp;
 	in >> pointId;
     char separator;
-    while(!in.atEnd())
+    while(!in.eof())
 	{
         T* point = new T(counter);
-        QString line = in.readLine();
-        QTextStream inner(&line);
-        while(!inner.atEnd())
+        std::string line;
+        std::getline(in, line);
+        std::stringstream inner(std::ios::in);
+        inner.str(line);
+        inner.seekg(0, std::ios_base::beg);
+        while(!inner.eof())
 		{
             inner >> coordId >> separator >> tmp;
             point->insert(coordId, tmp);
 		}
-        points__.insert(counter++, dynamic_cast<AbstractPoint*>(point));
+        points__.insert({counter, dynamic_cast<AbstractPoint*>(point)});
 	}
-	file.close();
+    in.close();
 }
 
-template<typename T>
-QList<unsigned> NormalizedPointsSpace<T>::getPointIds() const
-{
-	return points__.keys();
-}
 
 #endif //NORMALIZEDPOINTSPACE_CPP

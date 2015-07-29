@@ -3,6 +3,7 @@
 
 #include "commons/abstractpoint.h"
 #include <unordered_set>
+#include <algorithm>
 
 class AbstractDistance
 {

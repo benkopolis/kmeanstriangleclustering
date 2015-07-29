@@ -31,10 +31,6 @@ void MainWindow::on_btnCountTFIDF_clicked()
                 this,
                 "Please choose or create a file to save results of TFIDF processing",
                 "/home/zby/MAGISTERKA/kmeanstriangleclustering/data");
-    StemmedFileProcessingDialog *dialog = new StemmedFileProcessingDialog(
-                fileToProcess,
-                fileToStore,
-                this);
-    dialog->show();
-    dialog->processFiles();
+    StemmedFileProcessingDialog *dialog = new StemmedFileProcessingDialog(this);
+    dialog->processFiles(fileToProcess, fileToStore);
 }

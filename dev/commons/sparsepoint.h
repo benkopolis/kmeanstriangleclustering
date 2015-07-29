@@ -30,14 +30,12 @@ public:
     inline virtual unsigned size() const throw() { return this->hash->size(); }
     virtual bool contains(unsigned pid) const throw();
 
-    inline virtual const QList<unsigned> getKeys() const throw(DimensionsNotSet);
+    inline virtual const std::list<unsigned> &getKeys() const throw(DimensionsNotSet);
 
 private:
 
     std::unordered_map<unsigned, double> * hash;
-    QList<unsigned> * keys;
+    std::list<unsigned> * keys;
 };
-
-Q_DECLARE_TYPEINFO(SparsePoint, Q_MOVABLE_TYPE);
 
 #endif // VECTOR_H

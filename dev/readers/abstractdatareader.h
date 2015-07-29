@@ -8,6 +8,8 @@
 #include "spaces/abstractpointsspace.h"
 #include "exceptions/invalidfileformat.h"
 
+#include <fstream>
+
 /**
  * @brief The abstract AbstractDataReader class
  */
@@ -23,9 +25,9 @@ public:
      * @param container - the points' space object.
      * @return The points' space filled with points read from the opened file.
      */
-    AbstractPointsSpace<T> * readPointSpaceFromFile(QString fileName);
+    AbstractPointsSpace<T> * readPointSpaceFromFile(const char *fileName);
 
-    virtual AbstractPointsSpace<T> * parseFile(QTextStream *in) throw (InvalidFileFormat) = 0;
+    virtual AbstractPointsSpace<T> * parseFile(std::ifstream *in) throw (InvalidFileFormat) = 0;
 
 	virtual ~AbstractDataReader() {}
 

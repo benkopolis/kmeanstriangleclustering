@@ -2,8 +2,6 @@
 INCLUDEPATH += $$PWD/dev
 SRC_DIR = $$PWD
 
-QT       += core
-
 CONFIG += console
 CONFIG += c++11
 

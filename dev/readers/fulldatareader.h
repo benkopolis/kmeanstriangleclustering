@@ -19,7 +19,7 @@ public:
      * <integer:number of points> <integer:number of dimensions> \n(white space separated)
      * <double:coordinate value>{dimensions,dimensions} \n(white space separated)
      */
-    virtual AbstractPointsSpace<DensePoint> * parseFile(QTextStream *in) throw (InvalidFileFormat);
+    virtual AbstractPointsSpace<DensePoint> * parseFile(std::ifstream *in) throw (InvalidFileFormat);
 
 private:
 

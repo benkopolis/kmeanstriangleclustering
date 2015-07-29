@@ -1,6 +1,6 @@
 #include "upperbounds.h"
 
-UpperBounds::UpperBounds(PointsToClusters *pointsToClusters):
+UpperBounds::UpperBounds(std::unordered_map<unsigned, unsigned> *pointsToClusters):
     pointsToClusters(pointsToClusters)
 {
 

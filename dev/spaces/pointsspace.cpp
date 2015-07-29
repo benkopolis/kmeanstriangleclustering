@@ -3,6 +3,11 @@
 #ifndef POINTSPACE_CPP
 #define POINTSPACE_CPP
 
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
 template<typename T>
 PointsSpace<T>::PointsSpace(unsigned num_points, unsigned num_dimensions) :
     AbstractPointsSpace<T>(num_points, num_dimensions)
@@ -20,24 +25,24 @@ PointsSpace<T>::PointsSpace(const PointsSpace& another) :
         const T& src = another.getPoint(i);
         for(unsigned int j=0; j < this->num_dimensions__; ++j)
             point->insert(j, src.value(j));
-        points__.insert(i, dynamic_cast<PtrCAbstractPoint>(point));
+        points__.insert({i, dynamic_cast<PtrCAbstractPoint>(point)});
     }
 }
 
 template<typename T>
 PointsSpace<T>::~PointsSpace()
 {
-    foreach(PointId index, points__.keys())
+    for(auto pair: points__)
     {
-        delete points__[index];
-        points__[index] = 0;
+        delete points__[pair.first];
+        points__[pair.first] = 0;
     }
 }
 
 template<typename T>
 PtrCAbstractPoint PointsSpace<T>::operator [](const unsigned &pid) throw(BadIndex)
 {
-    if(!this->points__.contains(pid))
+    if(this->points__.count(pid) == 0)
         throw BadIndex();
     return this->points__[pid];
 }
@@ -45,76 +50,55 @@ PtrCAbstractPoint PointsSpace<T>::operator [](const unsigned &pid) throw(BadInde
 template<typename T>
 PtrCAbstractPoint PointsSpace<T>::operator [](const unsigned &pid) const throw(BadIndex)
 {
-    if(!this->points__.contains(pid))
+    if(this->points__.count(pid) == 0)
         throw BadIndex();
-    return this->points__[pid];
+    return this->points__.at(pid);
 }
 
 template<typename T>
 void PointsSpace<T>::insertPoint(T *p, unsigned index)
 {
-	points__.insert(index, p);
+    points__.insert({index, p});
     ++(this->num_points__);
 }
 
 template<typename T>
 PtrCAbstractPoint PointsSpace<T>::getPoint(unsigned index) const
 {
-    return points__.value(index);
+    return points__.at(index);
 }
 
 template<typename T>
 bool PointsSpace<T>::contains(unsigned index) const
 {
-	return points__.contains(index);
+    return points__.count(index) > 0;
 }
 
 template<typename T>
-QList<unsigned> PointsSpace<T>::getPointIds() const
+void PointsSpace<T>::savePointsSpace(const char* fileName)
 {
-	return points__.keys();
-}
-
-template<typename T>
-void PointsSpace<T>::init_points() {
-	srand(QDateTime::currentMSecsSinceEpoch());
-    for (PointId i = 0; i < this->num_points__; i++) {
-        T* p = new T(i);
-        for (Dimensions d = 0; d < this->num_dimensions__; d++) {
-            p->insert(d, (double)(rand() % 10)/10.0);
-		}
-        points__.insert(i, dynamic_cast<PtrCAbstractPoint>(p));
-
-		//std::cout << "pid[" << i << "]= (" << p << ")" << std::endl;
-	}
-}
-
-template<typename T>
-void PointsSpace<T>::savePointsSpace(QString fileName)
-{
-	QFile file(fileName);
-	if(!file.open(QFile::WriteOnly))
+    std::ofstream out(fileName, std::ios::out | std::ios::trunc);
+    if(!out.is_open())
 		return;
-	QTextStream out(&file);
-    out << this->num_points__ << " " << this->num_dimensions__ << endl;
-    for(PtrCAbstractPoint p : points__.values())
+    out << this->num_points__ << " " << this->num_dimensions__ << this->quant << std::endl;
+    for(auto p : points__)
 	{
-        for(unsigned i : p->getKeys())
-            out << (*p)[i] << ' ';
-		out << endl;
+        for(unsigned i : p.second->getKeys())
+            out << (*p.second)[i] << ' ';
+        out << std::endl;
 	}
-    file.close();
+    out.close();
 }
 
 template<typename T>
-void PointsSpace<T>::loadPointsSpace(QString fileName)
+void PointsSpace<T>::loadPointsSpace(const char* fileName)
 {
-	QFile file(fileName);
-	if(!file.open(QFile::ReadOnly))
-		return;
-	QTextStream in(&file);
+    std::ifstream in(fileName, std::ios::in);
+    if(!in.is_open())
+        return;
     in >> this->num_points__;
     in >> this->num_dimensions__;
+    in >> this->quant;
     for(unsigned int i=0; i<this->num_points__; ++i)
 	{
 		Coord tmp =0;
@@ -124,9 +108,9 @@ void PointsSpace<T>::loadPointsSpace(QString fileName)
 			in >> tmp;
             point->insert(j, tmp);
 		}
-        points__.insert(i, dynamic_cast<PtrCAbstractPoint>(point));
+        points__.insert({i, dynamic_cast<PtrCAbstractPoint>(point)});
 	}
-    file.close();
+    in.close();
 }
 
 #endif //POINTSPACE_CPP

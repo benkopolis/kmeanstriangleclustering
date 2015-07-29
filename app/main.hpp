@@ -2,6 +2,7 @@
 #define MAIN_HPP
 
 #include <QtCore/QCoreApplication>
+#include <QTextStream>
 #include "models.hpp"
 #include "spaces/pointsspace.h"
 #include "spaces/normalizedpointsspace.h"

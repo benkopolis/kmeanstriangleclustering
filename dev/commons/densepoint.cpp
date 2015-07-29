@@ -3,7 +3,7 @@
 #include <typeindex>
 
 unsigned DensePoint::dimensions = 0;
-std::future<QList<unsigned>*> DensePoint::KEYS;
+std::future<std::list<unsigned>*> DensePoint::KEYS;
 std::thread *DensePoint::keys_initializer = 0;
 bool DensePoint::initialized = false;
 
@@ -76,7 +76,7 @@ void DensePoint::insert(unsigned key, double value) throw(BadIndex)
         throw BadIndex("This is not supported way of inserting a value for given index.");
 }
 
-const QList<unsigned> DensePoint::getKeys() const throw(DimensionsNotSet)
+const std::list<unsigned>& DensePoint::getKeys() const throw(DimensionsNotSet)
 {
     if(!initialized)
         throw new DimensionsNotSet("GetKeys can't be called before initilizing all keys!");
@@ -96,12 +96,12 @@ void DensePoint::InitializeKeys(unsigned numD)
     KEYS = std::async(std::launch::async, initKeys);
 }
 
-QList<unsigned>* DensePoint::initKeys()
+std::list<unsigned> *DensePoint::initKeys()
 {
-    QList<unsigned>* result = new QList<unsigned>();
+    std::list<unsigned>* result = new std::list<unsigned>();
     for(unsigned i = 0; i < dimensions; ++i)
     {
-        result->append(i);
+        result->push_back(i);
     }
 
     return result;

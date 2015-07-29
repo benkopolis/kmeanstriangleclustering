@@ -6,6 +6,10 @@
 #include "spaces/pointsspace.h"
 #include "commons/densepoint.h"
 
+#include <string>
+#include <sstream>
+
+
 FullDataReader FullDataReader::_instance;
 
 FullDataReader::FullDataReader()
@@ -18,23 +22,28 @@ FullDataReader::~FullDataReader()
 
 }
 
-AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(QTextStream *in) throw (InvalidFileFormat)
+AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(std::ifstream *in) throw (InvalidFileFormat)
 {
-    if(in->atEnd())
+    if(in->eof() || !in->is_open())
         return 0;
 
     PointId pointIndex = 0;
     unsigned numP=0, numD=0;
-    *in >> numP >> numD;
+    double quant = 0.0;
+    *in >> numP >> numD >> quant;
     PointsSpace<DensePoint> *space = new PointsSpace<DensePoint>(numP, numD);
+    space->setQuant(quant);
     Coord c = 0.0;
-    while(!in->atEnd())
+    while(!in->eof())
     {
-        QString line = in->readLine();
-        QTextStream line_in(&line);
+        std::string line;
+        std::getline(*in, line);
+        std::stringstream line_in(std::ios::in);
+        line_in.str(line);
+        line_in.seekg(0, std::ios_base::beg);
         DensePoint* p = new DensePoint(pointIndex, numD);
         unsigned coordtIndex = 0;
-        while(!line_in.atEnd() && coordtIndex < numD)
+        while(!line_in.eof() && coordtIndex < numD)
         {
             line_in >> c;
             p->insert(coordtIndex++, c);

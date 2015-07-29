@@ -3,17 +3,20 @@
 
 #include "abstractaccountingcontainer.h"
 
+#include <unordered_map>
+#include <vector>
+
 class UpperBounds : public AbstractAccountingContainer
 {
 public:
-    UpperBounds(PointsToClusters* pointsToClusters);
+    UpperBounds(std::unordered_map<unsigned, unsigned>* pointsToClusters);
 
     virtual void update(const QVector<Distance>& delta);
 
 private:
 
-    QVector<Distance> upperBounds;
-    PointsToClusters* pointsToClusters;
+    std::vector<Distance> upperBounds;
+    std::unordered_map<unsigned, unsigned>* pointsToClusters;
 };
 
 #endif // UPPERBOUNDS_H

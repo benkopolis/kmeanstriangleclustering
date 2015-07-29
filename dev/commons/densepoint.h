@@ -38,7 +38,7 @@ public:
 
     inline virtual unsigned size() const throw() { return this->vector->size(); }
 
-    inline virtual const QList<unsigned> getKeys() const throw(DimensionsNotSet);
+    inline virtual const std::list<unsigned> &getKeys() const throw(DimensionsNotSet);
 
     virtual bool contains(unsigned pid) const throw();
 
@@ -49,13 +49,11 @@ private:
     std::vector<double>* vector;
 
     static unsigned dimensions;
-    static std::future<QList<unsigned>*> KEYS;
+    static std::future<std::list<unsigned>*> KEYS;
     static std::thread *keys_initializer;
     static bool initialized;
 
-    static QList<unsigned> *initKeys();
+    static std::list<unsigned> *initKeys();
 };
-
-Q_DECLARE_TYPEINFO(DensePoint, Q_MOVABLE_TYPE);
 
 #endif // DENSEPOINT_H

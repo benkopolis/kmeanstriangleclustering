@@ -7,6 +7,8 @@
 #include "commons/sparsepoint.h"
 #include "commons/densepoint.h"
 
+#include <list>
+
 template<typename T>
 class AbstractPointsSpace : private Utils::Where<T, AbstractPoint>
 {
@@ -29,10 +31,11 @@ public:
     virtual PtrCAbstractPoint getPoint(unsigned index) const = 0;
     virtual bool contains(unsigned index) const = 0;
 
-	virtual void savePointsSpace(QString fileName) = 0;
-	virtual void loadPointsSpace(QString fileName) = 0;
+    virtual void savePointsSpace(const char* fileName) = 0;
+    virtual void loadPointsSpace(const char* fileName) = 0;
 
-    virtual QList<unsigned> getPointIds() const = 0;
+    double getQuant() const;
+    void setQuant(double value);
 
 protected:
 
@@ -40,6 +43,8 @@ protected:
 
 	unsigned int num_points__;
 	unsigned int num_dimensions__;
+
+    double quant;
 
 private:
 };

@@ -39,7 +39,8 @@ SOURCES += \
     exceptions/dimensionsnotset.cpp \
     generators/sparsepointgenerator.cpp \
     commons/globals.cpp \
-    generators/densepointgenerator.cpp
+    generators/densepointgenerator.cpp \
+    tfidf/tfidfhistogramgenerator.cpp
 HEADERS += \
     algorithms/abstractalgorithm.h \
     algorithms/kmeansalgorithm.h \
@@ -77,6 +78,7 @@ HEADERS += \
     exceptions/dimensionsnotset.h \
     generators/sparsepointgenerator.h \
     commons/globals.h \
-    generators/densepointgenerator.h
+    generators/densepointgenerator.h \
+    tfidf/tfidfhistogramgenerator.h
 
 FORMS +=

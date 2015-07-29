@@ -2,6 +2,7 @@
 #define NORMALIZEDPOINTSSPACE_H
 
 #include "abstractpointsspace.h"
+#include <unordered_map>
 
 template<typename T>
 class NormalizedPointsSpace : public AbstractPointsSpace<T>
@@ -19,13 +20,12 @@ public:
     virtual PtrCAbstractPoint getPoint(unsigned index) const;
     virtual bool contains(unsigned index) const;
 
-	virtual void savePointsSpace(QString fileName);
-	virtual void loadPointsSpace(QString fileName);
-    virtual QList<unsigned> getPointIds() const;
+    virtual void savePointsSpace(const char *fileName);
+    virtual void loadPointsSpace(const char *fileName);
 
 protected:
 
-    QHash<unsigned, PtrCAbstractPoint> points__;
+    std::unordered_map<unsigned, PtrCAbstractPoint> points__;
 	unsigned int lines__;
 
 private:

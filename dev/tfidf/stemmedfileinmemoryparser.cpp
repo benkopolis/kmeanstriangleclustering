@@ -1,8 +1,12 @@
 #include "stemmedfileinmemoryparser.h"
-#include <QTextStream>
-#include <QtCore/qmath.h>
-#include <QFile>
+
+#include <cmath>
 #include <cfloat>
+#include <fstream>
+#include <functional>
+#include <iostream>
+#include <string>
+#include <sstream>
 
 //#include <QMap>
 /// We don't care for DBL_MIN, so quantization has to be at 2*DBL_MIN,
@@ -31,26 +35,28 @@ StemmedFileInMemoryParser::~StemmedFileInMemoryParser()
     }
 }
 
-bool StemmedFileInMemoryParser::fillWithData(QString fileName)
+bool StemmedFileInMemoryParser::fillWithData(const char *fileName)
 {
-    QFile stemmedFile(fileName);
-    if(!stemmedFile.open(QFile::ReadOnly))
+    std::ifstream in(fileName, std::ios::in);
+    if(!in.is_open())
         return false;
-    QTextStream in(&stemmedFile);
     unsigned docNumber = 0;
-    while(!in.atEnd())
+    while(!in.eof())
     {
-        QString line = in.readLine(), tmp;
-        QTextStream inner(&line);
+        std::string line;
+        std::getline(in, line);
+        std::stringstream inner(std::ios::in);
+        inner.str(line);
+        inner.seekg(0, std::ios_base::beg);
         unsigned int lineLen = 0;
-        inner >> tmp;
-        std::unordered_map<uint, unsigned int>* doc = new std::unordered_map<uint, unsigned int>();
-        std::unordered_map<uint, bool> alreadyInserted;
-        while(!inner.atEnd())
+        std::unordered_map<size_t, unsigned int>* doc = new std::unordered_map<size_t, unsigned int>();
+        std::unordered_map<size_t, bool> alreadyInserted;
+        while(!inner.eof())
         {
-            inner >> tmp;
+            std::string word;
+            inner >> word;
             ++lineLen;
-            uint hash = qHash(tmp);
+            size_t hash = this->hash_fn(word);
             if(this->_wordsToCoords.count(hash) == 0)
                 this->_wordsToCoords.insert({hash, _nextCoord++});
             if(doc->count(hash) == 0)
@@ -74,24 +80,24 @@ bool StemmedFileInMemoryParser::fillWithData(QString fileName)
         this->_docsLens.insert({docIndex, lineLen});
         this->_wordsCountPerDocument.insert({docIndex, doc});
     }
-    stemmedFile.close();
+    in.close();
     return true;
 }
 
-double StemmedFileInMemoryParser::tfidf(uint word, unsigned int docIndex)
+double StemmedFileInMemoryParser::tfidf(size_t word, unsigned int docIndex)
 {
     return tf(word, docIndex) * idf(word);
 }
 
-double StemmedFileInMemoryParser::tf(uint word, unsigned int docIndex)
+double StemmedFileInMemoryParser::tf(size_t word, unsigned int docIndex)
 {
     return (double)(*_wordsCountPerDocument[docIndex])[word] /
            (double)_docsLens[docIndex];
 }
 
-double StemmedFileInMemoryParser::idf(uint word)
+double StemmedFileInMemoryParser::idf(size_t word)
 {
-    return qLn((double)_wordsCountPerDocument.size() /
+    return log((double)_wordsCountPerDocument.size() /
                 (double)_numberOfDocumentsWithGivenWords[word]);
 }
 
@@ -113,14 +119,13 @@ void StemmedFileInMemoryParser::countTfidf()
     this->quant = this->minimalValue / 4;
 }
 
-bool StemmedFileInMemoryParser::storeTfidfInFile(QString fileName)
+bool StemmedFileInMemoryParser::storeTfidfInFile(const char *fileName)
 {
-    QFile tfidfFile(fileName);
-    if(!tfidfFile.open(QFile::WriteOnly))
+    std::ofstream out(fileName, std::ios::trunc | std::ios::out);
+    if(!out.is_open())
         return false;
-    QTextStream out(&tfidfFile);
     out << _wordsCountPerDocument.size() << " "
-        << _nextCoord << " " << this->quant << endl; // header format: <number of vectors> <number of dimensions> <quantization value>
+        << _nextCoord << " " << this->quant << std::endl; // header format: <number of vectors> <number of dimensions> <quantization value>
     for(auto map : this->tfIdfResults)
     { // for all docs
         for(auto pair : *map)
@@ -129,8 +134,9 @@ bool StemmedFileInMemoryParser::storeTfidfInFile(QString fileName)
                 pair.second = this->minimalValue / 2;
             out << pair.first << ':' << pair.second << ' ';
         }
-        out << endl;
+        out << std::endl;
     }
+    out << std::ends;
     out.flush();
-    tfidfFile.close();
+    out.close();
 }

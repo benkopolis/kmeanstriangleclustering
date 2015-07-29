@@ -3,22 +3,22 @@
 #ifndef ABSTRACTDATAREADER_CPP
 #define ABSTRACTDATAREADER_CPP
 
+#include <string>
+#include <iostream>
+#include <fstream>
+
 template<typename T>
 AbstractDataReader<T>::AbstractDataReader()
 {
 }
 
 template<typename T>
-AbstractPointsSpace<T> *AbstractDataReader<T>::readPointSpaceFromFile(QString fileName)
+AbstractPointsSpace<T> *AbstractDataReader<T>::readPointSpaceFromFile(const char* fileName)
 {
-    QFile file(fileName);
-    QTextStream *in;
-    if(file.open(QFile::ReadOnly))
-        in = new QTextStream(&file);
-    else
+    std::ifstream *in = new std::ifstream(fileName, std::ios::in);
+    if(!in->is_open())
     {
-        QTextStream err(stderr);
-        err << "Can not open file for reading: " << fileName;
+        std::cerr << "Can not open file for reading: " << fileName << std::endl;
         return 0;
     }
     return parseFile(in);

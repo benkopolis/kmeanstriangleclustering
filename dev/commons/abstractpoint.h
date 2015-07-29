@@ -7,7 +7,7 @@
 #include "exceptions/dimensionsnotset.h"
 
 #include <iterator>
-#include <QList>
+#include <list>
 
 class AbstractPoint
 {
@@ -36,10 +36,8 @@ public:
      *
      * The list is always sorted! From smaller to bigger.
      */
-    virtual const QList<unsigned> getKeys() const throw(DimensionsNotSet) = 0;
+    virtual const std::list<unsigned>& getKeys() const throw(DimensionsNotSet) = 0;
 };
-
-Q_DECLARE_TYPEINFO(AbstractPoint, Q_MOVABLE_TYPE);
 
 typedef AbstractPoint const * const CPtrCAbstractPoint;
 

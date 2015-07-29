@@ -4,7 +4,7 @@
 
 #include <QApplication>
 
-QTextStream* m_globalLogger = 0;
+std::ostream* m_globalLogger = 0;
 
 double dotMatrixes(AbstractPoint const * const a, AbstractPoint const * const b)
 {
@@ -38,28 +38,6 @@ void produceClusteringData()
 {
     throw 1;
 }
-
-void createTfIdfFile(int argc, char *argv[])
-{
-    StemmedFileInMemoryParser parser;
-    QTextStream out(stdout);
-    if(argc != 4)
-    {
-        out << "Please give 2 more args: input file name and output file name" << endl;
-        return;
-    }
-    QElapsedTimer e1timer;
-    e1timer.start();
-    parser.fillWithData(argv[2]);
-    parser.countTfidf();
-    parser.storeTfidfInFile(argv[3]);
-    QString kwFile(argv[3]);
-    kwFile = kwFile.replace("tfidf", "tfidfKW");
-    parser.countTfidf();
-    parser.storeTfidfInFile(kwFile);
-    out << "Elapsed: " << e1timer.elapsed() << endl;
-}
-
 
 QString getOutputFileName(QString input, QString fileType,
                           int num_clusters, int num_iters)
