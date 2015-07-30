@@ -7,4 +7,6 @@ MGR/*
 *.pro.user.*
 build-*-Desktop_Qt_*_*_*_GCC_*bit-*
 BDATA/*
-data/*
+data/
+*.pro.user
+
