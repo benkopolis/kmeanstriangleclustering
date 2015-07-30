@@ -1,4 +1,5 @@
 #include "stemmedfileparsercontroller.h"
+#include "tfidf/tfidfhistogramgenerator.h"
 
 #include <QByteArray>
 
@@ -29,5 +30,20 @@ void StemmedFileParserController::onWrite(const QString &out)
 {
     QByteArray ba = out.toLatin1();
     emit writeDone(this->parser->storeTfidfInFile(ba.data()));
+}
+
+void StemmedFileParserController::onGenerateHistograms(const QString &out)
+{
+    TfidfHistogramGenerator generator;
+    generator.generateHistograms(this->parser->getTfIdfResults());
+    QByteArray ba = out.toLatin1();
+    try {
+        generator.save(ba.data());
+    } catch(IOException& e) {
+        emit generateHistogramsDone(false, e.what());
+        return;
+    }
+
+    emit generateHistogramsDone(true, "");
 }
 

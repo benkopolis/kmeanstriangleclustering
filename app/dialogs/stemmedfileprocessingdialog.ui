@@ -57,6 +57,26 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="cbxHistogramsDone">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>[Optional] Histograms generated.</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnGenerateHistograms">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Generate histograms</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnClose">
        <property name="enabled">
         <bool>false</bool>

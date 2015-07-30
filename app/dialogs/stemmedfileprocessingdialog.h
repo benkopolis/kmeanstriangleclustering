@@ -20,6 +20,7 @@ signals:
     void read(const QString& in);
     void process();
     void write(const QString& out);
+    void generateHistograms(const QString& out);
 
 public slots:
 
@@ -27,9 +28,12 @@ public slots:
     void onReadDone(bool ok);
     void onProcessDone();
     void onWriteDone(bool ok);
+    void onGenerateHistogramsDone(bool ok, const QString &message);
 
 private slots:
     void on_btnClose_clicked();
+
+    void on_btnGenerateHistograms_clicked();
 
 private:
     Ui::StemmedFileProcessingDialog *ui;

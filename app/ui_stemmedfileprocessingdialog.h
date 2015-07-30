@@ -30,6 +30,8 @@ public:
     QCheckBox *cbxTfidf;
     QCheckBox *cbxWriting;
     QCheckBox *cbxDone;
+    QCheckBox *cbxHistogramsDone;
+    QPushButton *btnGenerateHistograms;
     QPushButton *btnClose;
 
     void setupUi(QDialog *StemmedFileProcessingDialog)
@@ -65,6 +67,18 @@ public:
 
         verticalLayout->addWidget(cbxDone);
 
+        cbxHistogramsDone = new QCheckBox(StemmedFileProcessingDialog);
+        cbxHistogramsDone->setObjectName(QStringLiteral("cbxHistogramsDone"));
+        cbxHistogramsDone->setEnabled(false);
+
+        verticalLayout->addWidget(cbxHistogramsDone);
+
+        btnGenerateHistograms = new QPushButton(StemmedFileProcessingDialog);
+        btnGenerateHistograms->setObjectName(QStringLiteral("btnGenerateHistograms"));
+        btnGenerateHistograms->setEnabled(false);
+
+        verticalLayout->addWidget(btnGenerateHistograms);
+
         btnClose = new QPushButton(StemmedFileProcessingDialog);
         btnClose->setObjectName(QStringLiteral("btnClose"));
         btnClose->setEnabled(false);
@@ -87,6 +101,8 @@ public:
         cbxTfidf->setText(QApplication::translate("StemmedFileProcessingDialog", "Counting tfidf indexes for words", 0));
         cbxWriting->setText(QApplication::translate("StemmedFileProcessingDialog", "Writing to file:", 0));
         cbxDone->setText(QApplication::translate("StemmedFileProcessingDialog", "All done, you can close this window", 0));
+        cbxHistogramsDone->setText(QApplication::translate("StemmedFileProcessingDialog", "[Optional] Histograms generated.", 0));
+        btnGenerateHistograms->setText(QApplication::translate("StemmedFileProcessingDialog", "Generate histograms", 0));
         btnClose->setText(QApplication::translate("StemmedFileProcessingDialog", "Close", 0));
     } // retranslateUi
 

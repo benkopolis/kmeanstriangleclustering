@@ -12,11 +12,13 @@
 class AbstractPoint
 {
 protected:
-    AbstractPoint(unsigned pid) : pointId(pid) {}
+    AbstractPoint(unsigned pid);
 
     unsigned pointId;
 
 public:
+
+    virtual ~AbstractPoint();
 
     inline unsigned getPointId() { return this->pointId; }
 

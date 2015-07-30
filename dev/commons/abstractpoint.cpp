@@ -5,3 +5,14 @@
 
 
 //#endif // ABSTRACTPOINT_CPP
+
+
+AbstractPoint::AbstractPoint(unsigned pid)
+ : pointId(pid)
+{
+
+}
+
+AbstractPoint::~AbstractPoint()
+{
+}

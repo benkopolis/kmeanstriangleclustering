@@ -40,7 +40,8 @@ SOURCES += \
     generators/sparsepointgenerator.cpp \
     commons/globals.cpp \
     generators/densepointgenerator.cpp \
-    tfidf/tfidfhistogramgenerator.cpp
+    tfidf/tfidfhistogramgenerator.cpp \
+    exceptions/ioexception.cpp
 HEADERS += \
     algorithms/abstractalgorithm.h \
     algorithms/kmeansalgorithm.h \
@@ -79,6 +80,7 @@ HEADERS += \
     generators/sparsepointgenerator.h \
     commons/globals.h \
     generators/densepointgenerator.h \
-    tfidf/tfidfhistogramgenerator.h
+    tfidf/tfidfhistogramgenerator.h \
+    exceptions/ioexception.h
 
 FORMS +=

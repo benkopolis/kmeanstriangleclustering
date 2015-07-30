@@ -1,16 +1,28 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <list>
+#include <string>
+#include <memory>
+
 class Utils
 {
 private:
     Utils();
+    Utils(const Utils&) = delete;
+    Utils(Utils&&) = delete;
+    ~Utils();
+
+    Utils& operator=(const Utils&) = delete;
+    Utils& operator=(const Utils&&) = delete;
 
     static Utils *instance;
 
 public:
 
     static Utils* getInstance();
+
+    static void destroy();
 
     template<class T, class B> struct Derived_from {
         static void constraints(T* p) { B* pb = p; }
@@ -36,6 +48,12 @@ public:
         static void constraints(T* p) { B* pb = p; }
         Where() { void(*p)(T*) = constraints; }
     };
+
+    const char* concatenate(const char* one, const char* two);
+
+private:
+
+    std::list<std::unique_ptr<std::string>> messages;
 
 };
 

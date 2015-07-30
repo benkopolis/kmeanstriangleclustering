@@ -16,12 +16,14 @@ signals:
     void readDone(bool ok);
     void processDone();
     void writeDone(bool ok);
+    void generateHistogramsDone(bool ok, const QString& message);
 
 public slots:
 
     void onRead(const QString& in);
     void onProcess();
     void onWrite(const QString& out);
+    void onGenerateHistograms(const QString& out);
 
 private:
 

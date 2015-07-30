@@ -150,5 +150,7 @@ int main(int argc, char **argv)
     QApplication a(argc, argv);
     MainWindow mainWindow;
     mainWindow.show();
-    return a.exec();
+    int result = a.exec();
+    Utils::destroy();
+    return result;
 }
