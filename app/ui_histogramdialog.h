@@ -25,13 +25,11 @@ QT_BEGIN_NAMESPACE
 class Ui_HistogramDialog
 {
 public:
-    QWidget *widget;
+    QWidget *layoutWidget;
     QVBoxLayout *verticalLayout;
     QCheckBox *cbxRead;
-    QCheckBox *cbxCount;
     QCheckBox *cbxWrite;
-    QPushButton *btnCoordsHist;
-    QPushButton *btnDimsHist;
+    QPushButton *btnView;
     QPushButton *btnClose;
 
     void setupUi(QDialog *HistogramDialog)
@@ -39,41 +37,31 @@ public:
         if (HistogramDialog->objectName().isEmpty())
             HistogramDialog->setObjectName(QStringLiteral("HistogramDialog"));
         HistogramDialog->resize(400, 300);
-        widget = new QWidget(HistogramDialog);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(10, 10, 371, 261));
-        verticalLayout = new QVBoxLayout(widget);
+        layoutWidget = new QWidget(HistogramDialog);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(10, 10, 371, 261));
+        verticalLayout = new QVBoxLayout(layoutWidget);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        cbxRead = new QCheckBox(widget);
+        cbxRead = new QCheckBox(layoutWidget);
         cbxRead->setObjectName(QStringLiteral("cbxRead"));
         cbxRead->setEnabled(false);
 
         verticalLayout->addWidget(cbxRead);
 
-        cbxCount = new QCheckBox(widget);
-        cbxCount->setObjectName(QStringLiteral("cbxCount"));
-        cbxCount->setEnabled(false);
-
-        verticalLayout->addWidget(cbxCount);
-
-        cbxWrite = new QCheckBox(widget);
+        cbxWrite = new QCheckBox(layoutWidget);
         cbxWrite->setObjectName(QStringLiteral("cbxWrite"));
         cbxWrite->setEnabled(false);
 
         verticalLayout->addWidget(cbxWrite);
 
-        btnCoordsHist = new QPushButton(widget);
-        btnCoordsHist->setObjectName(QStringLiteral("btnCoordsHist"));
+        btnView = new QPushButton(layoutWidget);
+        btnView->setObjectName(QStringLiteral("btnView"));
+        btnView->setEnabled(false);
 
-        verticalLayout->addWidget(btnCoordsHist);
+        verticalLayout->addWidget(btnView);
 
-        btnDimsHist = new QPushButton(widget);
-        btnDimsHist->setObjectName(QStringLiteral("btnDimsHist"));
-
-        verticalLayout->addWidget(btnDimsHist);
-
-        btnClose = new QPushButton(widget);
+        btnClose = new QPushButton(layoutWidget);
         btnClose->setObjectName(QStringLiteral("btnClose"));
         btnClose->setEnabled(false);
 
@@ -88,11 +76,9 @@ public:
     void retranslateUi(QDialog *HistogramDialog)
     {
         HistogramDialog->setWindowTitle(QApplication::translate("HistogramDialog", "Dialog", 0));
-        cbxRead->setText(QApplication::translate("HistogramDialog", "Read tf-idf file", 0));
-        cbxCount->setText(QApplication::translate("HistogramDialog", "Count frequencies", 0));
+        cbxRead->setText(QApplication::translate("HistogramDialog", "Read and process tf-idf file", 0));
         cbxWrite->setText(QApplication::translate("HistogramDialog", "Store results", 0));
-        btnCoordsHist->setText(QApplication::translate("HistogramDialog", "View coordinates values frequency", 0));
-        btnDimsHist->setText(QApplication::translate("HistogramDialog", "View nonzero dimensions count frequency", 0));
+        btnView->setText(QApplication::translate("HistogramDialog", "View histograms", 0));
         btnClose->setText(QApplication::translate("HistogramDialog", "Close", 0));
     } // retranslateUi
 

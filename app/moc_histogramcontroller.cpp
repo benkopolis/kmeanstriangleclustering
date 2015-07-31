@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_HistogramController_t {
-    QByteArrayData data[1];
-    char stringdata[20];
+    QByteArrayData data[18];
+    char stringdata[199];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -29,10 +29,31 @@ struct qt_meta_stringdata_HistogramController_t {
     )
 static const qt_meta_stringdata_HistogramController_t qt_meta_stringdata_HistogramController = {
     {
-QT_MOC_LITERAL(0, 0, 19) // "HistogramController"
+QT_MOC_LITERAL(0, 0, 19), // "HistogramController"
+QT_MOC_LITERAL(1, 20, 8), // "readDone"
+QT_MOC_LITERAL(2, 29, 0), // ""
+QT_MOC_LITERAL(3, 30, 2), // "ok"
+QT_MOC_LITERAL(4, 33, 7), // "message"
+QT_MOC_LITERAL(5, 41, 9), // "writeDone"
+QT_MOC_LITERAL(6, 51, 18), // "readHistogramsDone"
+QT_MOC_LITERAL(7, 70, 6), // "mesage"
+QT_MOC_LITERAL(8, 77, 14), // "histogramsData"
+QT_MOC_LITERAL(9, 92, 22), // "HistogramsDrawingData*"
+QT_MOC_LITERAL(10, 115, 10), // "histograms"
+QT_MOC_LITERAL(11, 126, 6), // "onRead"
+QT_MOC_LITERAL(12, 133, 8), // "fileName"
+QT_MOC_LITERAL(13, 142, 16), // "onReadHistograms"
+QT_MOC_LITERAL(14, 159, 6), // "coords"
+QT_MOC_LITERAL(15, 166, 4), // "dims"
+QT_MOC_LITERAL(16, 171, 7), // "onWrite"
+QT_MOC_LITERAL(17, 179, 19) // "onGetHistogramsData"
 
     },
-    "HistogramController"
+    "HistogramController\0readDone\0\0ok\0"
+    "message\0writeDone\0readHistogramsDone\0"
+    "mesage\0histogramsData\0HistogramsDrawingData*\0"
+    "histograms\0onRead\0fileName\0onReadHistograms\0"
+    "coords\0dims\0onWrite\0onGetHistogramsData"
 };
 #undef QT_MOC_LITERAL
 
@@ -42,22 +63,83 @@ static const uint qt_meta_data_HistogramController[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       0,    0, // methods
+       8,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       4,       // signalCount
+
+ // signals: name, argc, parameters, tag, flags
+       1,    2,   54,    2, 0x06 /* Public */,
+       5,    2,   59,    2, 0x06 /* Public */,
+       6,    2,   64,    2, 0x06 /* Public */,
+       8,    1,   69,    2, 0x06 /* Public */,
+
+ // slots: name, argc, parameters, tag, flags
+      11,    1,   72,    2, 0x0a /* Public */,
+      13,    2,   75,    2, 0x0a /* Public */,
+      16,    1,   80,    2, 0x0a /* Public */,
+      17,    0,   83,    2, 0x0a /* Public */,
+
+ // signals: parameters
+    QMetaType::Void, QMetaType::Bool, QMetaType::QString,    3,    4,
+    QMetaType::Void, QMetaType::Bool, QMetaType::QString,    3,    4,
+    QMetaType::Void, QMetaType::Bool, QMetaType::QString,    3,    7,
+    QMetaType::Void, 0x80000000 | 9,   10,
+
+ // slots: parameters
+    QMetaType::Void, QMetaType::QString,   12,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString,   14,   15,
+    QMetaType::Void, QMetaType::QString,   12,
+    QMetaType::Void,
 
        0        // eod
 };
 
 void HistogramController::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
-    Q_UNUSED(_o);
-    Q_UNUSED(_id);
-    Q_UNUSED(_c);
-    Q_UNUSED(_a);
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        HistogramController *_t = static_cast<HistogramController *>(_o);
+        switch (_id) {
+        case 0: _t->readDone((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
+        case 1: _t->writeDone((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
+        case 2: _t->readHistogramsDone((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
+        case 3: _t->histogramsData((*reinterpret_cast< HistogramsDrawingData*(*)>(_a[1]))); break;
+        case 4: _t->onRead((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 5: _t->onReadHistograms((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
+        case 6: _t->onWrite((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 7: _t->onGetHistogramsData(); break;
+        default: ;
+        }
+    } else if (_c == QMetaObject::IndexOfMethod) {
+        int *result = reinterpret_cast<int *>(_a[0]);
+        void **func = reinterpret_cast<void **>(_a[1]);
+        {
+            typedef void (HistogramController::*_t)(bool , const QString & );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&HistogramController::readDone)) {
+                *result = 0;
+            }
+        }
+        {
+            typedef void (HistogramController::*_t)(bool , const QString & );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&HistogramController::writeDone)) {
+                *result = 1;
+            }
+        }
+        {
+            typedef void (HistogramController::*_t)(bool , const QString & );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&HistogramController::readHistogramsDone)) {
+                *result = 2;
+            }
+        }
+        {
+            typedef void (HistogramController::*_t)(HistogramsDrawingData * );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&HistogramController::histogramsData)) {
+                *result = 3;
+            }
+        }
+    }
 }
 
 const QMetaObject HistogramController::staticMetaObject = {
@@ -84,6 +166,43 @@ int HistogramController::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QObject::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 8)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 8;
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        if (_id < 8)
+            *reinterpret_cast<int*>(_a[0]) = -1;
+        _id -= 8;
+    }
     return _id;
+}
+
+// SIGNAL 0
+void HistogramController::readDone(bool _t1, const QString & _t2)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+
+// SIGNAL 1
+void HistogramController::writeDone(bool _t1, const QString & _t2)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    QMetaObject::activate(this, &staticMetaObject, 1, _a);
+}
+
+// SIGNAL 2
+void HistogramController::readHistogramsDone(bool _t1, const QString & _t2)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    QMetaObject::activate(this, &staticMetaObject, 2, _a);
+}
+
+// SIGNAL 3
+void HistogramController::histogramsData(HistogramsDrawingData * _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 3, _a);
 }
 QT_END_MOC_NAMESPACE

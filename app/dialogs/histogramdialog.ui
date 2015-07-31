@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -29,17 +29,7 @@
        <bool>false</bool>
       </property>
       <property name="text">
-       <string>Read tf-idf file</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QCheckBox" name="cbxCount">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>Count frequencies</string>
+       <string>Read and process tf-idf file</string>
       </property>
      </widget>
     </item>
@@ -54,16 +44,12 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="btnCoordsHist">
-      <property name="text">
-       <string>View coordinates values frequency</string>
+     <widget class="QPushButton" name="btnView">
+      <property name="enabled">
+       <bool>false</bool>
       </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="btnDimsHist">
       <property name="text">
-       <string>View nonzero dimensions count frequency</string>
+       <string>View histograms</string>
       </property>
      </widget>
     </item>

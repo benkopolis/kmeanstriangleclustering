@@ -70,27 +70,76 @@ void TfidfHistogramGenerator::save(const char *histogramsFileName) throw(IOExcep
     this->saveDims(Utils::getInstance()->concatenate(histogramsFileName, ".dhist"));
 }
 
+
+
+void TfidfHistogramGenerator::loadCoordsHistogram(const char *file) throw(IOException)
+{
+    std::ifstream* in = openFileToRead(file);
+    while(!in->eof()) {
+        double one;
+        unsigned two;
+        *in >> one >> two;
+        this->coordsValuesFrequency.insert({one, two});
+    }
+    in->close();
+    delete in;
+}
+
+void TfidfHistogramGenerator::loadDimsHistogram(const char *file) throw(IOException)
+{
+    std::ifstream* in = openFileToRead(file);
+    while(!in->eof()) {
+        unsigned one, two;
+        *in >> one >> two;
+        this->nonZeroCoordsFrequency.insert({one, two});
+    }
+    in->close();
+    delete in;
+}
+
 void TfidfHistogramGenerator::saveCoords(const char *fileName) throw(IOException)
 {
-    std::ofstream out(fileName, std::ios::out | std::ios::trunc);
-    if(!out.is_open())
-        throw IOException(Utils::getInstance()->concatenate(fileName, " can't be open to write."));
+    std::ofstream* out = openFileToWrite(fileName);
     for(std::pair<double, unsigned> pair: this->coordsValuesFrequency) {
-        out << pair.first << " " << pair.second << std::endl;
+        *out << pair.first << " " << pair.second << std::endl;
     }
-    out.flush();
-    out.close();
+    out->flush();
+    out->close();
+    delete out;
 }
 
 void TfidfHistogramGenerator::saveDims(const char *fileName) throw(IOException)
 {
-    std::ofstream out(fileName, std::ios::out | std::ios::trunc);
-    if(!out.is_open())
-        throw IOException(Utils::getInstance()->concatenate(fileName, " can't be open to write."));
+    std::ofstream* out = openFileToWrite(fileName);
     for(std::pair<unsigned, unsigned> pair: this->nonZeroCoordsFrequency) {
-        out << pair.first << " " << pair.second << std::endl;
+        *out << pair.first << " " << pair.second << std::endl;
     }
-    out.flush();
-    out.close();
+    out->flush();
+    out->close();
+    delete out;
 }
 
+std::ifstream* TfidfHistogramGenerator::openFileToRead(const char *file) throw(IOException)
+{
+    std::ifstream* in = new std::ifstream(file, std::ios::in);
+    if(!in->is_open())
+        throw IOException(Utils::getInstance()->concatenate(file, " can't be open to read."));
+    return in;
+}
+
+std::ofstream *TfidfHistogramGenerator::openFileToWrite(const char *file) throw(IOException)
+{
+    std::ofstream* out = new std::ofstream(file, std::ios::out | std::ios::trunc);
+    if(!out->is_open())
+        throw IOException(Utils::getInstance()->concatenate(file, " can't be open to write."));
+    return out;
+}
+const std::unordered_map<unsigned, unsigned>& TfidfHistogramGenerator::getNonZeroCoordsFrequency() const
+{
+    return this->nonZeroCoordsFrequency;
+}
+
+const std::unordered_map<double, unsigned>& TfidfHistogramGenerator::getCoordsValuesFrequency() const
+{
+    return this->coordsValuesFrequency;
+}

@@ -1,12 +1,13 @@
-src/data/*
-DATA/*
-debug/*
+src/data/**
+DATA/**
+debug/**
 Makefile*
 *.o
-MGR/*
+MGR/**
 *.pro.user.*
 build-*-Desktop_Qt_*_*_*_GCC_*bit-*
-BDATA/*
-data/
+BDATA/**
+data/**
 *.pro.user
+*.so.*
 
