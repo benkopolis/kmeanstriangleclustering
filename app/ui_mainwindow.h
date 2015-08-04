@@ -13,12 +13,12 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextBrowser>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -27,10 +27,12 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralwidget;
-    QGridLayout *gridLayout;
+    QWidget *widget;
+    QVBoxLayout *verticalLayout;
     QTextBrowser *textBrowser;
     QPushButton *btnCountTFIDF;
     QPushButton *btnGetStatsForTFIDF;
+    QPushButton *btnLoadHist;
     QPushButton *btnClustering;
     QPushButton *btnClose;
     QStatusBar *statusbar;
@@ -42,32 +44,46 @@ public:
         MainWindow->resize(800, 600);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
-        gridLayout = new QGridLayout(centralwidget);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        textBrowser = new QTextBrowser(centralwidget);
+        widget = new QWidget(centralwidget);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(9, 11, 781, 431));
+        verticalLayout = new QVBoxLayout(widget);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setContentsMargins(0, 0, 0, 0);
+        textBrowser = new QTextBrowser(widget);
         textBrowser->setObjectName(QStringLiteral("textBrowser"));
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(textBrowser->sizePolicy().hasHeightForWidth());
+        textBrowser->setSizePolicy(sizePolicy);
 
-        gridLayout->addWidget(textBrowser, 0, 0, 1, 1);
+        verticalLayout->addWidget(textBrowser);
 
-        btnCountTFIDF = new QPushButton(centralwidget);
+        btnCountTFIDF = new QPushButton(widget);
         btnCountTFIDF->setObjectName(QStringLiteral("btnCountTFIDF"));
 
-        gridLayout->addWidget(btnCountTFIDF, 1, 0, 1, 1);
+        verticalLayout->addWidget(btnCountTFIDF);
 
-        btnGetStatsForTFIDF = new QPushButton(centralwidget);
+        btnGetStatsForTFIDF = new QPushButton(widget);
         btnGetStatsForTFIDF->setObjectName(QStringLiteral("btnGetStatsForTFIDF"));
 
-        gridLayout->addWidget(btnGetStatsForTFIDF, 2, 0, 1, 1);
+        verticalLayout->addWidget(btnGetStatsForTFIDF);
 
-        btnClustering = new QPushButton(centralwidget);
+        btnLoadHist = new QPushButton(widget);
+        btnLoadHist->setObjectName(QStringLiteral("btnLoadHist"));
+
+        verticalLayout->addWidget(btnLoadHist);
+
+        btnClustering = new QPushButton(widget);
         btnClustering->setObjectName(QStringLiteral("btnClustering"));
 
-        gridLayout->addWidget(btnClustering, 3, 0, 1, 1);
+        verticalLayout->addWidget(btnClustering);
 
-        btnClose = new QPushButton(centralwidget);
+        btnClose = new QPushButton(widget);
         btnClose->setObjectName(QStringLiteral("btnClose"));
 
-        gridLayout->addWidget(btnClose, 4, 0, 1, 1);
+        verticalLayout->addWidget(btnClose);
 
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
@@ -96,6 +112,7 @@ public:
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt;\">- process results of clustering algorothms to obtain some statistical information, and reverse vector mappings to words.</span></p></body></html>", 0));
         btnCountTFIDF->setText(QApplication::translate("MainWindow", "Process stemmed file, to obtain TF-IDF vectors", 0));
         btnGetStatsForTFIDF->setText(QApplication::translate("MainWindow", "Process TF-IDF vectors to obtain histograms", 0));
+        btnLoadHist->setText(QApplication::translate("MainWindow", "Load histogram files", 0));
         btnClustering->setText(QApplication::translate("MainWindow", "Perform clustering on TF-IDF vectors", 0));
         btnClose->setText(QApplication::translate("MainWindow", "Close", 0));
     } // retranslateUi

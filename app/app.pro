@@ -5,6 +5,7 @@ QT += gui
 QT += widgets
 
 CONFIG += app_bundle
+CONFIG += qwt
 
 HEADERS += main.hpp \
     mainwindow.h \
@@ -13,7 +14,8 @@ HEADERS += main.hpp \
     controllers/histogramcontroller.h \
     dialogs/histogramdialog.h \
     views/histogramsview.h \
-    models/histogramsdrawingdata.h
+    models/histogramsdrawingdata.h \
+    models/histogramseriesdata.h
 SOURCES += main.cpp \
     mainwindow.cpp \
     dialogs/stemmedfileprocessingdialog.cpp \
@@ -21,9 +23,11 @@ SOURCES += main.cpp \
     controllers/histogramcontroller.cpp \
     dialogs/histogramdialog.cpp \
     views/histogramsview.cpp \
-    models/histogramsdrawingdata.cpp
+    models/histogramsdrawingdata.cpp \
+    models/histogramseriesdata.cpp
 
-LIBS += -L../dev -lclustering
+LIBS += -L../dev -lclustering -L/usr/local/qwt-6.1.3-svn/lib -lqwt
+QMAKE_CXXFLAGS += -I/usr/local/qwt-6.1.3-svn/include
 
 FORMS += \
     mainwindow.ui \

@@ -20,6 +20,10 @@ private slots:
 
     void on_btnCountTFIDF_clicked();
 
+    void on_btnGetStatsForTFIDF_clicked();
+
+    void on_btnLoadHist_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

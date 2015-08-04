@@ -6,6 +6,7 @@
 
 #include <QThread>
 #include <QFileDialog>
+#include <QMessageBox>
 
 HistogramDialog::HistogramDialog(QWidget *parent) :
     QDialog(parent),
@@ -94,11 +95,21 @@ void HistogramDialog::readHistogramsData()
     QObject::connect(controler, SIGNAL(histogramsData(HistogramsDrawingData*)), this, SLOT(onHistogramsData(HistogramsDrawingData*)), Qt::QueuedConnection);
 
     emit readHistograms(f1, f2);
+    this->show();
 }
 
 void HistogramDialog::onHistogramsData(HistogramsDrawingData *histograms)
 {
     this->histograms = histograms;
+    if(this->histograms == 0)
+        QMessageBox::warning(this,
+                             "Data not ready",
+                             "Data not yet ready to display, please try \"View\" again in a while.",
+                             QMessageBox::Ok,
+                             QMessageBox::NoButton);
+    else {
+
+    }
 }
 
 void HistogramDialog::on_btnClose_clicked()

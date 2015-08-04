@@ -2,8 +2,8 @@
 
 HistogramsDrawingData::HistogramsDrawingData()
 {
-    this->dims = new QList<QPointF>();
-    this->coords = new QList<QPointF>();
+    this->dims = new Data();
+    this->coords = new Data();
 }
 
 HistogramsDrawingData::~HistogramsDrawingData()
@@ -12,25 +12,35 @@ HistogramsDrawingData::~HistogramsDrawingData()
     delete this->dims;
 }
 
-QList<QPointF> *HistogramsDrawingData::getCoords() const
+QVector<QPointF> *HistogramsDrawingData::getCoords() const
 {
-    return coords;
+    return coords->points;
 }
 
-void HistogramsDrawingData::setCoords(QList<QPointF> *value)
+void HistogramsDrawingData::addCoordsDataPoint(QPointF p)
 {
-    coords = value;
+    this->coords->addPoint(p);
 }
 
-QList<QPointF> *HistogramsDrawingData::getDims() const
+QVector<QPointF> *HistogramsDrawingData::getDims() const
 {
-    return dims;
+    return dims->points;
 }
 
-void HistogramsDrawingData::setDims(QList<QPointF> *value)
+void HistogramsDrawingData::addDimsDataPoint(QPointF p)
 {
-    dims = value;
+    this->dims->addPoint(p);
 }
 
-
-
+void HistogramsDrawingData::Data::addPoint(QPointF p)
+{
+    this->points->push_back(p);
+    if(this->max.rx() < p.rx())
+        this->max.setX(p.rx());
+    if(this->max.ry() < p.ry())
+        this->max.setY(p.ry());
+    if(this->min.rx() > p.rx())
+        this->min.setX(p.rx());
+    if(this->min.ry() > p.ry())
+        this->min.setY(p.ry());
+}

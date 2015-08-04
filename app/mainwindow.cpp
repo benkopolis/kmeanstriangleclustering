@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "dialogs/stemmedfileprocessingdialog.h"
+#include "dialogs/histogramdialog.h"
 
 #include <QFileDialog>
 
@@ -33,4 +34,20 @@ void MainWindow::on_btnCountTFIDF_clicked()
                 "/home/zby/MAGISTERKA/kmeanstriangleclustering/data");
     StemmedFileProcessingDialog *dialog = new StemmedFileProcessingDialog(this);
     dialog->processFiles(fileToProcess, fileToStore);
+}
+
+void MainWindow::on_btnGetStatsForTFIDF_clicked()
+{
+    QString fileToProcess = QFileDialog::getOpenFileName(
+                this,
+                "Please choose TF-IDF file",
+                "/home/zby/MAGISTERKA/kmeanstriangleclustering/data");
+    HistogramDialog* dialog = new HistogramDialog(this);
+    dialog->processTfidf(fileToProcess);
+}
+
+void MainWindow::on_btnLoadHist_clicked()
+{
+    HistogramDialog* dialog = new HistogramDialog(this);
+    dialog->readHistogramsData();
 }

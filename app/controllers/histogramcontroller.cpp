@@ -72,10 +72,10 @@ void HistogramController::fillDrawingData()
 {
     this->data = new HistogramsDrawingData();
     for(auto pair : this->histograms->getCoordsValuesFrequency()) {
-        this->data->getCoords()->append(QPointF((qreal)pair.first, (qreal)pair.second));
+        this->data->addCoordsDataPoint(QPointF((qreal)pair.first, (qreal)pair.second));
     }
     for(auto pair: this->histograms->getNonZeroCoordsFrequency()) {
-        this->data->getDims()->append(QPointF((qreal)pair.first, (qreal)pair.second));
+        this->data->addDimsDataPoint(QPointF((qreal)pair.first, (qreal)pair.second));
     }
 
     this->dataReady = true;
