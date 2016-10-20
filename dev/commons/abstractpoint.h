@@ -29,6 +29,7 @@ public:
     virtual void insert(unsigned key, double value) throw(BadIndex) = 0;
     virtual unsigned size() const throw() = 0;
     virtual bool contains(unsigned pid) const throw() = 0;
+    virtual double get(const unsigned& index) const throw(BadIndex) = 0;
 
     /**
      * @brief getKeys method returns list of unsigned values representing indexes of point coordinates.

@@ -22,9 +22,9 @@ FullDataReader::~FullDataReader()
 
 }
 
-AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(std::ifstream *in) throw (InvalidFileFormat)
+AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(std::istream *in) throw (InvalidFileFormat)
 {
-    if(in->eof() || !in->is_open())
+    if(in == NULL || in->eof() || in->peek() == std::istream::traits_type::eof())
         return 0;
 
     PointId pointIndex = 0;
@@ -48,11 +48,11 @@ AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(std::ifstream *in) th
             line_in >> c;
             p->insert(coordtIndex++, c);
         }
-        if(coordtIndex != numD) throw new InvalidFileFormat();
+        if(coordtIndex != numD) throw InvalidFileFormat(__FILE__, __LINE__);
         space->insertPoint(p, pointIndex);
         ++pointIndex;
     }
-    if(pointIndex != numP) throw new InvalidFileFormat;
+    if(pointIndex != numP) throw InvalidFileFormat(__FILE__, __LINE__);
 
     return space;
 }

@@ -42,6 +42,8 @@ public:
 
     virtual bool contains(unsigned pid) const throw();
 
+    virtual double get(const unsigned& index) const throw(BadIndex);
+
     static void InitializeKeys(unsigned numD);
 
 private:
@@ -50,6 +52,7 @@ private:
 
     static unsigned dimensions;
     static std::future<std::list<unsigned>*> KEYS;
+    static std::list<unsigned>* KEYS_RETURNED;
     static std::thread *keys_initializer;
     static bool initialized;
 

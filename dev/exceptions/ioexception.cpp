@@ -1,22 +1,22 @@
 #include "ioexception.h"
 
-IOException::IOException() : message("Input output error.")
+IOException::IOException(const char* file, int line) :
+    _data("Input output error.", file, line)
 {
 
 }
 
-IOException::IOException(const char *msg) : message(msg)
+IOException::IOException(const char *msg, const char *file, int line) :
+    _data(msg, file, line)
 {
-
 }
 
 IOException::~IOException()
 {
-
 }
 
 const char *IOException::what() const throw()
 {
-    return this->message;
+    return this->_data.what();
 }
 

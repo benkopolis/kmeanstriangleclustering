@@ -42,7 +42,7 @@ template<typename T>
 PtrCAbstractPoint NormalizedPointsSpace<T>::operator [](const unsigned &pid) throw(BadIndex)
 {
     if(this->points__.count(pid) == 0)
-        throw BadIndex();
+        throw BadIndex(__FILE__, __LINE__);
     return this->points__[pid];
 }
 
@@ -50,7 +50,7 @@ template<typename T>
 PtrCAbstractPoint NormalizedPointsSpace<T>::operator [](const unsigned &pid) const throw(BadIndex)
 {
     if(!this->points__.count(pid) == 0)
-        throw BadIndex();
+        throw BadIndex(__FILE__, __LINE__);
     return this->points__.at(pid);
 }
 

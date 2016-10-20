@@ -17,7 +17,7 @@ void StemmedFileParserController::onRead(const QString &in)
 {
     this->parser = new StemmedFileInMemoryParser();
     QByteArray ba = in.toLatin1();
-    emit readDone(this->parser->fillWithData(ba.data()));
+    emit readDone(this->parser->loadData(ba.data()));
 }
 
 void StemmedFileParserController::onProcess()

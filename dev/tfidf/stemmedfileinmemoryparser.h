@@ -13,7 +13,7 @@ public:
 
     virtual ~StemmedFileInMemoryParser();
 
-    bool fillWithData(const char* fileName);
+    bool loadData(const char* fileName);
 
     void countTfidf();
 

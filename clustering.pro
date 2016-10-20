@@ -6,8 +6,6 @@
 
 include(defaults.pri)
 
-QT       += gui
-
 CONFIG += ordered
 
 TARGET = all

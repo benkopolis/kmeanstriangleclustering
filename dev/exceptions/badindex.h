@@ -1,20 +1,20 @@
 #ifndef BADINDEX_H
 #define BADINDEX_H
 
-#include <exception>
+#include "base_exception.h"
 
 class BadIndex : public std::exception
 {
 public:
-    BadIndex();
-    BadIndex(const char* msg);
+    BadIndex(const char* file, int line);
+    BadIndex(const char* msg, const char* file, int line);
     virtual ~BadIndex() throw() {}
 
     virtual const char* what() const throw();
 
 private:
 
-    const char* message;
+    base_exception _data;
 };
 
 #endif // BADINDEX_H

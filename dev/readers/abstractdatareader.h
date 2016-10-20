@@ -27,7 +27,7 @@ public:
      */
     AbstractPointsSpace<T> * readPointSpaceFromFile(const char *fileName);
 
-    virtual AbstractPointsSpace<T> * parseFile(std::ifstream *in) throw (InvalidFileFormat) = 0;
+    virtual AbstractPointsSpace<T> * parseFile(std::istream *in) throw (InvalidFileFormat) = 0;
 
 	virtual ~AbstractDataReader() {}
 

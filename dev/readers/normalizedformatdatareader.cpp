@@ -16,9 +16,9 @@ NormalizedFormatDataReader::NormalizedFormatDataReader()
 {
 }
 
-AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::ifstream *in) throw (InvalidFileFormat)
+AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::istream *in) throw (InvalidFileFormat)
 {
-    if(in->eof() || !in->is_open())
+    if(in == NULL || in->eof() || in->peek() == std::istream::traits_type::eof())
         return 0;
 
     PointId pointIndex = 0;
@@ -45,7 +45,7 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::if
         space->insertPoint(p, pointIndex);
         ++pointIndex;
     }
-    if(pointIndex != numP) throw new InvalidFileFormat;
+    if(pointIndex != numP) throw InvalidFileFormat(__FILE__, __LINE__);
 
     return space;
 }

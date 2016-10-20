@@ -1,20 +1,21 @@
 #ifndef DIMENSIONSNOTSET_H
 #define DIMENSIONSNOTSET_H
 
-#include <exception>
+#include "base_exception.h"
 
 class DimensionsNotSet : public std::exception
 {
 public:
-    DimensionsNotSet();
-    DimensionsNotSet(const char* m);
-    virtual ~DimensionsNotSet() throw() {};
+    DimensionsNotSet(const char* file, int line);
+    DimensionsNotSet(const char* m, const char* file, int line);
+    virtual ~DimensionsNotSet();
 
     virtual const char* what() const throw();
 
 private:
 
-    const char* message;
+    base_exception _data;
+
 };
 
 #endif // DIMENSIONSNOTSET_H

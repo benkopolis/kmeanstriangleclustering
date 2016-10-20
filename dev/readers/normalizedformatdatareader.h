@@ -21,7 +21,7 @@ public:
      * <integer:number of points> <integer:number of dimensions> \n(white space separated)
      * <integer:dimension ordinate number>:<double:coordinate value>{1,dimensions} \n(white space separated)
      */
-    AbstractPointsSpace<SparsePoint> *parseFile(std::ifstream *in) throw (InvalidFileFormat);
+    AbstractPointsSpace<SparsePoint> *parseFile(std::istream *in) throw (InvalidFileFormat);
 
 private:
 

@@ -1,20 +1,20 @@
 #ifndef IOEXCEPTION_H
 #define IOEXCEPTION_H
 
-#include <exception>
+#include "base_exception.h"
 
 class IOException : public std::exception
 {
 public:
-    IOException();
-    IOException(const char* msg);
+    IOException(const char* file, int line);
+    IOException(const char* msg, const char* file, int line);
     virtual ~IOException();
 
     virtual const char* what() const throw();
 
 private:
 
-    const char* message;
+    base_exception _data;
 };
 
 #endif // IOEXCEPTION_H

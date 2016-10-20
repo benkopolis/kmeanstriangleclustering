@@ -23,21 +23,21 @@ SparsePoint::~SparsePoint()
 double& SparsePoint::operator [](const unsigned& index) throw(BadIndex)
 {
     if(this->hash->find(index) == this->hash->end())
-        throw BadIndex();
+        throw BadIndex("Point with given index is not held by the object.", __FILE__, __LINE__);
     return (*this->hash)[index];
 }
 
 double SparsePoint::operator [](const unsigned &index) const throw(BadIndex)
 {
     if(this->hash->find(index) == this->hash->end())
-        throw BadIndex();
+        throw BadIndex("Point with given index is not held by the object.", __FILE__, __LINE__);
     return (*this->hash)[index];
 }
 
 unsigned SparsePoint::diff(const AbstractPoint* another, bool exact = false) const throw(NotSparsePoint, NotDensePoint)
 {
     if(another == 0 || std::type_index(typeid(*another)) != std::type_index(typeid(SparsePoint)))
-        throw NotSparsePoint();
+        throw NotSparsePoint(__FILE__, __LINE__);
     const SparsePoint* p = dynamic_cast<const SparsePoint*>(another);
     unsigned difference = 0;
     bool itBigger = this->hash->size() > p->hash->size();
@@ -73,5 +73,12 @@ const std::list<unsigned>& SparsePoint::getKeys() const throw(DimensionsNotSet)
 bool SparsePoint::contains(unsigned pid) const throw()
 {
     return this->hash->count(pid) > 0;
+}
+
+double SparsePoint::get(const unsigned &index) const throw(BadIndex)
+{
+    if(this->hash->find(index) == this->hash->end())
+        throw BadIndex("Point with given index is not held by the object.", __FILE__, __LINE__);
+    return (*this->hash)[index];
 }
 

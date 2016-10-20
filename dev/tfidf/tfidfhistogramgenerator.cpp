@@ -43,7 +43,7 @@ void TfidfHistogramGenerator::generateHistograms(const char *tfidfFileName) thro
 {
     std::ifstream in(tfidfFileName, std::ios::in);
     if(!in.is_open())
-        throw IOException(Utils::getInstance()->concatenate(tfidfFileName, " can't be open to read."));
+        throw IOException(Utils::getInstance()->concatenate(tfidfFileName, " can't be open to read."), __FILE__, __LINE__);
     NormalizedFormatDataReader reader;
     AbstractPointsSpace<SparsePoint> * space = reader.parseFile(&in);
     for(unsigned i = 0; i < space->getNumPoints(); ++i) {
@@ -123,7 +123,7 @@ std::ifstream* TfidfHistogramGenerator::openFileToRead(const char *file) throw(I
 {
     std::ifstream* in = new std::ifstream(file, std::ios::in);
     if(!in->is_open())
-        throw IOException(Utils::getInstance()->concatenate(file, " can't be open to read."));
+        throw IOException(Utils::getInstance()->concatenate(file, " can't be open to read."), __FILE__, __LINE__);
     return in;
 }
 
@@ -131,7 +131,7 @@ std::ofstream *TfidfHistogramGenerator::openFileToWrite(const char *file) throw(
 {
     std::ofstream* out = new std::ofstream(file, std::ios::out | std::ios::trunc);
     if(!out->is_open())
-        throw IOException(Utils::getInstance()->concatenate(file, " can't be open to write."));
+        throw IOException(Utils::getInstance()->concatenate(file, " can't be open to write."), __FILE__, __LINE__);
     return out;
 }
 const std::unordered_map<unsigned, unsigned>& TfidfHistogramGenerator::getNonZeroCoordsFrequency() const

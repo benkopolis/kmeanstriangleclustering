@@ -35,7 +35,7 @@ StemmedFileInMemoryParser::~StemmedFileInMemoryParser()
     }
 }
 
-bool StemmedFileInMemoryParser::fillWithData(const char *fileName)
+bool StemmedFileInMemoryParser::loadData(const char *fileName)
 {
     std::ifstream in(fileName, std::ios::in);
     if(!in.is_open())

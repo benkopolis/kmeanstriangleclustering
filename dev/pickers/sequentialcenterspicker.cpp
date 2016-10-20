@@ -14,8 +14,9 @@ PartitionData *SequentialCentersPicker<PointType>::performInitialPartition(unsig
     {
         cid = pid % clusters;
         data->assign_unsafe(pid, cid);
-
+        this->addCoordsToCenter(ps->getPoint(pid), cid);
     }
 
+    this->divideCentersCoords(data);
     return data;
 }

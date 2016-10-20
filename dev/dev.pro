@@ -41,7 +41,8 @@ SOURCES += \
     commons/globals.cpp \
     generators/densepointgenerator.cpp \
     tfidf/tfidfhistogramgenerator.cpp \
-    exceptions/ioexception.cpp
+    exceptions/ioexception.cpp \
+    exceptions/base_exception.cpp
 HEADERS += \
     algorithms/abstractalgorithm.h \
     algorithms/kmeansalgorithm.h \
@@ -81,6 +82,7 @@ HEADERS += \
     commons/globals.h \
     generators/densepointgenerator.h \
     tfidf/tfidfhistogramgenerator.h \
-    exceptions/ioexception.h
+    exceptions/ioexception.h \
+    exceptions/base_exception.h
 
 FORMS +=

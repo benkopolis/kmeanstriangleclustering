@@ -13,7 +13,7 @@ CentersData::CentersData(unsigned nClusters) :
 DensePoint *CentersData::operator [](const unsigned &index) throw(BadIndex)
 {
     if(index >= this->centers.size())
-        throw BadIndex();
+        throw BadIndex(__FILE__, __LINE__);
 
     return this->centers[index];
 }
@@ -21,7 +21,7 @@ DensePoint *CentersData::operator [](const unsigned &index) throw(BadIndex)
 const DensePoint * const CentersData::operator [](const unsigned &index) const throw(BadIndex)
 {
     if(index >= this->centers.size())
-        throw BadIndex();
+        throw BadIndex(__FILE__, __LINE__);
 
     return this->centers[index];
 }
