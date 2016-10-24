@@ -2,10 +2,13 @@
 #define PARTITIONDATA_H
 
 #include <vector>
-#include <QHash>
-#include <QSet>
-#include <QTextStream>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <iostream>
+#include <string>
 #include "spaces/abstractpointsspace.h"
+#include "commons/pair_hash.h"
 
 class PartitionData
 {
@@ -24,24 +27,24 @@ public:
 
     unsigned getCluster(unsigned point) const throw();
 
-    QSet<unsigned> getPoints(unsigned cluster) const throw();
+    std::unordered_set<unsigned> getPoints(unsigned cluster) const throw();
 
     inline unsigned getNumberOfClusters() const throw() { return this->clustersData.size(); }
     inline void setNumberOfClusters(unsigned nclusters) throw() { this->clustersData.resize(nclusters); }
 
-    void printDifferences(const PartitionData* from, QTextStream& stream) const;
-    bool printClusters(QTextStream& stream) const;
+    void printDifferences(const PartitionData* from, std::ostream &stream) const;
+    bool printClusters(std::ostream& stream) const;
     void countPreRandIndex();
-    bool storePreRandIndex(const QString& fileName) const;
-    void printClustersSize(QTextStream& stream) const;
-    bool printClusteringResults(const QString& fileName) const;
-    bool printCentroids(const QString& fileName, AbstractPointsSpace<AbstractPoint> *ps) const;
+    bool storePreRandIndex(const std::string& fileName) const;
+    void printClustersSize(std::ostream& stream) const;
+    bool printClusteringResults(const std::string& fileName) const;
+    bool printCentroids(const std::string& fileName, AbstractPointsSpace<AbstractPoint> *ps) const;
 
 private:
 
-    QHash<unsigned, unsigned> pointsData;
-    std::vector<QSet<unsigned> > clustersData;
-    QHash<QPair<unsigned, unsigned>, bool> pre_rand_index__;
+    std::unordered_map<unsigned, unsigned> pointsData;
+    std::vector<std::unordered_set<unsigned> > clustersData;
+    std::unordered_map<std::pair<unsigned, unsigned>, bool> pre_rand_index__;
 
 };
 

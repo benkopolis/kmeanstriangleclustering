@@ -8,6 +8,11 @@
 
 SUITE(DensePointUT)
 {
+    TEST(EmptyRead)
+    {
+        CHECK(true);
+    }
+
     TEST(CreateAndEvaluateDensePoint)
     {
         DensePoint::InitializeKeys(100);

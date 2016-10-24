@@ -83,6 +83,7 @@ HEADERS += \
     generators/densepointgenerator.h \
     tfidf/tfidfhistogramgenerator.h \
     exceptions/ioexception.h \
-    exceptions/base_exception.h
+    exceptions/base_exception.h \
+    commons/pair_hash.h
 
 FORMS +=

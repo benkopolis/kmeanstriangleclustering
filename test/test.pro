@@ -26,7 +26,5 @@ SOURCES += \
     distances/cosinedistanceut.cpp \
     distances/euclideandistanceut.cpp \
     distances/hamiltondistanceut.cpp \
-    pickers/randomcenterpickerut.cpp \
-    pickers/sequentialcenterspickerut.cpp \
     readers/readersut.cpp \
     main.cpp

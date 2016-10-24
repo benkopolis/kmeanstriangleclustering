@@ -1,11 +1,10 @@
 #ifndef SEQUENTIALCENTERSPICKERUT_H
 #define SEQUENTIALCENTERSPICKERUT_H
 
-class SequentialCentersPickerUT
-{
-public:
-    SequentialCentersPickerUT();
+#include <UnitTest++/UnitTest++.h>
 
-};
+SUITE(SequentialCentersPickerUT)
+{
+}
 
 #endif // SEQUENTIALCENTERSPICKERUT_H

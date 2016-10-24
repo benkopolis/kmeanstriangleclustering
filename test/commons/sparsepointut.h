@@ -9,6 +9,11 @@
 
 SUITE(SparsePointUT)
 {
+    TEST(EmptyRead)
+    {
+        CHECK(true);
+    }
+
     TEST(CreateAndEvaluateSparsePoint)
     {
         SparsePoint* sparse = new SparsePoint(10);
