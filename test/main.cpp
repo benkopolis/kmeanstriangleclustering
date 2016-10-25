@@ -19,14 +19,11 @@ int main(int argc, char** argv)
         UnitTest::TestList selectedTests;
         UnitTest::Test* p = allTests.GetHead();
         bool readersTest = false, densePointTest = false;
-        int counter = 0;
         while(p)
         {
             for(int i=1; i< argc; ++i)
             {
                 UnitTest::Test* check = p;
-                p = p->m_nextTest;
-
                 if(strcmp(bSuite
                           ? check->m_details.suiteName
                           : check->m_details.testName,
@@ -49,12 +46,8 @@ int main(int argc, char** argv)
                     selectedTests.Add(check);
                 }
             }
-            counter++;
-            if(counter > 100)
-            {
-                std::cerr << "Too many iterations!" << std::endl;
-                break;
-            }
+
+            p = p->m_nextTest;
         }
 
         if(readersTest)

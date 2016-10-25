@@ -5,6 +5,11 @@ InvalidFileFormat::InvalidFileFormat(const char *file, int line) :
 {
 }
 
+InvalidFileFormat::InvalidFileFormat(const char *msg, const char *file, int line) :
+    _data(msg, file, line)
+{
+}
+
 InvalidFileFormat::~InvalidFileFormat()
 {
 }

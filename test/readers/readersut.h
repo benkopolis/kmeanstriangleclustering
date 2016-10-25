@@ -32,7 +32,7 @@ SUITE(ReadersUT)
         CHECK(true);
     }
 
-    // std::string str = "6 3 0\n1 2 1\n1 3 1\n0 1 0\n4 5 7\n5 5 7\n0 1 45\n0 2 48\n";
+    // std::string str = "7 3 0\n1 2 1\n1 3 1\n0 1 0\n4 5 7\n5 5 7\n0 1 45\n0 2 48\n";
     TEST(FullDataReaderOk)
     {
         FullDataReader fdr;
@@ -42,10 +42,10 @@ SUITE(ReadersUT)
         delete stream;
         CHECK(aps != NULL);
         CHECK(aps->getNumDimensions() == 3); // in helper string
-        CHECK(aps->getNumPoints() == 6); // in helper string
+        CHECK(aps->getNumPoints() == 7); // in helper string
         CHECK(aps->contains(5) == true);
         PtrCAbstractPoint point = (*aps)[5];
-        CHECK(point->get(3) == 48);
+        CHECK(point->get(1) == 5);
         delete aps;
     }
 
@@ -75,7 +75,7 @@ SUITE(ReadersUT)
         delete stream;
     }
 
-    //std::string str = "6 10\n0:1 1:2 2:1\n1:1 2:3 3:1\n1:1 2:1 3:1\n3:4 5:5 7:7\n3:5 4:5 7:7\n2:1 9:45\n3:2 9:48\n";
+    //std::string str = "7 10\n0:1 1:2 2:1\n1:1 2:3 3:1\n1:1 2:1 3:1\n3:4 5:5 7:7\n3:5 4:5 7:7\n2:1 9:45\n3:2 9:48\n";
     TEST(SparseDataReaderOk)
     {
         NormalizedFormatDataReader nfdr;
@@ -85,10 +85,10 @@ SUITE(ReadersUT)
         delete stream;
         CHECK(aps != NULL);
         CHECK(aps->getNumDimensions() == 10); // in helper string
-        CHECK(aps->getNumPoints() == 6); // in helper string
+        CHECK(aps->getNumPoints() == 7); // in helper string
         CHECK(aps->contains(5) == true);
         PtrCAbstractPoint point = (*aps)[5];
-        CHECK(point->get(9) == 48);
+        CHECK(point->get(7) == 7);
         delete aps;
     }
 
@@ -115,6 +115,7 @@ SUITE(ReadersUT)
         ReadersUTHelper helper;
         std::istream* stream = helper.getFullDataInvalidStream();
         CHECK_THROW(fdr.parseFile(stream), InvalidFileFormat);
+        delete stream;
     }
 }
 

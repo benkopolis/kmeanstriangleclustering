@@ -7,6 +7,7 @@ class InvalidFileFormat : public std::exception
 {
 public:
     InvalidFileFormat(const char* file, int line);
+    InvalidFileFormat(const char* msg, const char* file, int line);
     virtual ~InvalidFileFormat();
 
     virtual const char* what() const throw();

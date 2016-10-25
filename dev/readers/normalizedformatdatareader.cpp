@@ -25,6 +25,7 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::is
     unsigned int coordtIndex = 0;
     unsigned int numP=0, numD=0;
     *in >> numP >> numD;
+    in->ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     NormalizedPointsSpace<SparsePoint> * space = new NormalizedPointsSpace<SparsePoint>(numP, numD);
     Coord c = 0.0;
     char separator;
@@ -32,6 +33,8 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::is
     {
         std::string line;
         std::getline(*in, line);
+        if(line.empty())
+            continue;
         std::stringstream line_in(std::ios::in);
         line_in.str(line);
         line_in.seekg(0, std::ios::beg);
@@ -45,7 +48,8 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::is
         space->insertPoint(p, pointIndex);
         ++pointIndex;
     }
-    if(pointIndex != numP) throw InvalidFileFormat(__FILE__, __LINE__);
+    if(pointIndex != numP)
+        throw InvalidFileFormat("Wrong number of points readed", __FILE__, __LINE__);
 
     return space;
 }

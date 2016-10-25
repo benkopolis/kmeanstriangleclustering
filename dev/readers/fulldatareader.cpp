@@ -30,7 +30,8 @@ AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(std::istream *in) thr
     PointId pointIndex = 0;
     unsigned numP=0, numD=0;
     double quant = 0.0;
-    *in >> numP >> numD >> quant;
+    *in >> numP >> numD;
+    in->ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     PointsSpace<DensePoint> *space = new PointsSpace<DensePoint>(numP, numD);
     space->setQuant(quant);
     Coord c = 0.0;
@@ -38,6 +39,8 @@ AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(std::istream *in) thr
     {
         std::string line;
         std::getline(*in, line);
+        if(line.empty())
+            continue;
         std::stringstream line_in(std::ios::in);
         line_in.str(line);
         line_in.seekg(0, std::ios_base::beg);
@@ -48,11 +51,11 @@ AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(std::istream *in) thr
             line_in >> c;
             p->insert(coordtIndex++, c);
         }
-        if(coordtIndex != numD) throw InvalidFileFormat(__FILE__, __LINE__);
+        if(coordtIndex != numD) throw InvalidFileFormat("Point has wrong number of coordinates", __FILE__, __LINE__);
         space->insertPoint(p, pointIndex);
         ++pointIndex;
     }
-    if(pointIndex != numP) throw InvalidFileFormat(__FILE__, __LINE__);
+    if(pointIndex != numP) throw InvalidFileFormat("Wrong number of points readed", __FILE__, __LINE__);
 
     return space;
 }
