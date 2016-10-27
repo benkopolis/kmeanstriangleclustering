@@ -9,7 +9,7 @@
 
 SUITE(SparsePointUT)
 {
-    TEST(EmptyRead)
+    TEST(EmptySparsePoint)
     {
         CHECK(true);
     }

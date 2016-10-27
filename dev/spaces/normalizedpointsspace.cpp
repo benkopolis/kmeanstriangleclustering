@@ -69,7 +69,13 @@ PtrCAbstractPoint NormalizedPointsSpace<T>::getPoint(unsigned index) const
 template<typename T>
 bool NormalizedPointsSpace<T>::contains(unsigned index) const
 {
-    return points__.count(index) > 0;
+    return this->points__.count(index) > 0;
+}
+
+template<typename T>
+unsigned NormalizedPointsSpace<T>::getNumOfInsertedPoints() const
+{
+    return this->points__.size();
 }
 
 template<typename T>

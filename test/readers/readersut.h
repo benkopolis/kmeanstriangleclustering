@@ -2,6 +2,7 @@
 #define NORMALIZEDFORMATDATAREADERUT_H
 
 #include <UnitTest++/UnitTest++.h>
+#include <iostream>
 #include "readers/fulldatareader.h"
 #include "readers/normalizedformatdatareader.h"
 
@@ -42,10 +43,12 @@ SUITE(ReadersUT)
         delete stream;
         CHECK(aps != NULL);
         CHECK(aps->getNumDimensions() == 3); // in helper string
-        CHECK(aps->getNumPoints() == 7); // in helper string
+        CHECK(aps->getDeclaredNumPoints() == 7); // in helper string
+        CHECK(aps->getDeclaredNumPoints() == aps->getNumOfInsertedPoints());
         CHECK(aps->contains(5) == true);
         PtrCAbstractPoint point = (*aps)[5];
-        CHECK(point->get(1) == 5);
+        std::cout << "At point 5 at index 1 there is: " << point->get(1) << std::endl;
+        CHECK_CLOSE(1, point->get(1), 0.00000001);
         delete aps;
     }
 
@@ -85,10 +88,11 @@ SUITE(ReadersUT)
         delete stream;
         CHECK(aps != NULL);
         CHECK(aps->getNumDimensions() == 10); // in helper string
-        CHECK(aps->getNumPoints() == 7); // in helper string
+        CHECK(aps->getDeclaredNumPoints() == 7); // in helper string
+        CHECK(aps->getDeclaredNumPoints() == aps->getNumOfInsertedPoints());
         CHECK(aps->contains(5) == true);
         PtrCAbstractPoint point = (*aps)[5];
-        CHECK(point->get(7) == 7);
+        CHECK_CLOSE(45, point->get(9), 0.00000001);
         delete aps;
     }
 
@@ -113,7 +117,7 @@ SUITE(ReadersUT)
     {
         NormalizedFormatDataReader fdr;
         ReadersUTHelper helper;
-        std::istream* stream = helper.getFullDataInvalidStream();
+        std::istream* stream = helper.getNormalizedDataInvalidStream();
         CHECK_THROW(fdr.parseFile(stream), InvalidFileFormat);
         delete stream;
     }

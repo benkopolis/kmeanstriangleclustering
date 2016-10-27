@@ -9,7 +9,7 @@
 
 SUITE(RandomCentersPickerUT)
 {
-    TEST(EmptyRead)
+    TEST(EmptyRandPick)
     {
         CHECK(true);
     }
@@ -23,8 +23,10 @@ SUITE(RandomCentersPickerUT)
         int pointsNum = 0;
         for(unsigned int i = 0; i<5; ++i)
         {
-            p->getPoints(i)
+            pointsNum += p->getPoints(i).size();
         }
+        CHECK(pointsNum == space->getDeclaredNumPoints());
+        CHECK(pointsNum == space->getNumOfInsertedPoints());
         delete p;
         delete space;
     }

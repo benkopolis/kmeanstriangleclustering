@@ -18,7 +18,7 @@ public:
      * @brief Don't want to throw in this method, without throw(sth) declaration, and
      * can't change the header since it's inherited.
      */
-    virtual inline QPointF sample(size_t i) const { this->points == 0 ? QPointF(-1, -1) : (*(this->points))[i]; }
+    virtual inline QPointF sample(size_t i) const { return this->points == 0 ? QPointF(-1, -1) : (*(this->points))[i]; }
     virtual inline QRectF boundingRect() const { return this->d_boundingRect; }
     virtual void setRectOfInterest(const QRectF& rect);
 

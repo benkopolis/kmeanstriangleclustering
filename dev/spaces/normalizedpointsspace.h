@@ -19,6 +19,7 @@ public:
     virtual void insertPoint(T *p, unsigned index);
     virtual PtrCAbstractPoint getPoint(unsigned index) const;
     virtual bool contains(unsigned index) const;
+    virtual unsigned getNumOfInsertedPoints() const;
 
     virtual void savePointsSpace(const char *fileName);
     virtual void loadPointsSpace(const char *fileName);

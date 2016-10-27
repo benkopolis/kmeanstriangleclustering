@@ -55,7 +55,7 @@ unsigned DensePoint::diff(const AbstractPoint *another, bool exact = false) cons
         throw NotDensePoint(__FILE__, __LINE__);
 
     unsigned difference = 0;
-    for(int i = 0; i < this->vector->size(); ++i)
+    for(unsigned i = 0; i < this->vector->size(); ++i)
     {
         if(this->vector->at(i) != (*another)[i])
             ++difference;
@@ -65,8 +65,10 @@ unsigned DensePoint::diff(const AbstractPoint *another, bool exact = false) cons
 
 void DensePoint::insert(unsigned key, double value) throw(BadIndex)
 {
+#ifdef DONOTPERFORMKEYSCHECK
     if(key != this->vector->size() && this->vector->size() < dimensions) // insert must be called for every key from 0 to max
         throw BadIndex("Dimension was skipped while inserting values into DensPoint.", __FILE__, __LINE__);
+#endif
     if(key >= dimensions)
         throw BadIndex("Given key to insert coordinate value exceeds DensePoint:dimensions.", __FILE__, __LINE__);
     if(this->vector->size() < dimensions)

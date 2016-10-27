@@ -19,7 +19,7 @@ public:
     virtual PtrCAbstractPoint operator [] (const unsigned& pid) throw(BadIndex) = 0;
     virtual PtrCAbstractPoint operator [] (const unsigned& pid) const throw(BadIndex) = 0;
 
-    inline unsigned getNumPoints() const {
+    inline unsigned getDeclaredNumPoints() const {
 		return num_points__;
 	}
 
@@ -30,6 +30,7 @@ public:
     virtual void insertPoint(T* p, unsigned index) = 0;
     virtual PtrCAbstractPoint getPoint(unsigned index) const = 0;
     virtual bool contains(unsigned index) const = 0;
+    virtual unsigned getNumOfInsertedPoints() const = 0;
 
     virtual void savePointsSpace(const char* fileName) = 0;
     virtual void loadPointsSpace(const char* fileName) = 0;

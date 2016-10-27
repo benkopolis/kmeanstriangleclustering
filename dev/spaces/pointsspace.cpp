@@ -58,20 +58,25 @@ PtrCAbstractPoint PointsSpace<T>::operator [](const unsigned &pid) const throw(B
 template<typename T>
 void PointsSpace<T>::insertPoint(T *p, unsigned index)
 {
-    points__.insert({index, p});
-    ++(this->num_points__);
+    this->points__.insert({index, p});
 }
 
 template<typename T>
 PtrCAbstractPoint PointsSpace<T>::getPoint(unsigned index) const
 {
-    return points__.at(index);
+    return this->points__.at(index);
 }
 
 template<typename T>
 bool PointsSpace<T>::contains(unsigned index) const
 {
-    return points__.count(index) > 0;
+    return this->points__.count(index) > 0;
+}
+
+template<typename T>
+unsigned PointsSpace<T>::getNumOfInsertedPoints() const
+{
+    return this->points__.size();
 }
 
 template<typename T>

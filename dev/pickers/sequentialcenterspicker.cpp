@@ -8,9 +8,9 @@ SequentialCentersPicker<PointType>::SequentialCentersPicker()
 template<class PointType>
 PartitionData *SequentialCentersPicker<PointType>::performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType> *ps)
 {
-    PartitionData *data = new PartitionData(clusters, ps->getNumPoints());
+    PartitionData *data = new PartitionData(clusters, ps->getDeclaredNumPoints());
     unsigned cid;
-    for (unsigned pid = 0; pid < ps->getNumPoints(); pid++)
+    for (unsigned pid = 0; pid < ps->getDeclaredNumPoints(); pid++)
     {
         cid = pid % clusters;
         data->assign_unsafe(pid, cid);

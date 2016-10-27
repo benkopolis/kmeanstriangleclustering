@@ -4,6 +4,8 @@
 #include <UnitTest++/TestReporterStdout.h>
 #include <cstring>
 
+#define DONOTPERFORMKEYSCHECK 1
+
 #include "commons/densepointut.h"
 #include "commons/sparsepointut.h"
 #include "commons/globals.h"
@@ -19,6 +21,8 @@ int main(int argc, char** argv)
         UnitTest::TestList selectedTests;
         UnitTest::Test* p = allTests.GetHead();
         bool readersTest = false, densePointTest = false;
+        unsigned int testCount = 0;
+        unsigned int addedCount = 0;
         while(p)
         {
             for(int i=1; i< argc; ++i)
@@ -44,11 +48,16 @@ int main(int argc, char** argv)
                     }
 
                     selectedTests.Add(check);
+                    ++addedCount;
                 }
             }
 
             p = p->m_nextTest;
+            ++testCount;
         }
+
+        std::cout << "All tests: " << testCount << std::endl;
+        std::cout << "Added tests: " << addedCount << std::endl;
 
         if(readersTest)
         {
@@ -70,6 +79,8 @@ int main(int argc, char** argv)
 
         try
         {
+            Globals::DIMENSIONS = 100;
+            DensePoint::InitializeKeys(Globals::DIMENSIONS);
             return UnitTest::RunAllTests();
         }
         catch (std::exception const &b)

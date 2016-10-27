@@ -42,6 +42,8 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::is
         while(!line_in.eof())
         {
             line_in >> coordtIndex >> separator >> c;
+            if(coordtIndex > numD)
+                throw InvalidFileFormat(__FILE__, __LINE__);
             if(!p->contains(coordtIndex))
                 p->insert(coordtIndex, c);
         }
@@ -49,7 +51,7 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::is
         ++pointIndex;
     }
     if(pointIndex != numP)
-        throw InvalidFileFormat("Wrong number of points readed", __FILE__, __LINE__);
+        throw InvalidFileFormat("Wrong number of points read", __FILE__, __LINE__);
 
     return space;
 }

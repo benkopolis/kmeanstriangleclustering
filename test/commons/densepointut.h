@@ -8,7 +8,7 @@
 
 SUITE(DensePointUT)
 {
-    TEST(EmptyRead)
+    TEST(EmptyDensePoint)
     {
         CHECK(true);
     }

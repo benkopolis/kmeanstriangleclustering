@@ -17,6 +17,10 @@ protected:
 
     const char* getMessage() const throw();
 
+    int _bufferSize;
+    void** _stackBuffer;
+    char** _stackTrace;
+
 };
 
 #endif // BASE_EXCEPTION_H

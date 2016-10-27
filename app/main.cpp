@@ -27,7 +27,7 @@ Distance cosinDist(AbstractPoint const * const p, AbstractPoint const * const q)
 Distance euclideanDist(AbstractPoint* p, AbstractPoint* q)
 {
 	long double sigma = 0.0;
-    for(int i=0; i<p->size() && i<q->size(); ++i)
+    for(unsigned i=0; i<p->size() && i<q->size(); ++i)
 	{
         sigma = sigma + (long double)(((*p)[i] - (*q)[i])*((*p)[i] - (*q)[i]));
 	}
