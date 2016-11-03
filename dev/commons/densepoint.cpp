@@ -67,16 +67,24 @@ void DensePoint::insert(unsigned key, double value) throw(BadIndex)
 {
 #ifdef DONOTPERFORMKEYSCHECK
     if(key != this->vector->size() && this->vector->size() < dimensions) // insert must be called for every key from 0 to max
+    {
         throw BadIndex("Dimension was skipped while inserting values into DensPoint.", __FILE__, __LINE__);
+    }
 #endif
     if(key >= dimensions)
         throw BadIndex("Given key to insert coordinate value exceeds DensePoint:dimensions.", __FILE__, __LINE__);
-    if(this->vector->size() < dimensions)
+    if(key == this->vector->size())
+    {
         this->vector->push_back(value);
+    }
     else if(key < this->vector->size())
+    {
         (*this->vector)[key] = value;
+    }
     else
+    {
         throw BadIndex("This is not supported way of inserting a value for given index.", __FILE__, __LINE__);
+    }
 }
 
 const std::list<unsigned>& DensePoint::getKeys() const throw(DimensionsNotSet)

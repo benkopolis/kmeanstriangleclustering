@@ -1,5 +1,8 @@
 #include "abstractcenterspicker.h"
 
+#ifndef ABSTRACTCENTERSPICKER_CPP
+#define ABSTRACTCENTERSPICKER_CPP
+
 template<typename PointType>
 CentersData *AbstractCentersPicker<PointType>::getInitialCentersData()
 {
@@ -15,22 +18,26 @@ AbstractCentersPicker<PointType>::AbstractCentersPicker():
 template<typename PointType>
 void AbstractCentersPicker<PointType>::divideCentersCoords(PartitionData *data)
 {
-    for(unsigned cid : this->initialData)
+    unsigned cid = 0;
+    for(DensePoint* p : *(this->initialData))
     {
-        DensePoint* p = this->initialData[cid];
         for(unsigned d : p->getKeys())
         {
             (*p)[d] = (*p)[d] / data->getPoints(cid).size();
         }
+
+        ++cid;
     }
 }
 
 template<typename PointType>
-void AbstractCentersPicker<PointType>::addCoordsToCenter(PointType *p, unsigned center)
+void AbstractCentersPicker<PointType>::addCoordsToCenter(PtrCAbstractPoint p, unsigned center)
 {
-    AbstractPoint* q = dynamic_cast<AbstractPoint*>(p);
-    for(unsigned d : q->getKeys())
+    for(unsigned d : p->getKeys())
     {
-        this->initialData[center][d] += (*q)[d];
+        DensePoint* tmp = (*(this->initialData))[center];
+        (*tmp)[d] += (*p)[d];
     }
 }
+
+#endif //ABSTRACTCENTERSPICKER_CPP

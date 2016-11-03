@@ -26,6 +26,6 @@ private:
     static FullDataReader _instance;
 };
 
-#include "fulldatareader.cpp"
+//#include "fulldatareader.cpp"
 
 #endif // FULLDATAREADER_H

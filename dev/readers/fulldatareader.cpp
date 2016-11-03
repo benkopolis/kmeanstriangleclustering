@@ -1,13 +1,10 @@
 #include "fulldatareader.h"
-
-#ifndef FULLDATAREADER_CPP
-#define FULLDATAREADER_CPP
-
 #include "spaces/pointsspace.h"
 #include "commons/densepoint.h"
 
 #include <string>
 #include <sstream>
+#include <iostream>
 
 
 FullDataReader FullDataReader::_instance;
@@ -59,5 +56,3 @@ AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(std::istream *in) thr
 
     return space;
 }
-
-#endif //FULLDATAREADER_CPP

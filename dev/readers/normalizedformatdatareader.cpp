@@ -1,16 +1,10 @@
 #include "spaces/normalizedpointsspace.h"
-
-#ifndef NORMALIZEDFORMATDATAREADER_CPP
-#define NORMALIZEDFORMATDATAREADER_CPP
-
 #include "normalizedformatdatareader.h"
 #include "commons/sparsepoint.h"
 
 #include <string>
 #include <fstream>
 #include <iostream>
-
-NormalizedFormatDataReader NormalizedFormatDataReader::_instance;
 
 NormalizedFormatDataReader::NormalizedFormatDataReader()
 {
@@ -55,5 +49,3 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::is
 
     return space;
 }
-
-#endif //NORMALIZEDFORMATDATAREADER_CPP

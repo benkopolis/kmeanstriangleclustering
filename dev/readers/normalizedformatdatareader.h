@@ -1,9 +1,10 @@
-#ifndef DEFAULTNORMALIZEDFORMATDATAREADER_H
-#define DEFAULTNORMALIZEDFORMATDATAREADER_H
 
 #include "models.hpp"
 #include "abstractdatareader.h"
 #include "commons/sparsepoint.h"
+
+#ifndef DEFAULTNORMALIZEDFORMATDATAREADER_H
+#define DEFAULTNORMALIZEDFORMATDATAREADER_H
 
 #include <fstream>
 
@@ -18,16 +19,12 @@ public:
      * @return The points' space filled with points read from the opened file.
      *
      * The format of the file is defined as:
-     * <integer:number of points> <integer:number of dimensions> \n(white space separated)
+     * <integer:number of points> <integer:number of dimensions>\n(white space separated)
      * <integer:dimension ordinate number>:<double:coordinate value>{1,dimensions} \n(white space separated)
      */
     AbstractPointsSpace<SparsePoint> *parseFile(std::istream *in) throw (InvalidFileFormat);
-
-private:
-
-    static NormalizedFormatDataReader _instance;
 };
 
-#include "normalizedformatdatareader.cpp"
+//#include "normalizedformatdatareader.cpp"
 
 #endif // DEFAULTNORMALIZEDFORMATDATAREADER_H

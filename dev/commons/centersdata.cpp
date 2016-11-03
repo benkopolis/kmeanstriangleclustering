@@ -4,24 +4,24 @@
 #include <algorithm>
 
 CentersData::CentersData(unsigned nClusters) :
-    centers(nClusters, 0)
+    _centers(nClusters, 0)
 {
     DensePointGenerator generator;
-    std::generate_n(this->centers.begin(), nClusters, generator);
+    std::generate_n(this->_centers.begin(), nClusters, generator);
 }
 
 DensePoint *CentersData::operator [](const unsigned &index) throw(BadIndex)
 {
-    if(index >= this->centers.size())
+    if(index >= this->_centers.size())
         throw BadIndex(__FILE__, __LINE__);
 
-    return this->centers[index];
+    return this->_centers[index];
 }
 
-const DensePoint * const CentersData::operator [](const unsigned &index) const throw(BadIndex)
+DensePoint const * CentersData::operator [](const unsigned &index) const throw(BadIndex)
 {
-    if(index >= this->centers.size())
+    if(index >= this->_centers.size())
         throw BadIndex(__FILE__, __LINE__);
 
-    return this->centers[index];
+    return this->_centers[index];
 }

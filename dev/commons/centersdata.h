@@ -11,15 +11,19 @@ class CentersData
 public:
     CentersData(unsigned nClusters);
 
-    static CentersData* countCenters(PartitionData* data);
-
     DensePoint *operator [] (const unsigned& index) throw(BadIndex);
-    DensePoint const * const operator [] (const unsigned& index) const throw(BadIndex);
+    DensePoint const * operator [] (const unsigned& index) const throw(BadIndex);
 
+    std::vector<DensePoint* >::iterator begin() { return this->_centers.begin(); }
+    std::vector<DensePoint* >::const_iterator begin() const { return this->_centers.begin(); }
+    std::vector<DensePoint* >::iterator end() { return this->_centers.end(); }
+    std::vector<DensePoint* >::const_iterator end() const { return this->_centers.end(); }
+
+    unsigned size() const { return this->_centers.size(); }
 
 private:
 
-    std::vector<DensePoint* > centers;
+    std::vector<DensePoint* > _centers;
 };
 
 #endif // CENTERSDATA_H

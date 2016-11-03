@@ -19,12 +19,12 @@ protected:
 
     void divideCentersCoords(PartitionData* data);
 
-    void addCoordsToCenter(PointType *p, unsigned center);
-
-private:
+    void addCoordsToCenter(PtrCAbstractPoint p, unsigned center);
 
     CentersData * initialData;
 
 };
+
+#include "abstractcenterspicker.cpp"
 
 #endif // ABSTRACTCENTERSPICKER_H

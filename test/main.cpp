@@ -1,14 +1,17 @@
 //file with test executions
 #include <iostream>
-#include <UnitTest++/UnitTest++.h>
+#include <UnitTest++/UnitTestPP.h>
 #include <UnitTest++/TestReporterStdout.h>
 #include <cstring>
 
 #define DONOTPERFORMKEYSCHECK 1
 
-#include "commons/densepointut.h"
-#include "commons/sparsepointut.h"
+#include "commons/densepoint.h"
 #include "commons/globals.h"
+
+//#include "pickers/randomcenterpickerut.h"
+//#include "pickers/sequentialcenterspickerut.h"
+//#include "readers/readersut.h"
 
 
 int main(int argc, char** argv)
@@ -81,6 +84,16 @@ int main(int argc, char** argv)
         {
             Globals::DIMENSIONS = 100;
             DensePoint::InitializeKeys(Globals::DIMENSIONS);
+            const UnitTest::TestList& allTests(UnitTest::Test::GetTestList());
+            UnitTest::Test* p = allTests.GetHead();
+            while(p!= NULL)
+            {
+                std::cout << "Adding " << p->m_details.testName << " from " << p->m_details.suiteName << std::endl;
+                p = p->m_nextTest;
+            }
+            UnitTest::TestReporterStdout reporter;
+            UnitTest::TestRunner runner(reporter);
+            return runner.RunTestsIf(allTests, 0, UnitTest::True(), 0 );
             return UnitTest::RunAllTests();
         }
         catch (std::exception const &b)
