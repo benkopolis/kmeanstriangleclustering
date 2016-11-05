@@ -70,9 +70,9 @@ const std::list<unsigned>& SparsePoint::getKeys() const throw(DimensionsNotSet)
     return *(this->keys);
 }
 
-bool SparsePoint::contains(unsigned pid) const throw()
+bool SparsePoint::contains(unsigned dimIndex) const throw()
 {
-    return this->hash->count(pid) > 0;
+    return this->hash->count(dimIndex) > 0;
 }
 
 double SparsePoint::get(const unsigned &index) const throw(BadIndex)

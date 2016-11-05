@@ -40,7 +40,7 @@ public:
 
     inline virtual const std::list<unsigned> &getKeys() const throw(DimensionsNotSet);
 
-    virtual bool contains(unsigned pid) const throw();
+    virtual bool contains(unsigned dimIndex) const throw();
 
     virtual double get(const unsigned& index) const throw(BadIndex);
 

@@ -1,6 +1,0 @@
-#ifndef SPARSEPOINTUT_H
-#define SPARSEPOINTUT_H
-
-
-
-#endif // SPARSEPOINTUT_H

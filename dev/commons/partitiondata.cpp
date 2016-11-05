@@ -72,7 +72,7 @@ void PartitionData::printDifferences(const PartitionData *from, std::ostream &st
            << "Errors %: " << ((float)total / this->pointsData.size()) *100.0 << std::endl;
 }
 
-bool PartitionData::printClusters(std::ostream &stream) const
+void PartitionData::printClusters(std::ostream &stream) const
 {
     int i=0;
     for(const std::unordered_set<unsigned>& set : this->clustersData)
@@ -145,7 +145,7 @@ bool PartitionData::printClusteringResults(const std::string &fileName) const
     return true;
 }
 
-bool PartitionData::printCentroids(const std::string &fileName, AbstractPointsSpace<AbstractPoint> *ps) const
+bool PartitionData::printCentroids(const std::string &fileName) const
 {
     std::fstream file(fileName, std::ios_base::out);
     if(!file.is_open())

@@ -28,7 +28,7 @@ public:
     virtual unsigned diff(const AbstractPoint* another, bool exact) const throw(NotSparsePoint, NotDensePoint) = 0;
     virtual void insert(unsigned key, double value) throw(BadIndex) = 0;
     virtual unsigned size() const throw() = 0;
-    virtual bool contains(unsigned pid) const throw() = 0;
+    virtual bool contains(unsigned dimIndex) const throw() = 0;
     virtual double get(const unsigned& index) const throw(BadIndex) = 0;
 
     /**

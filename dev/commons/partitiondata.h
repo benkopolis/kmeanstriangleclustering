@@ -33,12 +33,12 @@ public:
     inline void setNumberOfClusters(unsigned nclusters) throw() { this->clustersData.resize(nclusters); }
 
     void printDifferences(const PartitionData* from, std::ostream &stream) const;
-    bool printClusters(std::ostream& stream) const;
+    void printClusters(std::ostream& stream) const;
     void countPreRandIndex();
     bool storePreRandIndex(const std::string& fileName) const;
     void printClustersSize(std::ostream& stream) const;
     bool printClusteringResults(const std::string& fileName) const;
-    bool printCentroids(const std::string& fileName, AbstractPointsSpace<AbstractPoint> *ps) const;
+    bool printCentroids(const std::string& fileName) const;
 
 private:
 

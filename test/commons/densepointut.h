@@ -1,6 +1,0 @@
-#ifndef DENSEPOINTUT_H
-#define DENSEPOINTUT_H
-
-
-
-#endif // DENSEPOINTUT_H

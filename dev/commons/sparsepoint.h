@@ -28,7 +28,7 @@ public:
     virtual unsigned diff(const AbstractPoint* another, bool exact) const throw(NotSparsePoint, NotDensePoint);
     virtual void insert(unsigned key, double value) throw(BadIndex);
     inline virtual unsigned size() const throw() { return this->hash->size(); }
-    virtual bool contains(unsigned pid) const throw();
+    virtual bool contains(unsigned dimIndex) const throw();
     virtual double get(const unsigned& index) const throw(BadIndex);
 
     inline virtual const std::list<unsigned> &getKeys() const throw(DimensionsNotSet);

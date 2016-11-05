@@ -100,9 +100,9 @@ const std::list<unsigned>& DensePoint::getKeys() const throw(DimensionsNotSet)
     return *KEYS_RETURNED;
 }
 
-bool DensePoint::contains(unsigned pid) const throw()
+bool DensePoint::contains(unsigned dimIndex) const throw()
 {
-    return this->vector->size() > pid;
+    return this->vector->size() > dimIndex;
 }
 
 double DensePoint::get(const unsigned &index) const throw(BadIndex)

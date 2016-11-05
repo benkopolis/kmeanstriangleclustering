@@ -7,7 +7,7 @@ CosineDistance::CosineDistance()
 
 double CosineDistance::distance(AbstractPoint *one, AbstractPoint *two)
 {
-    return 1.0 - (dotMatrixes(one, two) / sqrt(dotMatrixes(one, one))
+    return 1.0 - dotMatrixes(one, two) / (sqrt(dotMatrixes(one, one))
                   * sqrt(dotMatrixes(two, two)));
 }
 
