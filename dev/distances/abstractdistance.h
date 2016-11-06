@@ -9,22 +9,22 @@ class AbstractDistance
 {
 public:
 
-    virtual double distance(AbstractPoint* one, AbstractPoint* two) = 0;
+    virtual double distance(AbstractPoint* one, AbstractPoint* two) const = 0;
 
 protected:
 
     AbstractDistance();
 
     template<class T>
-    T getIntersectedIndexes(AbstractPoint *one, AbstractPoint *two);
+    T getIntersectedIndexes(AbstractPoint *one, AbstractPoint *two) const;
 
 };
 
 template<>
-std::unordered_set<unsigned> AbstractDistance::getIntersectedIndexes(AbstractPoint *one, AbstractPoint *two);
+std::unordered_set<unsigned> AbstractDistance::getIntersectedIndexes(AbstractPoint *one, AbstractPoint *two) const;
 
 template<class T>
-T AbstractDistance::getIntersectedIndexes(AbstractPoint *one, AbstractPoint *two)
+T AbstractDistance::getIntersectedIndexes(AbstractPoint *one, AbstractPoint *two) const
 {
     T v(one->size() > two->size() ? one->size() : two->size());
     typename T::iterator it;

@@ -9,11 +9,11 @@ class CosineDistance : public AbstractDistance
 public:
     CosineDistance();
 
-    virtual double distance(AbstractPoint *one, AbstractPoint *two);
+    virtual double distance(AbstractPoint *one, AbstractPoint *two) const;
 
 private:
 
-    double dotMatrixes(AbstractPoint *one, AbstractPoint *two) throw();
+    double dotMatrixes(AbstractPoint *one, AbstractPoint *two) const throw();
 };
 
 #endif // COSINEDISTANCE_H

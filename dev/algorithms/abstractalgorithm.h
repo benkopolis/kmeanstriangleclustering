@@ -17,15 +17,51 @@ class AbstractAlgorithm : private Utils::Where<Point, AbstractPoint>,
 {
 public:
 
+    virtual ~AbstractAlgorithm();
+
     virtual void execute() = 0;
 
 protected:
 
-    AbstractAlgorithm();
+    AbstractAlgorithm(Distance *distance,
+                      Picker<Point> *picker,
+                      Space<Point> *space);
 
 protected: // fields
 
+    AbstractDistance* _distance;
+    AbstractPointsSpace<Point> * _space;
+    AbstractCentersPicker<Point> * _picker;
+    CentersData* _centers;
+    PartitionData* _partition;
+
 
 };
+
+template<class Point, class Distance, class Picker, class Space>
+AbstractAlgorithm<Point, Distance, Picker, Space>::~AbstractAlgorithm()
+{
+    if(this->_centers != NULL)
+        delete this->_centers;
+    this->_centers = NULL;
+
+    if(this->_partition != NULL)
+        delete this->_partition;
+    this->_partition = NULL;
+}
+
+template<class Point, class Distance, class Picker, class Space>
+AbstractAlgorithm<Point, Distance, Picker, Space>::AbstractAlgorithm(
+        Distance* distance,
+        Picker<Point>* picker,
+        Space<Point>* space) :
+    _distance(distance),
+    _space(space),
+    _picker(picker),
+    _centers(0),
+    _partition(0)
+{
+}
+
 
 #endif // ABSTRACTALGORITHM_H

@@ -9,11 +9,11 @@ class EuclideanDistance : public AbstractDistance
 public:
     EuclideanDistance();
 
-    virtual double distance(AbstractPoint* one, AbstractPoint* two);
+    virtual double distance(AbstractPoint* one, AbstractPoint* two) const;
 
 private:
 
-    double addResultsFromSingleVector(AbstractPoint *one, const std::unordered_set<unsigned> &v, double result);
+    double addResultsFromSingleVector(AbstractPoint *one, const std::unordered_set<unsigned> &v, double result) const;
 };
 
 #endif // EUCLIDEANDISTANCE_H

@@ -5,13 +5,17 @@ CosineDistance::CosineDistance()
 {
 }
 
-double CosineDistance::distance(AbstractPoint *one, AbstractPoint *two)
+double CosineDistance::distance(AbstractPoint *one, AbstractPoint *two) const
 {
-    return 1.0 - dotMatrixes(one, two) / (sqrt(dotMatrixes(one, one))
-                  * sqrt(dotMatrixes(two, two)));
+    double top = dotMatrixes(one, two);
+    double bottom_left = sqrt(dotMatrixes(one, one));
+    double bottom_right = sqrt(dotMatrixes(two, two));
+    double bottom = bottom_left * bottom_right;
+    double similarity = top / bottom;
+    return 1.0 - similarity;
 }
 
-double CosineDistance::dotMatrixes(AbstractPoint *one, AbstractPoint *two) throw()
+double CosineDistance::dotMatrixes(AbstractPoint *one, AbstractPoint *two) const throw()
 {
     double result = 0;
     std::vector<unsigned> v = getIntersectedIndexes<std::vector<unsigned> >(one, two);

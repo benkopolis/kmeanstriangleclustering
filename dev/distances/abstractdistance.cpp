@@ -10,17 +10,16 @@ AbstractDistance::AbstractDistance()
 }
 
 template<>
-std::unordered_set<unsigned> AbstractDistance::getIntersectedIndexes(AbstractPoint *one, AbstractPoint *two)
+std::unordered_set<unsigned> AbstractDistance::getIntersectedIndexes(AbstractPoint *one, AbstractPoint *two) const
 {
     std::unordered_set<unsigned> v(one->size() > two->size() ? one->size() : two->size());
-    std::unordered_set<unsigned>::iterator it;
     for(unsigned oneKey : one->getKeys()) {
-        if(!two->contains(oneKey))
+        if(two->contains(oneKey))
             v.insert(oneKey);
     }
 
     for(unsigned twoKey : two->getKeys()) {
-        if(!one->contains(twoKey))
+        if(one->contains(twoKey))
             v.insert(twoKey);
     }
 

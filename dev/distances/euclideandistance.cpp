@@ -5,7 +5,7 @@ EuclideanDistance::EuclideanDistance()
 {
 }
 
-double EuclideanDistance::distance(AbstractPoint *one, AbstractPoint *two)
+double EuclideanDistance::distance(AbstractPoint *one, AbstractPoint *two) const
 {
     std::unordered_set<unsigned> v = this->getIntersectedIndexes<std::unordered_set<unsigned> >(one, two);
     double result = 0.0;
@@ -19,7 +19,7 @@ double EuclideanDistance::distance(AbstractPoint *one, AbstractPoint *two)
     return sqrt(result);
 }
 
-double EuclideanDistance::addResultsFromSingleVector(AbstractPoint *one, const std::unordered_set<unsigned> &v, double result)
+double EuclideanDistance::addResultsFromSingleVector(AbstractPoint *one, const std::unordered_set<unsigned> &v, double result) const
 {
     for(unsigned i : one->getKeys()) {
         if(v.find(i) == v.end())

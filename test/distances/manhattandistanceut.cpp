@@ -2,15 +2,15 @@
 #include <utility>
 
 #include "commons/sparsepoint.h"
-#include "distances/hamiltondistance.h"
+#include "distances/manhattandistance.h"
 
-SUITE(HamiltonDistanceUT)
+SUITE(ManhattanDistanceUT)
 {
-    TEST(HamiltonEmpty)
+    TEST(ManhattanEmpty)
     {
     }
 
-    TEST(HamiltonDistance1)
+    TEST(ManhattanDistance1)
     {
         SparsePoint p0(0);
         p0.insert(0, 1);
@@ -18,12 +18,12 @@ SUITE(HamiltonDistanceUT)
         SparsePoint p1(1);
         p1.insert(0, 1);
         p1.insert(1, 2);
-        HamiltonDistance distance;
+        ManhattanDistance distance;
         double dist = distance.distance(&p0, &p1);
-        CHECK(dist == 1);
+        CHECK(dist == 0);
     }
 
-    TEST(HamiltonDistance0)
+    TEST(ManhattanDistance0)
     {
         SparsePoint p0(0);
         p0.insert(0, 1);
@@ -31,12 +31,12 @@ SUITE(HamiltonDistanceUT)
         SparsePoint p1(1);
         p1.insert(0, 1);
         p1.insert(1, 1);
-        HamiltonDistance distance;
+        ManhattanDistance distance;
         double dist = distance.distance(&p0, &p1);
         CHECK(dist == 0);
     }
 
-    TEST(HamiltonDistance2)
+    TEST(ManhattanDistance2)
     {
         SparsePoint p0(0);
         p0.insert(0, 1);
@@ -44,8 +44,8 @@ SUITE(HamiltonDistanceUT)
         SparsePoint p1(1);
         p1.insert(2, 1);
         p1.insert(3, 2);
-        HamiltonDistance distance;
+        ManhattanDistance distance;
         double dist = distance.distance(&p0, &p1);
-        CHECK(dist == 5);
+        CHECK(dist == 4);
     }
 }

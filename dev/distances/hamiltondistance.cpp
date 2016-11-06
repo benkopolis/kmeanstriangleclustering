@@ -6,18 +6,25 @@ HamiltonDistance::HamiltonDistance()
 {
 }
 
-double HamiltonDistance::distance(AbstractPoint *one, AbstractPoint *two)
+double HamiltonDistance::distance(AbstractPoint *one, AbstractPoint *two) const
 {
-    std::vector<unsigned> v(one->size() + two->size());
-    std::vector<unsigned>::iterator it;
+    std::unordered_set<unsigned> v = this->getIntersectedIndexes<std::unordered_set<unsigned> >(one, two);
+    double result = 0.0;
+    for(unsigned i : v) {
+        result = result + fabs((*one)[i] - (*two)[i]); // fabs in case of Y is not exactly 2
+    }
 
-    std::set_union(one->getKeys().begin(),
-                   one->getKeys().end(),
-                   two->getKeys().begin(),
-                   two->getKeys().end(),
-                   v.begin());
+    for(unsigned i : one->getKeys()) {
+        if(v.count(i) > 0)
+            continue;
+        result = result + (*one)[i];
+    }
 
-    v.resize(it - v.begin());
-    std::vector<unsigned> u = this->getIntersectedIndexes<std::vector<unsigned> >(one, two);
-    return v.size() - u.size();
+    for(unsigned i : two->getKeys()) {
+        if(v.count(i) > 0)
+            continue;
+        result = result + (*two)[i];
+    }
+
+    return result;
 }

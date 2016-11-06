@@ -8,7 +8,7 @@ class HamiltonDistance : public AbstractDistance
 public:
     HamiltonDistance();
 
-    virtual double distance(AbstractPoint* one, AbstractPoint* two);
+    virtual double distance(AbstractPoint* one, AbstractPoint* two) const;
 };
 
 #endif // HAMILTONDISTANCE_H
