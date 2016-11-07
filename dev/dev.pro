@@ -4,8 +4,6 @@ TARGET = clustering
 TEMPLATE = lib
 
 SOURCES += \
-    algorithms/abstractalgorithm.cpp \
-    algorithms/kmeansalgorithm.cpp \
     commons/abstractpoint.cpp \
     commons/centersdata.cpp \
     commons/densepoint.cpp \
@@ -22,8 +20,6 @@ SOURCES += \
     exceptions/notimplemented.cpp \
     exceptions/notsparsepoint.cpp \
     pickers/abstractcenterspicker.cpp \
-    pickers/randomcenterpicker.cpp \
-    pickers/sequentialcenterspicker.cpp \
     readers/abstractdatareader.cpp \
     readers/fulldatareader.cpp \
     readers/normalizedformatdatareader.cpp \
@@ -42,7 +38,8 @@ SOURCES += \
     generators/densepointgenerator.cpp \
     tfidf/tfidfhistogramgenerator.cpp \
     exceptions/ioexception.cpp \
-    exceptions/base_exception.cpp
+    exceptions/base_exception.cpp \
+    distances/manhattandistance.cpp
 HEADERS += \
     algorithms/abstractalgorithm.h \
     algorithms/kmeansalgorithm.h \
@@ -84,6 +81,7 @@ HEADERS += \
     tfidf/tfidfhistogramgenerator.h \
     exceptions/ioexception.h \
     exceptions/base_exception.h \
-    commons/pair_hash.h
+    commons/pair_hash.h \
+    distances/manhattandistance.h
 
 FORMS +=

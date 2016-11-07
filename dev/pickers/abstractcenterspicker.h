@@ -5,7 +5,7 @@
 #include "commons/partitiondata.h"
 #include "commons/centersdata.h"
 
-template<typename PointType>
+template<class PointType>
 class AbstractCentersPicker : private Utils::Where<PointType, AbstractPoint>
 {
 public:

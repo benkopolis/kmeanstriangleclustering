@@ -8,7 +8,7 @@ class ManhattanDistance : public AbstractDistance
 public:
     ManhattanDistance();
 
-    virtual double distance(AbstractPoint* one, AbstractPoint* two) const;
+    virtual double distance(const AbstractPoint * const one, const AbstractPoint * const two) const;
 };
 
 #endif // MANHATTANDISTANCE_H

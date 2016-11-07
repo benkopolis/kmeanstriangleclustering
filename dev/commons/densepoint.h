@@ -38,7 +38,7 @@ public:
 
     inline virtual unsigned size() const throw() { return this->vector->size(); }
 
-    inline virtual const std::list<unsigned> &getKeys() const throw(DimensionsNotSet);
+    virtual const std::list<unsigned> &getKeys() const throw(DimensionsNotSet);
 
     virtual bool contains(unsigned dimIndex) const throw();
 

@@ -3,19 +3,19 @@
 #ifndef ABSTRACTCENTERSPICKER_CPP
 #define ABSTRACTCENTERSPICKER_CPP
 
-template<typename PointType>
+template<class PointType>
 CentersData *AbstractCentersPicker<PointType>::getInitialCentersData()
 {
     return this->initialData;
 }
 
-template<typename PointType>
+template<class PointType>
 AbstractCentersPicker<PointType>::AbstractCentersPicker():
     initialData(0)
 {
 }
 
-template<typename PointType>
+template<class PointType>
 void AbstractCentersPicker<PointType>::divideCentersCoords(PartitionData *data)
 {
     unsigned cid = 0;
@@ -30,7 +30,7 @@ void AbstractCentersPicker<PointType>::divideCentersCoords(PartitionData *data)
     }
 }
 
-template<typename PointType>
+template<class PointType>
 void AbstractCentersPicker<PointType>::addCoordsToCenter(PtrCAbstractPoint p, unsigned center)
 {
     for(unsigned d : p->getKeys())

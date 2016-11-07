@@ -9,11 +9,10 @@
 #include "pickers/abstractcenterspicker.h"
 #include "spaces/abstractpointsspace.h"
 
-template<class Point, class Distance, class Picker, class Space>
-class AbstractAlgorithm : private Utils::Where<Point, AbstractPoint>,
+template<class Point, class Distance>
+class AbstractAlgorithm :
         private Utils::Where<Distance, AbstractDistance>,
-        private Utils::Where<Picker, AbstractCentersPicker<Point>>,
-        private Utils::Where<Space, AbstractPointsSpace<Point>>
+        private Utils::Where<Point, AbstractPoint>
 {
 public:
 
@@ -21,11 +20,14 @@ public:
 
     virtual void execute() = 0;
 
+    inline const CentersData* getCentersData() const { return this->_centers; }
+    inline const PartitionData* getPartitionData() const { return this->_partition; }
+
 protected:
 
     AbstractAlgorithm(Distance *distance,
-                      Picker<Point> *picker,
-                      Space<Point> *space);
+                      AbstractCentersPicker<Point> *picker,
+                      AbstractPointsSpace<Point> *space);
 
 protected: // fields
 
@@ -38,8 +40,8 @@ protected: // fields
 
 };
 
-template<class Point, class Distance, class Picker, class Space>
-AbstractAlgorithm<Point, Distance, Picker, Space>::~AbstractAlgorithm()
+template<class Point, class Distance>
+AbstractAlgorithm<Point, Distance>::~AbstractAlgorithm()
 {
     if(this->_centers != NULL)
         delete this->_centers;
@@ -50,11 +52,10 @@ AbstractAlgorithm<Point, Distance, Picker, Space>::~AbstractAlgorithm()
     this->_partition = NULL;
 }
 
-template<class Point, class Distance, class Picker, class Space>
-AbstractAlgorithm<Point, Distance, Picker, Space>::AbstractAlgorithm(
-        Distance* distance,
-        Picker<Point>* picker,
-        Space<Point>* space) :
+template<class Point, class Distance>
+AbstractAlgorithm<Point, Distance>::AbstractAlgorithm(Distance* distance,
+        AbstractCentersPicker<Point> *picker,
+        AbstractPointsSpace<Point> *space) :
     _distance(distance),
     _space(space),
     _picker(picker),

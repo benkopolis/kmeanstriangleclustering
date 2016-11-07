@@ -9,7 +9,7 @@
 
 #include <list>
 
-template<typename T>
+template<class T>
 class AbstractPointsSpace : private Utils::Where<T, AbstractPoint>
 {
 public:

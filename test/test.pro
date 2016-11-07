@@ -7,17 +7,8 @@ TARGET = test
 TEMPLATE = app
 
 HEADERS += \
-    algorithms/kmeansalgorithmut.h \
-    commons/centersdataut.h \
-    commons/densepointut.h \
-    commons/partitiondataut.h \
-    commons/sparsepointut.h \
-    distances/cosinedistanceut.h \
-    distances/euclideandistanceut.h \
-    distances/hamiltondistanceut.h \
-    pickers/randomcenterpickerut.h \
-    pickers/sequentialcenterspickerut.h \
-    readers/readersut.h
+    readers/readersut.h \
+    commons/testpoint.h
 
 SOURCES += \
     algorithms/kmeansalgorithmut.cpp \
@@ -27,4 +18,10 @@ SOURCES += \
     distances/euclideandistanceut.cpp \
     distances/hamiltondistanceut.cpp \
     readers/readersut.cpp \
-    main.cpp
+    main.cpp \
+    commons/densepointut.cpp \
+    commons/sparsepointut.cpp \
+    pickers/randomcenterspickerut.cpp \
+    pickers/sequentialcenterspickerut.cpp \
+    commons/testpoint.cpp \
+    distances/manhattandistanceut.cpp

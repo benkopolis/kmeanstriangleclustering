@@ -12,7 +12,6 @@ SUITE(DensePointUT)
 
     TEST(CreateAndEvaluateDensePoint)
     {
-        DensePoint::InitializeKeys(100);
         DensePoint* point = new DensePoint(1, 100);
         CHECK(point);
         CHECK(1 == point->getPointId());
@@ -28,7 +27,6 @@ SUITE(DensePointUT)
 
     TEST(CompareDensePoints)
     {
-        DensePoint::InitializeKeys(100);
         DensePoint* p = new DensePoint(0, 100);
         DensePoint* q = new DensePoint(0, 100);
         for(int i = 0; i < 100; ++i) {
@@ -43,5 +41,7 @@ SUITE(DensePointUT)
 
         CHECK(p->diff(q, true) != 0);
         CHECK(p->diff(q, true) == q->diff(p, true));
+        delete p;
+        delete q;
     }
 }

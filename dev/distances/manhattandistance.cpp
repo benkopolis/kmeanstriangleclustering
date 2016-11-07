@@ -7,7 +7,7 @@ ManhattanDistance::ManhattanDistance()
 
 }
 
-double ManhattanDistance::distance(AbstractPoint *one, AbstractPoint *two) const
+double ManhattanDistance::distance(const AbstractPoint * const one, const AbstractPoint * const two) const
 {
     std::vector<unsigned> v(one->size() + two->size());
     std::vector<unsigned>::iterator it;
