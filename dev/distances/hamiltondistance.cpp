@@ -6,6 +6,10 @@ HamiltonDistance::HamiltonDistance()
 {
 }
 
+HamiltonDistance::~HamiltonDistance()
+{
+}
+
 double HamiltonDistance::distance(const AbstractPoint * const one, const AbstractPoint * const two) const
 {
     std::unordered_set<unsigned> v = this->getIntersectedIndexes<std::unordered_set<unsigned> >(one, two);

@@ -42,12 +42,17 @@ void PartitionData::assign_unsafe(unsigned point, unsigned cluster) throw()
     this->clustersData[cluster].insert(point);
 }
 
+bool PartitionData::is_assigned(unsigned pid) const
+{
+    return this->pointsData.count(pid) > 0;
+}
+
 unsigned PartitionData::getCluster(unsigned point) const throw()
 {
     return this->pointsData.at(point);
 }
 
-std::unordered_set<unsigned> PartitionData::getPoints(unsigned cluster) const throw()
+const std::unordered_set<unsigned>& PartitionData::getPoints(unsigned cluster) const throw()
 {
     return this->clustersData[cluster];
 }

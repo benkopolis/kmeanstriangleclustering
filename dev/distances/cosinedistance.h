@@ -8,6 +8,7 @@ class CosineDistance : public AbstractDistance
 {
 public:
     CosineDistance();
+    virtual ~CosineDistance();
 
     virtual double distance(const AbstractPoint * const one, const AbstractPoint * const two) const;
 

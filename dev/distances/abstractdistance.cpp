@@ -5,6 +5,10 @@
 #ifndef ABSTRACTDISTANCE_CPP
 #define ABSTRACTDISTANCE_CPP
 
+AbstractDistance::~AbstractDistance()
+{
+}
+
 AbstractDistance::AbstractDistance()
 {
 }

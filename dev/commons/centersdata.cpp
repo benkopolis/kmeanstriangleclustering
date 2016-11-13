@@ -1,12 +1,12 @@
 #include "centersdata.h"
-#include "generators/densepointgenerator.h"
+#include "generators/emptydensepointgenerator.h"
 
 #include <algorithm>
 
 CentersData::CentersData(unsigned nClusters) :
     _centers(nClusters, 0)
 {
-    DensePointGenerator generator;
+    EmptyDensePointGenerator generator;
     std::generate_n(this->_centers.begin(), nClusters, generator);
 }
 

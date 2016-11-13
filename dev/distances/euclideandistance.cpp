@@ -5,6 +5,10 @@ EuclideanDistance::EuclideanDistance()
 {
 }
 
+EuclideanDistance::~EuclideanDistance()
+{
+}
+
 double EuclideanDistance::distance(const AbstractPoint * const one, const AbstractPoint * const two) const
 {
     std::unordered_set<unsigned> v = this->getIntersectedIndexes<std::unordered_set<unsigned> >(one, two);

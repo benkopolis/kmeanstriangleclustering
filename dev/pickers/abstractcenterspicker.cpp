@@ -21,12 +21,15 @@ void AbstractCentersPicker<PointType>::divideCentersCoords(PartitionData *data)
     unsigned cid = 0;
     for(DensePoint* p : *(this->initialData))
     {
+        double divider = (double)data->getPoints(cid).size();
+        ++cid;
+        if (divider == 0)
+            continue;
+
         for(unsigned d : p->getKeys())
         {
-            (*p)[d] = (*p)[d] / data->getPoints(cid).size();
+            (*p)[d] = (*p)[d] / divider;
         }
-
-        ++cid;
     }
 }
 

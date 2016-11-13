@@ -9,6 +9,8 @@ class AbstractDistance
 {
 public:
 
+    virtual ~AbstractDistance();
+
     virtual double distance(const AbstractPoint * const one, const AbstractPoint * const two) const = 0;
 
 protected:

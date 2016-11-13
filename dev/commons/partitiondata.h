@@ -25,9 +25,11 @@ public:
 
     void assign_unsafe(unsigned point, unsigned cluster) throw();
 
+    bool is_assigned(unsigned pid) const;
+
     unsigned getCluster(unsigned point) const throw();
 
-    std::unordered_set<unsigned> getPoints(unsigned cluster) const throw();
+    const std::unordered_set<unsigned> &getPoints(unsigned cluster) const throw();
 
     inline unsigned getNumberOfClusters() const throw() { return this->clustersData.size(); }
     inline void setNumberOfClusters(unsigned nclusters) throw() { this->clustersData.resize(nclusters); }

@@ -7,6 +7,7 @@ class ManhattanDistance : public AbstractDistance
 {
 public:
     ManhattanDistance();
+    virtual ~ManhattanDistance();
 
     virtual double distance(const AbstractPoint * const one, const AbstractPoint * const two) const;
 };

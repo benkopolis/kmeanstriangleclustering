@@ -5,6 +5,10 @@ CosineDistance::CosineDistance()
 {
 }
 
+CosineDistance::~CosineDistance()
+{
+}
+
 double CosineDistance::distance(const AbstractPoint * const one, const AbstractPoint * const two) const
 {
     double top = dotMatrixes(one, two);

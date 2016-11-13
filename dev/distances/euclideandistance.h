@@ -8,6 +8,7 @@ class EuclideanDistance : public AbstractDistance
 {
 public:
     EuclideanDistance();
+    virtual ~EuclideanDistance();
 
     virtual double distance(const AbstractPoint * const one, const AbstractPoint * const two) const;
 

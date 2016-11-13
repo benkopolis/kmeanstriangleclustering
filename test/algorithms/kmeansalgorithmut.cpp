@@ -1,6 +1,8 @@
 #include <UnitTest++/UnitTestPP.h>
+#include <iostream>
 
-#define PERFORMANCE_TEST
+//#define PERFORMANCE_TEST
+#define DIAGNOSTICS_DEBUG
 
 #include "algorithms/kmeansalgorithm.h"
 #include "commons/sparsepoint.h"
@@ -28,10 +30,65 @@ SUITE(KMeansTests)
         NormalizedFormatDataReader reader;
         AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint,CosineDistance> * algo =
-                new KMeansAlgorithm<SparsePoint, CosineDistance>(distance, picker, space, 5, 10);
+                new KMeansAlgorithm<SparsePoint, CosineDistance>(distance, picker, space, 5, 5);
         algo->execute();
         CHECK(algo->getCentersData() != NULL);
         CHECK(algo->getPartitionData() != NULL);
+        std::cerr << "KMeansCorrectDataRandomPickerCosineDist " << algo->getNumberOfIterations() << std::endl;
+        delete distance;
+        delete picker;
+        delete space;
+        delete algo;
+    }
+
+    TEST(KMeansCorrectDataRandomPickerEuclideanDist)
+    {
+        EuclideanDistance* distance = new EuclideanDistance();
+        RandomCenterPicker<SparsePoint>* picker = new RandomCenterPicker<SparsePoint>();
+        NormalizedFormatDataReader reader;
+        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        KMeansAlgorithm<SparsePoint,EuclideanDistance> * algo =
+                new KMeansAlgorithm<SparsePoint, EuclideanDistance>(distance, picker, space, 5, 5);
+        algo->execute();
+        CHECK(algo->getCentersData() != NULL);
+        CHECK(algo->getPartitionData() != NULL);
+        std::cerr << "KMeansCorrectDataRandomPickerEuclideanDist " << algo->getNumberOfIterations() << std::endl;
+        delete distance;
+        delete picker;
+        delete space;
+        delete algo;
+    }
+
+    TEST(KMeansCorrectDataRandomPickerHamiltonDist)
+    {
+        HamiltonDistance* distance = new HamiltonDistance();
+        RandomCenterPicker<SparsePoint>* picker = new RandomCenterPicker<SparsePoint>();
+        NormalizedFormatDataReader reader;
+        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        KMeansAlgorithm<SparsePoint,HamiltonDistance> * algo =
+                new KMeansAlgorithm<SparsePoint, HamiltonDistance>(distance, picker, space, 5, 5);
+        algo->execute();
+        CHECK(algo->getCentersData() != NULL);
+        CHECK(algo->getPartitionData() != NULL);
+        std::cerr << "KMeansCorrectDataRandomPickerHamiltonDist " << algo->getNumberOfIterations() << std::endl;
+        delete distance;
+        delete picker;
+        delete space;
+        delete algo;
+    }
+
+    TEST(KMeansCorrectDataRandomPickerManhattanDist)
+    {
+        ManhattanDistance* distance = new ManhattanDistance();
+        RandomCenterPicker<SparsePoint>* picker = new RandomCenterPicker<SparsePoint>();
+        NormalizedFormatDataReader reader;
+        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        KMeansAlgorithm<SparsePoint,ManhattanDistance> * algo =
+                new KMeansAlgorithm<SparsePoint, ManhattanDistance>(distance, picker, space, 5, 5);
+        algo->execute();
+        CHECK(algo->getCentersData() != NULL);
+        CHECK(algo->getPartitionData() != NULL);
+        std::cerr << "KMeansCorrectDataRandomPickerManhattanDist " << algo->getNumberOfIterations() << std::endl;
         delete distance;
         delete picker;
         delete space;

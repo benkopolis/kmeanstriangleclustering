@@ -9,7 +9,12 @@
 #include <limits>
 #endif //PERFORMANCE_TEST
 
+#ifdef DIAGNOSTICS_DEBUG
+#include <iostream>
+#endif //DIAGNOSTICS_DEBUG
+
 #include "abstractalgorithm.h"
+#include "commons/clustercalculator.h"
 
 template<class Point, class Distance>
 class KMeansAlgorithm : public AbstractAlgorithm<Point, Distance>
@@ -23,10 +28,13 @@ public:
 
     virtual void execute();
 
+    inline unsigned getNumberOfIterations() const { return this->_looped; }
+
 protected:
 
     unsigned _numClusters;
     unsigned _iterations;
+    unsigned _looped;
     // cluster id; point id = distance
     std::unordered_map<std::pair<unsigned, unsigned>, double> _distanceValues;
 };
@@ -51,8 +59,10 @@ void KMeansAlgorithm<Point, Distance>::execute()
                 this->_numClusters,
                 this->_space);
     this->_centers = this->_picker->getInitialCentersData();
+    this->_looped = 0;
     bool moved = true;
-    unsigned looped = 0, centerId = 0, numPoints = this->_space->getNumOfInsertedPoints();
+    ClusterCalculator<Point> calculator;
+    unsigned centerId = 0, numPoints = this->_space->getNumOfInsertedPoints();
     unsigned assignedClusterId = 0;
     double dist = 0, currentAssignedDist;
 #ifdef PERFORMANCE_TEST
@@ -114,9 +124,22 @@ void KMeansAlgorithm<Point, Distance>::execute()
 #endif //PERFORMANCE_TEST
         }
 
-        ++looped;
+        calculator.recalculateCenters(this->_centers, this->_partition, this->_space);
+#ifdef DIAGNOSTICS_DEBUG
+        std::cerr << "centers ================ " << std::endl;
+        for(DensePoint* p : *(this->_centers))
+        {
+            for(unsigned dim : p->getKeys())
+            {
+                std::cerr << (*p)[dim] << " ";
+            }
+
+            std::cerr << std::endl;
+        }
+#endif
+        this->_looped += 1;
         centerId = 0;
-    } while(moved && looped < this->_iterations);
+    } while(moved && this->_looped < this->_iterations);
 #ifdef PERFORMANCE_TEST
     clock_t endAll = clock();
     outerAvg = outerAvg / outerC / CLOCKS_PER_SEC;

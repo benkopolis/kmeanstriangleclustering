@@ -4,7 +4,10 @@
 
 ManhattanDistance::ManhattanDistance()
 {
+}
 
+ManhattanDistance::~ManhattanDistance()
+{
 }
 
 double ManhattanDistance::distance(const AbstractPoint * const one, const AbstractPoint * const two) const
