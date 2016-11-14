@@ -2,8 +2,11 @@
 #define DIMENSIONBASEDCENTERSPICKER_H
 
 #include <map>
-#include <unordered_set>
+#include <unordered_map>
 #include <limits>
+#include <set>
+#include <utility>
+#include <iostream>
 
 #include "abstractcenterspicker.h"
 #include "commons/abstractpoint.h"
@@ -19,86 +22,103 @@ public:
 
     virtual ~DimensionBasedCentersPicker() {}
 
-    virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType>* ps)
-    {
-        PartitionData* data = new PartitionData(clusters, ps->getDeclaredNumPoints());
-        this->initialData = new CentersData(clusters);
-        ManhattanDistance distance;
-        unsigned dist = 0, totalDist = 0, minDist = std::numeric_limits<unsigned>::max();
-        unsigned numPoints = ps->getNumOfInsertedPoints();
-        for(unsigned pid1 = 0; pid1 < numPoints - 1; ++pid1)
-        {
-            for(unsigned pid2 = pid1 + 1; pid2< numPoints; ++pid2)
-            {
-                dist = static_cast<unsigned>(distance.distance(ps->getPoint(pid1), ps->getPoint(pid2)) + 0.5);
-                if(dist < minDist)
-                    minDist = dist;
-                this->_distances.insert({{pid1, pid2}, dist});
-                totalDist = totalDist + dist;
-            } // now we are finished with total dist for this point
-
-            unsigned reversedPid2 = pid1 - 1;
-            while(reversedPid2 > -1 && reversedPid2 < pid1)
-            {
-                totalDist = totalDist + this->_distances[std::make_pair(reversedPid2, pid1)];
-                --reversedPid2;
-            }
-
-            this->_distanceToPoint.insert({totalDist, pid1});
-        }
-
-        unsigned gensClusters = 0;
-        std::unordered_multiset<std::pair<unsigned, unsigned>, unsigned>::iterator theDist;
-        std::multimap<unsigned, unsigned>::iterator theTotal = this->_distanceToPoint.begin();
-        std::pair<unsigned, unsigned> keyForDist;
-        std::vector<std::multimap<unsigned, unsigned>::iterator> seeds;
-        while(this->_distances.size() > 0)
-        {
-            while(data->is_assigned(theTotal.second))
-                ++theTotal;
-            if (!data->is_assigned(theTotal.second))
-            {
-                data->assign_unsafe(theTotal.second, gensClusters);
-                seeds.push_back(theTotal);
-            }
-            else
-                theTotal = seeds[gensClusters];
-            for(unsigned pid = 0; pid < numPoints - 1; ++pid)
-            {
-                if (pid == theTotal.second)
-                    continue;
-                if (pid < theTotal.second)
-                    keyForDist = std::make_pair(pid, theTotal.second);
-                else
-                    keyForDist = std::make_pair(theTotal.second, pid);
-                theDist = this->_distances.find(keyForDist);
-                while (theDist.first.first == theTotal.second && theDist.first.second == pid)
-                {
-                    if (theDist.second == minDist)
-                    {
-                        data->assign_unsafe(pid, gensClusters);
-                        theDist = this->_distances.erase(theDist);
-                    }
-                    else
-                        ++theDist;
-                }
-            }
-
-            ++gensClusters;
-            if(gensClusters == clusters)
-            {
-                gensClusters = 0;
-                minDist = minDist + 1;
-            }
-        }
-
-        return data;
-    }
+    virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType>* ps);
 
 private:
 
     std::multimap<unsigned, unsigned> _distanceToPoint;
-    std::unordered_multiset<std::pair<unsigned, unsigned>, unsigned> _distances;
+    std::unordered_map<unsigned, unsigned> _pointToDistance;
+    std::unordered_map<std::pair<unsigned, unsigned>, unsigned> _distances;
+};
+
+template <class PointType>
+PartitionData *DimensionBasedCentersPicker<PointType>::performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType> *ps)
+{
+    PartitionData* data = new PartitionData(clusters, ps->getDeclaredNumPoints());
+    this->initialData = new CentersData(clusters);
+    ManhattanDistance distance;
+    std::set<unsigned> distValues;
+    unsigned dist = 0, totalDist = 0, minDist = std::numeric_limits<unsigned>::max();
+    unsigned numPoints = ps->getNumOfInsertedPoints();
+    for(unsigned pid1 = 0; pid1 < numPoints - 1; ++pid1)
+    {
+        for(unsigned pid2 = pid1 + 1; pid2< numPoints; ++pid2)
+        {
+            dist = static_cast<unsigned>(distance.distance(ps->getPoint(pid1), ps->getPoint(pid2)) + 0.5);
+            if(distValues.count(dist) == 0)
+                distValues.insert(dist);
+            if(dist < minDist)
+                minDist = dist;
+            this->_distances.insert({{pid1, pid2}, dist});
+            totalDist = totalDist + dist;
+        }
+
+        unsigned reversedPid2 = pid1 - 1;
+        while(reversedPid2 >= 0 && reversedPid2 < pid1)
+        {
+            totalDist = totalDist + this->_distances[std::make_pair(reversedPid2, pid1)];
+            --reversedPid2;
+        } // now we are finished with total dist for this point
+
+        this->_distanceToPoint.insert({totalDist, pid1});
+        this->_pointToDistance.insert({pid1, totalDist});
+        totalDist = 0;
+    }
+
+    unsigned gensClusters = 0, currentPid = 0;
+    std::multimap<unsigned, unsigned>::iterator theTotal;
+    std::set<unsigned>::const_iterator currMinDist = distValues.cbegin();
+    std::cerr << "MinDist initial: " << *currMinDist << std::endl;
+    std::vector<unsigned> seeds;
+    std::pair<unsigned, unsigned> keyForDist;
+    unsigned loopCount = 0, innerLoop = 0;
+    while(data->assigned_points() < ps->getNumOfInsertedPoints())
+    {
+        theTotal = this->_distanceToPoint.begin();
+        if (theTotal != this->_distanceToPoint.end()
+                && seeds.size() < clusters
+                && !data->is_assigned(theTotal->second))
+        {
+            data->assign_unsafe(theTotal->second, gensClusters);
+            this->_pointToDistance.erase(theTotal->second);
+            currentPid = theTotal->second;
+            this->_distanceToPoint.erase(theTotal);
+            seeds.push_back(currentPid);
+        }
+        else
+            currentPid = seeds[gensClusters];
+        for(unsigned pid = 0; pid < numPoints; ++pid)
+        {
+            if (pid == currentPid || data->is_assigned(pid))
+                continue;
+            if (pid < currentPid)
+                keyForDist = std::make_pair(pid, currentPid);
+            else
+                keyForDist = std::make_pair(currentPid, pid);
+            dist = this->_distances[keyForDist];
+            if (dist <= *currMinDist)
+            {
+                data->assign_unsafe(pid, gensClusters);
+                totalDist = this->_pointToDistance[pid];
+                this->_pointToDistance.erase(pid);
+                this->_distanceToPoint.erase(totalDist);
+            }
+            ++innerLoop;
+        }
+
+        ++gensClusters;
+        ++loopCount;
+        if(gensClusters == clusters)
+        {
+            gensClusters = 0;
+            ++currMinDist;
+            std::cerr << "MinDist increased: " << *currMinDist << std::endl
+                      << "Looped in while: " << loopCount << std::endl
+                      << "Looped in for: " << innerLoop << std::endl;
+        }
+    }
+
+    return data;
 }
 
 #endif // DIMENSIONBASEDCENTERSPICKER_H

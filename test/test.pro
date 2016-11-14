@@ -24,4 +24,5 @@ SOURCES += \
     pickers/randomcenterspickerut.cpp \
     pickers/sequentialcenterspickerut.cpp \
     commons/testpoint.cpp \
-    distances/manhattandistanceut.cpp
+    distances/manhattandistanceut.cpp \
+    pickers/dimensionbasedcenterspicker.cpp

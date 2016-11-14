@@ -52,6 +52,11 @@ unsigned PartitionData::getCluster(unsigned point) const throw()
     return this->pointsData.at(point);
 }
 
+unsigned PartitionData::assigned_points() const throw()
+{
+    return this->pointsData.size();
+}
+
 const std::unordered_set<unsigned>& PartitionData::getPoints(unsigned cluster) const throw()
 {
     return this->clustersData[cluster];

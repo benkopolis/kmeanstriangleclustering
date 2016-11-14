@@ -29,6 +29,8 @@ public:
 
     unsigned getCluster(unsigned point) const throw();
 
+    unsigned assigned_points() const throw();
+
     const std::unordered_set<unsigned> &getPoints(unsigned cluster) const throw();
 
     inline unsigned getNumberOfClusters() const throw() { return this->clustersData.size(); }

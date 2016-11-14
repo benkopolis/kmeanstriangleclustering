@@ -39,7 +39,8 @@ SOURCES += \
     tfidf/tfidfhistogramgenerator.cpp \
     exceptions/ioexception.cpp \
     exceptions/base_exception.cpp \
-    distances/manhattandistance.cpp
+    distances/manhattandistance.cpp \
+    generators/emptydensepointgenerator.cpp
 HEADERS += \
     algorithms/abstractalgorithm.h \
     algorithms/kmeansalgorithm.h \
@@ -82,6 +83,9 @@ HEADERS += \
     exceptions/ioexception.h \
     exceptions/base_exception.h \
     commons/pair_hash.h \
-    distances/manhattandistance.h
+    distances/manhattandistance.h \
+    commons/clustercalculator.h \
+    pickers/dimensionbasedcenterspicker.h \
+    generators/emptydensepointgenerator.h
 
 FORMS +=

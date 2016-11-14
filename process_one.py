@@ -10,6 +10,12 @@ from stemming.porter2 import stem
 import sys
 import re
 
+class NoFileIdError(Exception):
+    """ Class that represents and error where there is no id"""
+    
+    def __init__(self, msg):
+        self.message = msg
+
 def get_wordnet_pos(treebank_tag):
     if treebank_tag.startswith('J'):
         return wordnet.ADJ
@@ -113,7 +119,6 @@ class DocumentProcessor:
         if re.search(P_BIBLIO, aline) and \
             re.search(self.biblio_title, aline) and \
             re.search(self.biblio_id, aline):
-            print("\t\tBiblio!!\n")
             self.pre_out.close()
             return False
         tmpLine = aline.strip()
@@ -121,22 +126,16 @@ class DocumentProcessor:
             if tmpLine == self.file_id:
                 if self.status == ProcessStatus.Content:
                     self.status = ProcessStatus.PageOnContent
-                    print("\t\tstarted page\n")
                 else:
-                    print("\t\tended page\n")
                     self.status = ProcessStatus.Content
                 return True
             if re.search(P_PAGE, aline):
                 if self.status == ProcessStatus.Content:
-                    print("\t\tstarted page\n")
                     self.status = ProcessStatus.PageOnContent
                 else:
-                    print("\t\tended page\n")
                     self.status = ProcessStatus.Content
                 return True
             if self.status == ProcessStatus.PageOnContent:
-                print("\t\tstumbled upon a title on page\n")
-                print(aline)
                 return True
         if re.search(P_CHAPTER, aline):
             self.pre_out.write("{}.\n".format(aline.strip()))
@@ -152,7 +151,6 @@ class DocumentProcessor:
         """ Produces content file, abstract file,
         keywords file and jel classification file.
         """
-        print("PREPROCESSING: '{}'\n".format(self.fName))
         patternTitle = ''
         tmpLine = ''
         lineCounter = 0
@@ -161,7 +159,7 @@ class DocumentProcessor:
             for line in fstep_file:
                 if self.status == ProcessStatus.Initial:
                     if lineCounter == 0 and line.strip() != self.file_id:
-                        raise Exception('No id at first line')
+                        raise NoFileIdError('No id at first line')
                     if re.match(P_TITLE, line) and lineCounter < 10:
                         if len(self.title) > 1:
                             self.title = \
