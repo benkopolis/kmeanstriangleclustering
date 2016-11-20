@@ -86,6 +86,7 @@ HEADERS += \
     distances/manhattandistance.h \
     commons/clustercalculator.h \
     pickers/dimensionbasedcenterspicker.h \
-    generators/emptydensepointgenerator.h
+    generators/emptydensepointgenerator.h \
+    pickers/graphcentersandclusterspicker.h
 
 FORMS +=

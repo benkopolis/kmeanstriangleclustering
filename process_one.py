@@ -40,7 +40,7 @@ class ProcessStatus(Enum):
 P_PAGE = r"^[0-9]{1,5}$"
 P_ABSTRACT = r"^Abstract$"
 P_KEYWORDS = r"^Keywords\:\s"
-P_JEL = r"JEL\sclassification\:\s"
+P_JEL = r"JEL\s(classification[s]{0,1}|categories|category)\:\s"
 JEL_LEN = 19
 JEL_SEP = ','
 KW_LEN = 9
@@ -48,6 +48,19 @@ KW_SEP = ','
 P_CHAPTER = r"^[1-9][0-9]{0,3}\.\s\w+(\s\w*)*$"
 P_BIBLIO = r"Bibliography\son\s"
 P_TITLE = r"^[A-Z]+\s([A-Z]+\s*)*$"
+
+def log_debug(log):
+    if False:
+        print(log + '\n')
+
+def try_open(fname, rw):
+    try:
+        return open(fname, rw)
+    except FileNotFoundError:
+        print("\n-------------\n")
+        print("Cannot open '{}' as '{}'".format(fname, rw))
+        print("\n-------------\n")
+        raise
 
 class DocumentProcessor:
     def __init__(self, dirpath, fileName):
@@ -57,6 +70,7 @@ class DocumentProcessor:
         self.fNamePattern = fileName[:-4]
         self.preProcessedFName = \
             "{}/{}{}".format(self.dName, self.fNamePattern, '.ctn')
+        self.preProcOpened = False
         self.abstractFName = \
             "{}/{}{}".format(self.dName, self.fNamePattern, '.abs')
         self.kwFName = \
@@ -75,51 +89,58 @@ class DocumentProcessor:
     
     def __store_abstract(self, aline):
         if not self.abstr_out:
-            self.abstr_out = open(self.abstractFName, 'w')
-        if not re.match(P_JEL, aline):
+            self.abstr_out = try_open(self.abstractFName, 'w')
+        if not re.match(P_JEL, aline, re.IGNORECASE):
+            log_debug("Line: '{}' did not match JEL".format(aline))
             self.abstr_out.write(aline)
             return True
         else:
+            log_debug("Matching JEL")
             self.abstr_out.close()
             return False
     
     def __store_kw(self, aline):
         if not self.kw_out:
-            self.kw_out = open(self.kwFName, 'w')
-            if not len(aline) == 1:
-                if re.match(P_KEYWORDS, aline):
-                    aline = aline[KW_LEN:]
-                splitted = aline.split(KW_SEP)
-                for word in splitted:
-                    self.kw_out.write(word.strip())
-                    self.kw_out.write('\n')
-                return True
-            else:
-                self.kw_out.close()
-                return False
+            self.kw_out = try_open(self.kwFName, 'w')
+        if not len(aline) < 2:
+            if re.match(P_KEYWORDS, aline, re.IGNORECASE):
+                aline = aline[KW_LEN:]
+            splitted = aline.split(KW_SEP)
+            for word in splitted:
+                self.kw_out.write(word.strip())
+                self.kw_out.write(' ')
+            return True
+        else:
+            self.kw_out.close()
+            log_debug("End of KeyWords")
+            return False
     
     def __store_jel(self, aline):
         if not self.jel_out:
-            self.jel_out = open(self.jelFName, 'w')
-            if not re.match(P_KEYWORDS, aline):
-                if re.match(P_JEL, aline):
-                    aline = aline[JEL_LEN:]
-                splitted = aline.split(JEL_SEP)
-                for word in splitted:
-                    self.jel_out.write(word.strip())
-                    self.jel_out.write('\n')
-                return True
-            else:
-                self.jel_out.close()
-                return False
+            self.jel_out = try_open(self.jelFName, 'w')
+        if not re.match(P_KEYWORDS, aline, re.IGNORECASE):
+            if re.match(P_JEL, aline):
+                aline = aline[JEL_LEN:]
+            splitted = aline.split(JEL_SEP)
+            for word in splitted:
+                self.jel_out.write(word.strip())
+                self.jel_out.write(' ')
+            return True
+        else:
+            self.jel_out.close()
+            return False
                 
     def __store_content(self, aline):
         if not self.pre_out:
-            self.pre_out = open(self.preProcessedFName, 'w')
+            self.pre_out = try_open(self.preProcessedFName, 'w')
+            self.preProcOpened = True
+            log_debug("Opened preout")
         if re.search(P_BIBLIO, aline) and \
             re.search(self.biblio_title, aline) and \
             re.search(self.biblio_id, aline):
             self.pre_out.close()
+            self.preProcOpened = False
+            log_debug("Encountered biblio - closing")
             return False
         tmpLine = aline.strip()
         if len(tmpLine) < 5:
@@ -144,8 +165,10 @@ class DocumentProcessor:
         return True
     
     def __set_biblio_tags(self):
+        log_debug("Setting biblio tags")
         self.biblio_title = re.compile(self.title)
         self.biblio_id = "\\({}\\)".format(self.file_id)
+        log_debug("Done setting biblio tags")
     
     def pre_process_file(self):
         """ Produces content file, abstract file,
@@ -155,55 +178,58 @@ class DocumentProcessor:
         tmpLine = ''
         lineCounter = 0
         result = False
-        with open(self.fName, 'r') as fstep_file:
+        with try_open(self.fName, 'r') as fstep_file:
             for line in fstep_file:
                 if self.status == ProcessStatus.Initial:
+                    log_debug("ProcessingInitial line is: '{}'".format(line))
                     if lineCounter == 0 and line.strip() != self.file_id:
                         raise NoFileIdError('No id at first line')
-                    if re.match(P_TITLE, line) and lineCounter < 10:
+                    elif re.match(P_TITLE, line) and lineCounter < 10:
                         if len(self.title) > 1:
                             self.title = \
                                 "{} {}".format(self.title, line.strip())
                         else:
                             self.title = line.strip()
-                    if re.match(P_ABSTRACT, line):
+                    elif re.match(P_ABSTRACT, line):
+                        log_debug("Matching abstract")
                         self.status = ProcessStatus.Abstract
                         self.__set_biblio_tags()
-                        continue
-                if self.status == ProcessStatus.Abstract:
+                elif self.status == ProcessStatus.Abstract:
+                    log_debug("Processing Abstract line is: '{}'".format(line))
                     result = self.__store_abstract(line)
                     if not result:
                         self.status = ProcessStatus.Jel
                         self.__store_jel(line)
-                    continue
-                if self.status == ProcessStatus.Jel:
+                elif self.status == ProcessStatus.Jel:
                     result = self.__store_jel(line)
                     if not result:
                         self.status = ProcessStatus.Keywords
                         self.__store_kw(line)
-                    continue
-                if self.status == ProcessStatus.Keywords:
+                elif self.status == ProcessStatus.Keywords:
                     result = self.__store_kw(line)
                     if not result:
                         self.status = ProcessStatus.Content
-                        continue
-                if self.status == ProcessStatus.Content or \
+                elif self.status == ProcessStatus.Content or \
                     self.status == ProcessStatus.PageOnContent:
                     result = self.__store_content(line)
                     if not result:
                         print("\t Leaving early\n")
                         break
+                log_debug("Status: '{}'".format(self.status))
                 lineCounter = lineCounter + 1
+        if self.preProcOpened:
+            self.preProcOpened = False
+            self.pre_out.close()
         print("Done preprocessing of {} lines".format(lineCounter))
     
     def __tokenize_single(self, fileInName):
-        with open(fileInName, 'r') as ctn_in:
+        with try_open(fileInName, 'r') as ctn_in:
             data = ctn_in.read()
             lmtzr = WordNetLemmatizer()
-            token_res = open(fileInName + '.tkn', 'w')
-            lem_res = open(fileInName + '.lem', 'w')
-            ilem_res = open(fileInName + '.ilem', 'w')
-            stem_res = open(fileInName + '.stem', 'w')
+            token_res = try_open(fileInName + '.tkn', 'w')
+            lem_res = try_open(fileInName + '.lem', 'w')
+            ilem_res = try_open(fileInName + '.ilem', 'w')
+            stem_res = try_open(fileInName + '.stem', 'w')
             sentences = sent_tokenize(data)
             ignoreTypes = ['TO', 'CD', '.', 'LS', '']
             for sentence in sentences:
@@ -223,9 +249,9 @@ class DocumentProcessor:
                     lem_res.write(lema + ' ')
                     stemW = stem(lema)
                     stem_res.write(stemW + ' ')
-                lem_res.write('\n')
-                stem_res.write('\n')
-                ilem_res.write('\n')
+                lem_res.write(' ')
+                stem_res.write(' ')
+                ilem_res.write(' ')
             token_res.write('\n\n'.join(sentences))
             token_res.close()
             lem_res.close()
@@ -240,14 +266,16 @@ class DocumentProcessor:
 
 
 def main(argv):
-    inputDir = '/home/zby/MAGISTERKA/law/civil and criminal procedure'
-    inputFile = '7000book.txt'
+    #/home/zby/MAGISTERKA/law/tort law and unjust enrichment/3800book.ctn
+    inputDir = '/home/zby/MAGISTERKA/law/regulation of contracts'
+    inputFile = '5550book.txt'
+    log_debug("Test")
     if len(argv) == 2:
         inputDir = argv[0]
         inputFile = argv[1]
     dProc = DocumentProcessor(inputDir, inputFile)
     dProc.pre_process_file()
-    dProc.tokenize_files()
+    #dProc.tokenize_files()
 
 if __name__ == "__main__":
     main(sys.argv[1:])

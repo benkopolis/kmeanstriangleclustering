@@ -1,4 +1,10 @@
 #!/usr/bin/python3.4
+# shell command to find and check files generated
+# find . -type f -name *.abs -exec ls -l {} \;
+# merge per type
+# find . -type f -name *.key -exec cat {} + >> keywords_merged
+# merge all for mass tfidf
+# find . -type f \( -name "*.key" -o -name "*.ctn" -o -name "*.abs" \) -exec cat {} + >> merged_all
 
 from multiprocessing import Pool
 from os import walk
