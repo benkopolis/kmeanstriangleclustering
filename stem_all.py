@@ -29,8 +29,11 @@ def process(input):
         print("\n-------------\n")
         print("Error processing " + input[1])
         print("\n-------------\n")
-
-    return True
+    return dProc
+    
+def initProcessor(input):
+    time.sleep(1)
+    return DocumentProcessor(input[0], input[1])
 
 def getFiles():
     dict = {}
@@ -41,13 +44,17 @@ def getFiles():
             if fname.endswith('.txt'):
                 yield (dirpath, fname)
 
+
 if __name__ == "__main__":
     p = Pool(4)
     toProc = getFiles()
     N = 11
     result = []
     while True:
-        res = p.map(process, itertools.islice(toProc, N))
+        if len(sys.argv) > 1:
+            res = p.map(initProcessor, itertools.islice(toProc, N))
+        else:
+            res = p.map(process, itertools.islice(toProc, N))
         if res:
             result.extend(res)
             print("Processed 11\n")
@@ -55,4 +62,40 @@ if __name__ == "__main__":
         else:
             print("Done\n")
             break
+    keys = open("keywords.txt", 'w')
+    abstracts = open("abstracts.txt", 'w')
+    contents = open("contents.txt", 'w')
+    merged = open("all_merged.txt", 'w')
+    for proc in result:
+        try:
+            key = open(proc.kwFNameResult, 'r')
+            abstract = open(proc.abstractFNameResult, 'r')
+            content = open(proc.preProcessedFNameResult, 'r')
+            keys.write(proc.file_id + ': ')
+            abstracts.write(proc.file_id + ': ')
+            contents.write(proc.file_id + ': ')
+            merged.write(proc.file_id + ': ')
+            for line in key:
+                keys.write(line.strip() + ' ')
+                merged.write(line.strip() + ' ')
+            key.close()
+            keys.write('\n')
+            for line in abstract:
+                abstracts.write(line.strip() + ' ')
+                merged.write(line.strip() + ' ')
+            abstracts.write('\n')
+            abstract.close()
+            for line in content:
+                contents.write(line.strip() + ' ')
+                merged.write(line.strip() + ' ')
+            contents.write('\n')
+            content.close()
+            merged.write('\n')
+        except FileNotFoundError:
+            print (proc.preProcessedFNameResult + ' was not found')
+    keys.close()
+    abstracts.close()
+    contents.close()
+    merged.close()
+        
         

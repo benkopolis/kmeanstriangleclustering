@@ -68,13 +68,17 @@ class DocumentProcessor:
         self.fName = "{}/{}".format(self.dName, fileName)
         self.file_id = fileName[:4]
         self.fNamePattern = fileName[:-4]
+        self.rFilePostfix = '.stem'
         self.preProcessedFName = \
             "{}/{}{}".format(self.dName, self.fNamePattern, '.ctn')
         self.preProcOpened = False
+        self.preProcessedFNameResult = self.preProcessedFName + self.rFilePostfix
         self.abstractFName = \
             "{}/{}{}".format(self.dName, self.fNamePattern, '.abs')
+        self.abstractFNameResult = self.abstractFName + self.rFilePostfix
         self.kwFName = \
             "{}/{}{}".format(self.dName, self.fNamePattern, '.key')
+        self.kwFNameResult = self.kwFName + self.rFilePostfix
         self.jelFName = \
             "{}/{}{}".format(self.dName, self.fNamePattern, '.jel')
         self.abstr_out = None
@@ -97,6 +101,7 @@ class DocumentProcessor:
         else:
             log_debug("Matching JEL")
             self.abstr_out.close()
+            self.abstr_out = None
             return False
     
     def __store_kw(self, aline):
@@ -112,6 +117,7 @@ class DocumentProcessor:
             return True
         else:
             self.kw_out.close()
+            self.kw_out = None
             log_debug("End of KeyWords")
             return False
     
@@ -128,6 +134,7 @@ class DocumentProcessor:
             return True
         else:
             self.jel_out.close()
+            self.jel_out = None
             return False
                 
     def __store_content(self, aline):
@@ -139,6 +146,7 @@ class DocumentProcessor:
             re.search(self.biblio_title, aline) and \
             re.search(self.biblio_id, aline):
             self.pre_out.close()
+            self.pre_out = None
             self.preProcOpened = False
             log_debug("Encountered biblio - closing")
             return False
@@ -220,6 +228,7 @@ class DocumentProcessor:
         if self.preProcOpened:
             self.preProcOpened = False
             self.pre_out.close()
+            self.pre_out = None
         print("Done preprocessing of {} lines".format(lineCounter))
     
     def __tokenize_single(self, fileInName):
@@ -263,6 +272,7 @@ class DocumentProcessor:
         """
         self.__tokenize_single(self.preProcessedFName)
         self.__tokenize_single(self.abstractFName)
+        self.__tokenize_single(self.kwFName)
 
 
 def main(argv):
@@ -275,7 +285,7 @@ def main(argv):
         inputFile = argv[1]
     dProc = DocumentProcessor(inputDir, inputFile)
     dProc.pre_process_file()
-    #dProc.tokenize_files()
+    dProc.tokenize_files()
 
 if __name__ == "__main__":
     main(sys.argv[1:])
