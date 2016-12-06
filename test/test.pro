@@ -25,4 +25,5 @@ SOURCES += \
     pickers/sequentialcenterspickerut.cpp \
     commons/testpoint.cpp \
     distances/manhattandistanceut.cpp \
-    pickers/dimensionbasedcenterspicker.cpp
+    pickers/dimensionbasedcenterspicker.cpp \
+    tfidf/stemmedinmemoryfileparserut.cpp

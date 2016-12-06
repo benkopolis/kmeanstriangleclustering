@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_StemmedFileParserController_t {
-    QByteArrayData data[14];
-    char stringdata[147];
+    QByteArrayData data[15];
+    char stringdata[157];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -39,16 +39,18 @@ QT_MOC_LITERAL(6, 63, 22), // "generateHistogramsDone"
 QT_MOC_LITERAL(7, 86, 7), // "message"
 QT_MOC_LITERAL(8, 94, 6), // "onRead"
 QT_MOC_LITERAL(9, 101, 2), // "in"
-QT_MOC_LITERAL(10, 104, 9), // "onProcess"
-QT_MOC_LITERAL(11, 114, 7), // "onWrite"
-QT_MOC_LITERAL(12, 122, 3), // "out"
-QT_MOC_LITERAL(13, 126, 20) // "onGenerateHistograms"
+QT_MOC_LITERAL(10, 104, 9), // "stopWords"
+QT_MOC_LITERAL(11, 114, 9), // "onProcess"
+QT_MOC_LITERAL(12, 124, 7), // "onWrite"
+QT_MOC_LITERAL(13, 132, 3), // "out"
+QT_MOC_LITERAL(14, 136, 20) // "onGenerateHistograms"
 
     },
     "StemmedFileParserController\0readDone\0"
     "\0ok\0processDone\0writeDone\0"
     "generateHistogramsDone\0message\0onRead\0"
-    "in\0onProcess\0onWrite\0out\0onGenerateHistograms"
+    "in\0stopWords\0onProcess\0onWrite\0out\0"
+    "onGenerateHistograms"
 };
 #undef QT_MOC_LITERAL
 
@@ -72,10 +74,10 @@ static const uint qt_meta_data_StemmedFileParserController[] = {
        6,    2,   61,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       8,    1,   66,    2, 0x0a /* Public */,
-      10,    0,   69,    2, 0x0a /* Public */,
-      11,    1,   70,    2, 0x0a /* Public */,
-      13,    1,   73,    2, 0x0a /* Public */,
+       8,    2,   66,    2, 0x0a /* Public */,
+      11,    0,   71,    2, 0x0a /* Public */,
+      12,    1,   72,    2, 0x0a /* Public */,
+      14,    1,   75,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Bool,    3,
@@ -84,10 +86,10 @@ static const uint qt_meta_data_StemmedFileParserController[] = {
     QMetaType::Void, QMetaType::Bool, QMetaType::QString,    3,    7,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::QString,    9,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString,    9,   10,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   12,
-    QMetaType::Void, QMetaType::QString,   12,
+    QMetaType::Void, QMetaType::QString,   13,
+    QMetaType::Void, QMetaType::QString,   13,
 
        0        // eod
 };
@@ -101,7 +103,7 @@ void StemmedFileParserController::qt_static_metacall(QObject *_o, QMetaObject::C
         case 1: _t->processDone(); break;
         case 2: _t->writeDone((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 3: _t->generateHistogramsDone((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
-        case 4: _t->onRead((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 4: _t->onRead((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
         case 5: _t->onProcess(); break;
         case 6: _t->onWrite((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 7: _t->onGenerateHistograms((*reinterpret_cast< const QString(*)>(_a[1]))); break;

@@ -8,6 +8,7 @@
 
 #include <iterator>
 #include <list>
+#include <string>
 
 class AbstractPoint
 {
@@ -16,11 +17,15 @@ protected:
 
     unsigned pointId;
 
+    std::string _fileId;
+
 public:
 
     virtual ~AbstractPoint();
 
     inline unsigned getPointId() { return this->pointId; }
+    inline std::string getFileId() const throw() { this->_fileId; }
+    inline void setFileId(std::string fileId) throw() { this->_fileId = fileId; }
 
     virtual double& operator [] (const unsigned& index) throw(BadIndex) = 0;
     virtual double operator [] (const unsigned& index) const throw(BadIndex) = 0;

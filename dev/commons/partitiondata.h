@@ -37,6 +37,7 @@ public:
     inline void setNumberOfClusters(unsigned nclusters) throw() { this->clustersData.resize(nclusters); }
 
     void printDifferences(const PartitionData* from, std::ostream &stream) const;
+    void printClusters(const char* fileName) const;
     void printClusters(std::ostream& stream) const;
     void countPreRandIndex();
     bool storePreRandIndex(const std::string& fileName) const;

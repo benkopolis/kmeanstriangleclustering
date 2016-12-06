@@ -1,0 +1,17 @@
+001: aaa aaa aaa aaa bbb bbb abc ccc ccc
+011: aaa bbb bbb bbb bbb bbb abc abc abc 
+002: aaa aaa aaa aaa bbb bbb abc ccc ccc
+003: aaa aaa aaa aaa bbb bbb abc abc abc
+004: aaa aaa aaa aaa bbb abc abc abc ccc
+012: aaa bbb bbb bbb bbb bbb bbb abc ccc
+013: bbb bbb bbb bbb bbb bbb abc abc abc
+014: aaa bbb bbb bbb bbb bbb bbb abc abc
+015: aaa bbb bbb bbb bbb bbb abc abc ccc
+021: aaa bbb ccc abc abc ddd ddd ddd ddd
+022: aaa ccc ccc abc abc ddd ddd ddd ddd
+023: aaa bbb bbb abc abc ddd ddd ddd ddd
+024: aaa bbb ccc ccc abc ddd ddd ddd ddd
+031: aaa bbb ccc abc abc abc abc abc ddd
+032: bbb bbb ccc abc abc abc abc abc ddd
+033: aaa ccc ccc abc abc abc abc abc ddd
+034: aaa ccc abc abc abc abc abc abc abc

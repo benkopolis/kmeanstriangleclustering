@@ -1,8 +1,6 @@
 #ifndef MAIN_HPP
 #define MAIN_HPP
 
-#include <QtCore/QCoreApplication>
-#include <QTextStream>
 #include "models.hpp"
 #include "spaces/pointsspace.h"
 #include "spaces/normalizedpointsspace.h"
@@ -25,22 +23,7 @@ void testThreadClustering();
 
 void createTfIdfFile(int argc, char *argv[]);
 
-QString getOutputFileName(QString input, QString fileType,
-                          int num_clusters, int num_iters);
-
-QString getPreRandFileName(QString input, int num_clusters,
-                           int num_iters);
-
-QString getResultsFileName(QString input, int num_clusters,
-                           int num_iters);
-
-QString getCentroidsFileName(QString input, int num_clusters,
-                             int num_iters);
-
-void printManForComparsion(QTextStream& out);
-
-template<typename T>
-AbstractPointsSpace<T> *generateProperPointSpace(char *argv[], QTextStream& out);
+void performClustering(int argc, char *argv[]);
 
 void comapareDifferentKmeans(int argc, char *argv[]);
 

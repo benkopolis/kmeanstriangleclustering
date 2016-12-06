@@ -82,6 +82,14 @@ void PartitionData::printDifferences(const PartitionData *from, std::ostream &st
            << "Errors %: " << ((float)total / this->pointsData.size()) *100.0 << std::endl;
 }
 
+void PartitionData::printClusters(const char *fileName) const
+{
+    std::ofstream file;
+    file.open(fileName, std::ofstream::out);
+    this->printClusters(file);
+    file.close();
+}
+
 void PartitionData::printClusters(std::ostream &stream) const
 {
     int i=0;

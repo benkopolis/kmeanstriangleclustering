@@ -40,7 +40,9 @@ SOURCES += \
     exceptions/ioexception.cpp \
     exceptions/base_exception.cpp \
     distances/manhattandistance.cpp \
-    generators/emptydensepointgenerator.cpp
+    generators/emptydensepointgenerator.cpp \
+    tfidf/stopwordsgroup.cpp \
+    tfidf/stopwordsmanager.cpp
 HEADERS += \
     algorithms/abstractalgorithm.h \
     algorithms/kmeansalgorithm.h \
@@ -87,6 +89,8 @@ HEADERS += \
     commons/clustercalculator.h \
     pickers/dimensionbasedcenterspicker.h \
     generators/emptydensepointgenerator.h \
-    pickers/graphcentersandclusterspicker.h
+    pickers/graphcentersandclusterspicker.h \
+    tfidf/stopwordsgroup.h \
+    tfidf/stopwordsmanager.h
 
 FORMS +=

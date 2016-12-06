@@ -33,6 +33,9 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::is
         line_in.str(line);
         line_in.seekg(0, std::ios::beg);
         SparsePoint* p = new SparsePoint(pointIndex);
+        std::string id;
+        line_in >> id;
+        p->setFileId(id);
         while(!line_in.eof())
         {
             line_in >> coordtIndex >> separator >> c;

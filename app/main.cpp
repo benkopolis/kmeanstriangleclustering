@@ -1,37 +1,80 @@
 #include "main.hpp"
+#include "algorithms/kmeansalgorithm.h"
 #include "commons/sparsepoint.h"
-#include "mainwindow.h"
+#include "commons/globals.h"
+#include "pickers/randomcenterpicker.h"
+#include "commons/partitiondata.h"
+#include "commons/centersdata.h"
+#include "spaces/normalizedpointsspace.h"
+#include "distances/cosinedistance.h"
+#include "distances/euclideandistance.h"
+#include "distances/hamiltondistance.h"
+#include "distances/manhattandistance.h"
+#include "readers/normalizedformatdatareader.h"
+#include "tfidf/stemmedfileinmemoryparser.h"
 
-#include <QApplication>
+#include <cstring>
+#include <iostream>
 
-std::ostream* m_globalLogger = 0;
-
-double dotMatrixes(AbstractPoint const * const a, AbstractPoint const * const b)
+void createTfIdfFile(int argc, char *argv[])
 {
-	Distance result = 0;
-    for(const unsigned d1 : a->getKeys())
-	{
-        for(const unsigned d2 : b->getKeys())
-        {
-            result = result + (*a)[d1] * (*b)[d2];
-        }
-	}
-	return result;
+    if (argc < 3) // invalid
+        throw "Not enough arguments";
+
+    StemmedFileInMemoryParser parser;
+    std::cerr << "Created parser" << std::endl;
+    std::cerr.flush();
+    char *stemFile = NULL;
+    char *stopFile = NULL;
+    char *tfidfFile = NULL;
+    for(unsigned i = 1; i < argc; i += 2)
+    {
+        if (!strcmp(argv[i], "-stem"))
+            stemFile = argv[i+1];
+        else if (!strcmp(argv[3], "-stop"))
+            stopFile = argv[i+1];
+        else if(!strcmp(argv[i], "-tfidf"))
+            tfidfFile = argv[i+1];
+    }
+    std::cerr << "Assigned names" << std::endl;
+    std::cerr.flush();
+
+    parser.loadData(stemFile, stopFile);
+    std::cerr << "Loaded data" << std::endl;
+    std::cerr.flush();
+    parser.countTfidf();
+    std::cerr << "Counted tfidf" << std::endl;
+    std::cerr.flush();
+    parser.storeTfidfInFile(tfidfFile);
+    std::cerr << "Storing data" << std::endl;
+    std::cerr.flush();
 }
 
-Distance cosinDist(AbstractPoint const * const p, AbstractPoint const * const q)
+void performClustering(int argc, char *argv[])
 {
-	return 1.0 - (dotMatrixes(p, q) / sqrt(dotMatrixes(p, p)) * sqrt(dotMatrixes(q, q)));
-}
-
-Distance euclideanDist(AbstractPoint* p, AbstractPoint* q)
-{
-	long double sigma = 0.0;
-    for(unsigned i=0; i<p->size() && i<q->size(); ++i)
-	{
-        sigma = sigma + (long double)(((*p)[i] - (*q)[i])*((*p)[i] - (*q)[i]));
-	}
-	return sqrt((double)sigma);
+    CosineDistance* distance = new CosineDistance();
+    RandomCenterPicker<SparsePoint>* picker = new RandomCenterPicker<SparsePoint>();
+    NormalizedFormatDataReader reader;
+    char *resFile = NULL;
+    char *tfidfFile = NULL;
+    for(unsigned i = 1; i < argc; i += 2)
+    {
+        if (!strcmp(argv[i], "-input"))
+            tfidfFile = argv[i+1];
+        else if (!strcmp(argv[3], "-out"))
+            resFile = argv[i+1];
+    }
+    AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile(tfidfFile);
+    KMeansAlgorithm<SparsePoint,CosineDistance> * algo =
+            new KMeansAlgorithm<SparsePoint, CosineDistance>(distance, picker, space, 10, 5);
+    algo->execute();
+    const PartitionData* partData = algo->getPartitionData();
+    partData->printClusters(resFile);
+    std::cerr << "KMeansCorrectDataRandomPickerCosineDist " << algo->getNumberOfIterations() << std::endl;
+    delete distance;
+    delete picker;
+    delete space;
+    delete algo;
 }
 
 void produceClusteringData()
@@ -39,118 +82,80 @@ void produceClusteringData()
     throw 1;
 }
 
-QString getOutputFileName(QString input, QString fileType,
-                          int num_clusters, int num_iters)
-{
-    input.replace("tfidf", fileType);
-    input.replace("data", "data/out");
-    QString appendix = QString("%1g%2i-out").arg(QString("%1").arg(num_clusters),
-                                                 QString("%1").arg(num_iters));
-    return input.replace("out", appendix);
-}
 
-QString getPreRandFileName(QString input, int num_clusters,
-                           int num_iters)
-{
-    return getOutputFileName(input, "prerand", num_clusters, num_iters);
-}
+//template<typename T>
+//AbstractPointsSpace<T> *generateProperPointSpace(char *argv[])
+//{
+//    Utils::Derived_from<T, AbstractPoint> d;
+//    AbstractPointsSpace<T>* ps = 0;
+//    if(!strcmp(argv[3], "-f"))
+//    {
+//        QString dataFile(argv[4]);
+//        ps = new PointsSpace<T>();
+//        ps->loadPointsSpace(dataFile);
+//    }
+//    else if(!strcmp(argv[3], "-random"))
+//    {
+//        bool okPoints = false, okDimensions = false;
+//        QString npoints(argv[5]), ndimensions(argv[4]);
+//        unsigned int num_points = npoints.toInt(&okPoints),
+//                num_dimensions = ndimensions.toInt(&okDimensions);
+//        if(!okDimensions || !okPoints)
+//        {
+//            std::cout << "Both arguments num-dimensions and num-points need to be valid integer numbers." << endl;
+//                   return 0;
+//        }
 
-QString getResultsFileName(QString input, int num_clusters,
-                           int num_iters)
-{
-    return getOutputFileName(input, "results", num_clusters, num_iters);
-}
-
-QString getCentroidsFileName(QString input, int num_clusters,
-                             int num_iters)
-{
-    return getOutputFileName(input, "centroids", num_clusters, num_iters);
-}
-
-void printManForComparsion(QTextStream& out)
-{
-    out << "Please provide more arguments:" << endl
-        << "First option: -f input-data-file" << endl <<
-           "Second option: -random num-dimensions num-points" << endl;
-}
-
-template<typename T>
-AbstractPointsSpace<T> *generateProperPointSpace(char *argv[], QTextStream& out)
-{
-    Utils::Derived_from<T, AbstractPoint> d;
-    AbstractPointsSpace<T>* ps = 0;
-    if(!qstrcmp(argv[3], "-f"))
-    {
-        QString dataFile(argv[4]);
-        ps = new PointsSpace<T>();
-        ps->loadPointsSpace(dataFile);
-    }
-    else if(!qstrcmp(argv[3], "-random"))
-    {
-        bool okPoints = false, okDimensions = false;
-        QString npoints(argv[5]), ndimensions(argv[4]);
-        unsigned int num_points = npoints.toInt(&okPoints),
-                num_dimensions = ndimensions.toInt(&okDimensions);
-        if(!okDimensions || !okPoints)
-        {
-            out << "Both arguments num-dimensions and num-points need to be valid integer numbers." << endl;
-                   return 0;
-        }
-
-        ps = new PointsSpace<T>(num_points, num_dimensions);
-    }
-    return ps;
-}
+//        ps = new PointsSpace<T>(num_points, num_dimensions);
+//    }
+//    return ps;
+//}
 
 void man()
 {
-    QTextStream out(stdout);
-    out << "please add args:" << endl;
-    out << "-tfidf input_file_name output_file_name" << endl
-        << "\t for genereting tfidf file based on stemmed documents set." << endl;
-    out << "-res input_file_name output_prerand_file_name output_results_file_name" << endl
-        << "\t for generating results of clustering, pre rand indexes and mean square error." << endl;
-    out << "-mse tfidf_file exisitng_results_file" << endl
-        << "\t for generating mean square error base on tfidf file and results of clustering tfidf vectors from this file." << endl;
+    std::cout << "please add args:" << std::endl;
+    std::cout << "-stem stemmed_file_name -stop stop_wrods_file_name -tfidf output_file_name" << std::endl
+        << "\t for genereting tfidf file based on stemmed documents set." << std::endl;
+    std::cout << "-res input_file_name output_prerand_file_name output_results_file_name" << std::endl
+        << "\t for generating results of clustering, pre rand indexes and mean square error." << std::endl;
+    std::cout << "-mse tfidf_file exisitng_results_file" << std::endl
+        << "\t for generating mean square error base on tfidf file and results of clustering tfidf vectors from this file." << std::endl;
 }
 
-//int main(int argc, char *argv[])
-//{
-//    QFile file("logs/full.log");
-//    bool globalLogFileOpened = file.open(QFile::WriteOnly);
-//    if(globalLogFileOpened)
-//        m_globalLogger = new QTextStream(&file);
-//    else
-//        m_globalLogger = new QTextStream(stderr);
-//    QTime time = QTime::currentTime();
-//    qsrand((uint)time.msec());
-////    testArgs();
-////    testClustering();
-//    if(argc < 2)
-//        man();
-//    else if(!qstrcmp(argv[1], "-tfidf"))
-//        createTfIdfFile(argc, argv);
-////    else if(!qstrcmp(argv[1], "-res"))
-////        generateResults(argc, argv);
-////    else if(!qstrcmp(argv[1], "-mse"))
-////        countMeanSquareErrorFromResultFile(argc, argv);
-////    else if(!qstrcmp(argv[1], "-cmp"))
-////        comapareDifferentKmeans(argc, argv);
-//    else
-//        man();
-//    m_globalLogger->flush();
-//    delete m_globalLogger;
-//    file.close();
-//	return EXIT_SUCCESS;
-
-//}
-
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow mainWindow;
-    mainWindow.show();
-    int result = a.exec();
-    Utils::destroy();
-    return result;
+//    testArgs();
+//    testClustering();
+    Globals::DIMENSIONS = 2045;
+    DensePoint::InitializeKeys(Globals::DIMENSIONS);
+    std::cerr << "started" << std::endl;
+    std::cerr.flush();
+    if(argc < 2)
+        man();
+    else if(!strcmp(argv[1], "-stem") || !strcmp(argv[1], "-tfidf") || !strcmp(argv[1], "-stop"))
+        createTfIdfFile(argc, argv);
+    else if(!strcmp(argv[1], "-input"))
+        performClustering(argc, argv);
+//    else if(!strcmp(argv[1], "-res"))
+//        generateResults(argc, argv);
+//    else if(!strcmp(argv[1], "-mse"))
+//        countMeanSquareErrorFromResultFile(argc, argv);
+//    else if(!strcmp(argv[1], "-cmp"))
+//        comapareDifferentKmeans(argc, argv);
+    else
+        man();
+    std::cerr << "done" << std::endl;
+    std::cerr.flush();
+    return EXIT_SUCCESS;
+
 }
+
+//int main(int argc, char **argv)
+//{
+//    QApplication a(argc, argv);
+//    MainWindow mainWindow;
+//    mainWindow.show();
+//    int result = a.exec();
+//    Utils::destroy();
+//    return result;
+//}

@@ -35,7 +35,7 @@ StemmedFileInMemoryParser::~StemmedFileInMemoryParser()
     }
 }
 
-bool StemmedFileInMemoryParser::loadData(const char *fileName)
+bool StemmedFileInMemoryParser::loadData(const char *fileName, const char *stopWordsDict)
 {
     std::ifstream in(fileName, std::ios::in);
     if(!in.is_open())
@@ -43,15 +43,21 @@ bool StemmedFileInMemoryParser::loadData(const char *fileName)
     unsigned docNumber = 0;
     while(!in.eof())
     {
+        std::string docId;
         std::string line;
-        std::getline(in, line);
+        std::getline(in, line); // reading a document - there is one per line
+        if(line.empty())
+            continue;
         std::stringstream inner(std::ios::in);
         inner.str(line);
         inner.seekg(0, std::ios_base::beg);
+        inner >> docId; // reading the 'docId:' thingy
+        docId = docId.substr(0, docId.length() - 1);
+        this->_fileIds.push_back(docId);
         unsigned int lineLen = 0;
         std::unordered_map<size_t, unsigned int>* doc = new std::unordered_map<size_t, unsigned int>();
         std::unordered_map<size_t, bool> alreadyInserted;
-        while(!inner.eof())
+        while(!inner.eof()) // reading words from document
         {
             std::string word;
             inner >> word;
@@ -119,6 +125,11 @@ void StemmedFileInMemoryParser::countTfidf()
     this->quant = this->minimalValue / 4;
 }
 
+bool StemmedFileInMemoryParser::storeStopWords(const char *fileName)
+{
+
+}
+
 bool StemmedFileInMemoryParser::storeTfidfInFile(const char *fileName)
 {
     std::ofstream out(fileName, std::ios::trunc | std::ios::out);
@@ -126,8 +137,11 @@ bool StemmedFileInMemoryParser::storeTfidfInFile(const char *fileName)
         return false;
     out << _wordsCountPerDocument.size() << " "
         << _nextCoord << " " << this->quant << std::endl; // header format: <number of vectors> <number of dimensions> <quantization value>
+    unsigned index = 0;
     for(auto map : this->tfIdfResults)
     { // for all docs
+        out << this->_fileIds[index] << ' '; // printing file id
+        ++index;
         for(auto pair : *map)
         { // for all words in doc - counting tfidf
             if(pair.second < DBL_MIN)
