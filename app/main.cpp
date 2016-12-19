@@ -14,6 +14,7 @@
 #include "tfidf/stemmedfileinmemoryparser.h"
 
 #include <cstring>
+#include <cstdlib>
 #include <iostream>
 
 void createTfIdfFile(int argc, char *argv[])
@@ -27,6 +28,7 @@ void createTfIdfFile(int argc, char *argv[])
     char *stemFile = NULL;
     char *stopFile = NULL;
     char *tfidfFile = NULL;
+    double ratio;
     for(unsigned i = 1; i < argc; i += 2)
     {
         if (!strcmp(argv[i], "-stem"))
@@ -35,11 +37,13 @@ void createTfIdfFile(int argc, char *argv[])
             stopFile = argv[i+1];
         else if(!strcmp(argv[i], "-tfidf"))
             tfidfFile = argv[i+1];
+        else if(!strcmp(argv[i], "-ratio"))
+            ratio = atof(argv[i+1]);
     }
     std::cerr << "Assigned names" << std::endl;
     std::cerr.flush();
 
-    parser.loadData(stemFile, stopFile);
+    parser.loadData(stemFile, stopFile, ratio);
     std::cerr << "Loaded data" << std::endl;
     std::cerr.flush();
     parser.countTfidf();
@@ -66,7 +70,7 @@ void performClustering(int argc, char *argv[])
     }
     AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile(tfidfFile);
     KMeansAlgorithm<SparsePoint,CosineDistance> * algo =
-            new KMeansAlgorithm<SparsePoint, CosineDistance>(distance, picker, space, 10, 5);
+            new KMeansAlgorithm<SparsePoint, CosineDistance>(distance, picker, space, 10, 25);
     algo->execute();
     const PartitionData* partData = algo->getPartitionData();
     partData->printClusters(resFile);
@@ -114,7 +118,9 @@ void produceClusteringData()
 void man()
 {
     std::cout << "please add args:" << std::endl;
-    std::cout << "-stem stemmed_file_name -stop stop_wrods_file_name -tfidf output_file_name" << std::endl
+    std::cout << "-stem stemmed_file_name -stop stop_wrods_file_name -tfidf output_file_name -ratio double_number" << std::endl
+        << "\t\t -ratio is used when generating stop words to determine what should be acceptance ratio for a stop word" << std::endl
+        << "\t\t where ratio is maximum ratio between standard devation and mean value of word occurences per document." << std::endl
         << "\t for genereting tfidf file based on stemmed documents set." << std::endl;
     std::cout << "-res input_file_name output_prerand_file_name output_results_file_name" << std::endl
         << "\t for generating results of clustering, pre rand indexes and mean square error." << std::endl;

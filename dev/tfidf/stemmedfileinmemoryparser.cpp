@@ -1,5 +1,9 @@
-#include "stemmedfileinmemoryparser.h"
 
+#include "exceptions/ioexception.h"
+#include "stemmedfileinmemoryparser.h"
+#include "stopwordsmanager.h"
+
+#include <algorithm>
 #include <cmath>
 #include <cfloat>
 #include <fstream>
@@ -8,10 +12,11 @@
 #include <string>
 #include <sstream>
 
+
 //#include <QMap>
 /// We don't care for DBL_MIN, so quantization has to be at 2*DBL_MIN,
 /// so smallest values have to be 4*DBL_MIN, so minimal value has to be bigger
-/// then that.
+/// than that.
 double StemmedFileInMemoryParser::MinimalValueLowerBound = DBL_MIN * 5;
 
 StemmedFileInMemoryParser::StemmedFileInMemoryParser():
@@ -35,9 +40,11 @@ StemmedFileInMemoryParser::~StemmedFileInMemoryParser()
     }
 }
 
-bool StemmedFileInMemoryParser::loadData(const char *fileName, const char *stopWordsDict)
+bool StemmedFileInMemoryParser::loadData(const char *fileName, const char *stopWordsDict, double changeRatio)
 {
     std::ifstream in(fileName, std::ios::in);
+    if (stopWordsDict != NULL)
+        this->_swManager = new StopWordsManager(changeRatio);
     if(!in.is_open())
         return false;
     unsigned docNumber = 0;
@@ -61,8 +68,12 @@ bool StemmedFileInMemoryParser::loadData(const char *fileName, const char *stopW
         {
             std::string word;
             inner >> word;
+            std::transform(word.begin(), word.end(), word.begin(), ::tolower);
             ++lineLen;
             size_t hash = this->hash_fn(word);
+            if (this->_swManager != NULL)
+                this->_swManager->add_word(word, hash, docNumber);
+
             if(this->_wordsToCoords.count(hash) == 0)
                 this->_wordsToCoords.insert({hash, _nextCoord++});
             if(doc->count(hash) == 0)
@@ -82,11 +93,22 @@ bool StemmedFileInMemoryParser::loadData(const char *fileName, const char *stopW
                     this->_numberOfDocumentsWithGivenWords[hash] += 1;
             }
         }
-        unsigned docIndex = docNumber++;
-        this->_docsLens.insert({docIndex, lineLen});
-        this->_wordsCountPerDocument.insert({docIndex, doc});
+
+        this->_docsLens.insert({docNumber, lineLen});
+        this->_wordsCountPerDocument.insert({docNumber, doc});
+        ++docNumber;
     }
     in.close();
+
+    if(this->_swManager != NULL)
+    {
+        std::ofstream outsw(stopWordsDict, std::ios::out);
+        if (outsw.is_open() == false)
+            throw IOException("Can not open stopWords file to wrtie\n", __FILE__, __LINE__);
+        this->_swManager->finalize_statistics(this->_docsLens.size());
+        this->_swManager->store_stopwords(outsw);
+    }
+
     return true;
 }
 
@@ -114,6 +136,8 @@ void StemmedFileInMemoryParser::countTfidf()
         std::unordered_map<unsigned, double>* map = new std::unordered_map<unsigned, double>();
         for(auto word : *(wordPerDocPair.second))
         { // for all words in doc - counting tfidf
+            if (this->_swManager != NULL && this->_swManager->is_stopword(word.first))
+                continue; // ignor all stop wrods
             double tfidfOfWord = this->tfidf(word.first, wordPerDocPair.first);
             if(tfidfOfWord < this->minimalValue && tfidfOfWord > MinimalValueLowerBound)
                 this->minimalValue = tfidfOfWord;

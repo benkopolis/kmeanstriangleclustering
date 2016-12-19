@@ -3,24 +3,25 @@
 
 #include <string>
 #include <list>
+#include <unordered_map>
 
 class StopWordDetector
 {
 public:
     StopWordDetector(std::string word);
 
-    inline double get_mean() const throw() { return this->_mean; }
-    inline std::string get_word() const throw() { return this->_word; }
-    inline bool get_status() const throw() { return this->_status; }
 
-    void add_word(unsigned occurences);
+    inline std::string get_word() const throw() { return this->_word; }
+    inline bool is_stopword() const throw() { return this->_is_stopword; }
+
+    void add_word(unsigned docId);
+    void count(double docNumber, double ratio);
 
 private:
 
-    double _mean;
-    unsigned _docs;
+    std::unordered_map<unsigned, unsigned> _docs;
     std::string _word;
-    bool _status;
+    bool _is_stopword;
 
 };
 

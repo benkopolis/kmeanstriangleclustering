@@ -8,6 +8,7 @@ public:
 
     static unsigned DIMENSIONS;
     static unsigned CLUSTERS;
+    static unsigned MAX_UNIQUE_WORDS;
 };
 
 #endif // GLOBALS_H

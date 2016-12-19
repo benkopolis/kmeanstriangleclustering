@@ -26,4 +26,5 @@ SOURCES += \
     commons/testpoint.cpp \
     distances/manhattandistanceut.cpp \
     pickers/dimensionbasedcenterspicker.cpp \
-    tfidf/stemmedinmemoryfileparserut.cpp
+    tfidf/stemmedinmemoryfileparserut.cpp \
+    commons/hashtableut.cpp
