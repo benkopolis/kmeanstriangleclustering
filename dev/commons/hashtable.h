@@ -55,6 +55,9 @@ private:
             this->_public = new Node(this->_key, this->_value);
         }
 
+        _Node(const Node&) = delete;
+        _Node(Node&&) = delete;
+
         ~_Node()
         {
             if (this->_public != NULL)
@@ -80,6 +83,9 @@ private:
             this->_nodes.push_back((new _Node(true)));
         }
 
+        _Chain(const _Chain&) = delete;
+        _Chain(_Chain&&) = delete;
+
         ~_Chain()
         {
             for(auto&& node : this->_nodes)
@@ -99,6 +105,7 @@ private:
     unsigned _max;
     Hashtable<Key, Value>::_Node* _begin;
     Hashtable<Key, Value>::_Node* _end;
+    Hashtable<Key, Value>::_Node* _last;
 
 public:
 
@@ -184,7 +191,8 @@ Hashtable<Key, Value>::Hashtable(unsigned predictedSize) :
     _size(0),
     _max(predictedSize),
     _begin(NULL),
-    _end(NULL)
+    _end(NULL),
+    _last(NULL)
 {
     _Node *tmp = NULL, *node = NULL;
 
@@ -402,26 +410,28 @@ void Hashtable<Key, Value>::insert_internal(_Node *node)
     unsigned index = this->_hash(node->_key);
     _Node* firstInChain = *(this->_container[index]->_nodes.begin());
     node->_next = firstInChain;
-    node->_next = firstInChain->_previous;
+    node->_previous = firstInChain->_previous;
     this->_container[index]->_nodes.push_front(node);
 
     if (firstInChain->_previous != NULL)
         firstInChain->_previous->_next = node;
     else
         node->_previous = NULL;
+    firstInChain->_previous = node;
 
     if (this->_size == 0)
     {
         this->_begin = node;
+        this->_last = node;
     }
     else
     {
         unsigned begIndex = this->_hash(this->_begin->_key);
-        unsigned endIndex = this->_hash(this->_end->_key);
+        unsigned endIndex = this->_hash(this->_last->_key);
         if (begIndex >= index)
             this->_begin = node;
         if (endIndex < index)
-            this->_end = node;
+            this->_last = node;
     }
 
     this->_size = this->_size + 1;

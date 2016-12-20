@@ -54,7 +54,7 @@ SUITE(HashtableUT)
             ++it;
         }
 
-        CHECK(495 == sum);
+        CHECK(4950 == sum);
     }
 
     TEST(HashtableIterator_2)
@@ -74,6 +74,48 @@ SUITE(HashtableUT)
             ++it;
         }
 
-        CHECK(495 == sum);
+        CHECK(4950 == sum);
+    }
+
+    TEST(HashtableIteratorReverse)
+    {
+        Hashtable<int, int> test(100);
+        for(int i = 0; i < 100; ++i)
+        {
+            test.insert(i, i);
+        }
+
+        auto it = test.end();
+        int i = 0;
+        int sum = 0;
+        do
+        {
+            --it;
+            sum += it->second;
+        }
+        while(it != test.begin());
+
+        CHECK(4950 == sum);
+    }
+
+    TEST(HashtableIteratorReverse_2)
+    {
+        Hashtable<int, int> test(1000);
+        for(int i = 0; i < 100; ++i)
+        {
+            test.insert(i, i);
+        }
+
+        auto it = test.end();
+        int i = 0;
+        int sum = 0;
+        do
+        {
+            --it;
+            sum += it->second;
+        }
+        while(it != test.begin());
+
+        CHECK(4950 == sum);
     }
 }
