@@ -118,4 +118,39 @@ SUITE(HashtableUT)
 
         CHECK(4950 == sum);
     }
+
+    TEST(HashtableContains)
+    {
+        Hashtable<size_t, size_t> test(100);
+        CHECK(!test.contains(1));
+        CHECK(!test.contains(2));
+        CHECK(!test.contains(57));
+        for(unsigned i = 0; i < 100; ++i)
+        {
+            test.insert(i, i);
+            CHECK(test.size() == i + 1);
+        }
+
+        CHECK(test.contains(0));
+        CHECK(test.contains(10));
+        CHECK(test.contains(57));
+        CHECK(!test.contains(101));
+    }
+
+    TEST(HashtableFind)
+    {
+        Hashtable<int, int> test(100);
+        CHECK(test.find(2) == test.end());
+        CHECK(test.find(45) == test.end());
+        CHECK(test.find(98) == test.end());
+        for(int i = 0; i < 100; ++i)
+        {
+            test.insert(i, i);
+        }
+
+        CHECK(test.find(0) != test.end());
+        CHECK(test.find(10) != test.end());
+        CHECK(test.find(57) != test.end());
+        CHECK(test.find(101) == test.end());
+    }
 }

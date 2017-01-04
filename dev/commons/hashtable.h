@@ -16,6 +16,8 @@ public:
     class Node;
 
     Hashtable(unsigned predictedSize);
+    Hashtable(const Hashtable&) = delete;
+    Hashtable(Hashtable&&) = delete;
     virtual ~Hashtable();
 
     Value& operator[] (const Key& key);
@@ -131,7 +133,7 @@ public:
     {
     private:
         Hashtable<Key, Value>::_Node* _current;
-        Hashtable<Key, Value>* _parent;
+        const Hashtable<Key, Value>* _parent;
 
     public:
 
@@ -278,10 +280,13 @@ typename Hashtable<Key, Value>::iterator Hashtable<Key, Value>::end()
 template <typename Key, typename Value>
 typename Hashtable<Key, Value>::iterator Hashtable<Key, Value>::find(const Key &key) const throw(BadIndex)
 {
-    iterator it = new iterator();
+    iterator it;
     it._parent = this;
     _Node* node = this->get_internal(key);
-    it._current = node;
+    if(node != NULL)
+        it._current = node;
+    else
+        it._current = this->_end;
 
     return it;
 }

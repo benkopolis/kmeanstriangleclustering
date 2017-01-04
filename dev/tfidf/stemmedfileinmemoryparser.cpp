@@ -1,4 +1,5 @@
 
+#include "commons/logger.h"
 #include "exceptions/ioexception.h"
 #include "stemmedfileinmemoryparser.h"
 #include "stopwordsmanager.h"
@@ -21,7 +22,9 @@ double StemmedFileInMemoryParser::MinimalValueLowerBound = DBL_MIN * 5;
 
 StemmedFileInMemoryParser::StemmedFileInMemoryParser():
     _nextCoord(0),
-    minimalValue(DBL_MAX)
+    minimalValue(DBL_MAX),
+    _swManager(NULL),
+    _stopWordsDict(NULL)
 {
 }
 
@@ -40,14 +43,24 @@ StemmedFileInMemoryParser::~StemmedFileInMemoryParser()
     }
 }
 
-bool StemmedFileInMemoryParser::loadData(const char *fileName, const char *stopWordsDict, double changeRatio)
+bool StemmedFileInMemoryParser::loadData(const LoadDataArgs &args)
 {
-    std::ifstream in(fileName, std::ios::in);
-    if (stopWordsDict != NULL)
-        this->_swManager = new StopWordsManager(changeRatio);
+    std::ifstream in(args.fileName, std::ios::in);
+    if (args.stopWordsDict != NULL)
+    {
+        logger::log("Reading stop words dict");
+        this->_stopWordsDict = new StopWordsDict();
+        this->_stopWordsDict->load(args.stopWordsDict);
+    }
+    else if (args.stopWordsStore != NULL)
+    {
+        logger::log("Creating stop words manager");
+        this->_swManager = new StopWordsManager(args.changeRatio);
+    }
     if(!in.is_open())
         return false;
     unsigned docNumber = 0;
+    logger::log("Before big loop");
     while(!in.eof())
     {
         std::string docId;
@@ -71,7 +84,9 @@ bool StemmedFileInMemoryParser::loadData(const char *fileName, const char *stopW
             std::transform(word.begin(), word.end(), word.begin(), ::tolower);
             ++lineLen;
             size_t hash = this->hash_fn(word);
-            if (this->_swManager != NULL)
+            if (this->_stopWordsDict != NULL && this->_stopWordsDict->contains(hash))
+                continue; // skip stop words if loaded to memory
+            else if (this->_swManager != NULL)
                 this->_swManager->add_word(word, hash, docNumber);
 
             if(this->_wordsToCoords.count(hash) == 0)
@@ -102,9 +117,11 @@ bool StemmedFileInMemoryParser::loadData(const char *fileName, const char *stopW
 
     if(this->_swManager != NULL)
     {
-        std::ofstream outsw(stopWordsDict, std::ios::out);
+        logger::log("Opening sw stream with some words");
+        std::ofstream outsw(args.stopWordsStore, std::ios::out);
         if (outsw.is_open() == false)
             throw IOException("Can not open stopWords file to wrtie\n", __FILE__, __LINE__);
+        logger::log("finalizing stats");
         this->_swManager->finalize_statistics(this->_docsLens.size());
         this->_swManager->store_stopwords(outsw);
     }

@@ -25,8 +25,8 @@ public:
 private:
 
     double _changeRatio;
-//    std::unordered_map<std::size_t, StopWordDetector*> * _stopWords;
-    Hashtable<std::size_t, StopWordDetector*> * _stopWords;
+    std::unordered_map<std::size_t, StopWordDetector*> * _stopWords;
+//    Hashtable<std::size_t, StopWordDetector*> * _stopWords;
 };
 
 #endif // STOPWORDSMANAGER_H

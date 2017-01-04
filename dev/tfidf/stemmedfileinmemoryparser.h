@@ -8,6 +8,23 @@
 #include <unordered_map>
 
 #include "stopwordsmanager.h"
+#include "stopwordsdict.h"
+
+struct LoadDataArgs
+{
+    const char *fileName;
+    const char *stopWordsStore;
+    double changeRatio;
+    const char *stopWordsDict;
+
+    LoadDataArgs()
+    {
+        this->fileName = NULL;
+        this->stopWordsDict = NULL;
+        this->stopWordsStore = NULL;
+        this->changeRatio = 0;
+    }
+};
 
 class StemmedFileInMemoryParser
 {
@@ -16,7 +33,7 @@ public:
 
     virtual ~StemmedFileInMemoryParser();
 
-    bool loadData(const char* fileName, const char* stopWordsDict, double changeRatio);
+    bool loadData(const LoadDataArgs& args);
 
     void countTfidf();
 
@@ -47,6 +64,7 @@ protected:
 
     std::hash<std::string> hash_fn;
     StopWordsManager* _swManager;
+    StopWordsDict* _stopWordsDict;
 
     static double MinimalValueLowerBound;
 

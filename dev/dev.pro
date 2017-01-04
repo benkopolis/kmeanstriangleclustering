@@ -42,7 +42,9 @@ SOURCES += \
     distances/manhattandistance.cpp \
     generators/emptydensepointgenerator.cpp \
     tfidf/stopwordsmanager.cpp \
-    tfidf/stopwordsdetector.cpp
+    tfidf/stopwordsdetector.cpp \
+    commons/logger.cpp \
+    tfidf/stopwordsdict.cpp
 HEADERS += \
     algorithms/abstractalgorithm.h \
     algorithms/kmeansalgorithm.h \
@@ -92,6 +94,8 @@ HEADERS += \
     pickers/graphcentersandclusterspicker.h \
     tfidf/stopwordsmanager.h \
     tfidf/stopwordsdetector.h \
-    commons/hashtable.h
+    commons/hashtable.h \
+    commons/logger.h \
+    tfidf/stopwordsdict.h
 
 FORMS +=

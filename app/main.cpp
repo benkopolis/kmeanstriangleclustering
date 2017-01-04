@@ -5,6 +5,7 @@
 #include "pickers/randomcenterpicker.h"
 #include "commons/partitiondata.h"
 #include "commons/centersdata.h"
+#include "commons/logger.h"
 #include "spaces/normalizedpointsspace.h"
 #include "distances/cosinedistance.h"
 #include "distances/euclideandistance.h"
@@ -23,35 +24,38 @@ void createTfIdfFile(int argc, char *argv[])
         throw "Not enough arguments";
 
     StemmedFileInMemoryParser parser;
-    std::cerr << "Created parser" << std::endl;
-    std::cerr.flush();
+    logger::log("Created parser");
     char *stemFile = NULL;
-    char *stopFile = NULL;
+    char *stopOut = NULL;
+    char *stopIn = NULL;
     char *tfidfFile = NULL;
     double ratio;
     for(unsigned i = 1; i < argc; i += 2)
     {
         if (!strcmp(argv[i], "-stem"))
             stemFile = argv[i+1];
-        else if (!strcmp(argv[3], "-stop"))
-            stopFile = argv[i+1];
+        else if (!strcmp(argv[i], "-stop"))
+            stopOut = argv[i+1];
+        else if (!strcmp(argv[i], "-istop"))
+            stopIn = argv[i+1];
         else if(!strcmp(argv[i], "-tfidf"))
             tfidfFile = argv[i+1];
         else if(!strcmp(argv[i], "-ratio"))
             ratio = atof(argv[i+1]);
     }
-    std::cerr << "Assigned names" << std::endl;
-    std::cerr.flush();
+    logger::log("Assigned names - going to load data");
 
-    parser.loadData(stemFile, stopFile, ratio);
-    std::cerr << "Loaded data" << std::endl;
-    std::cerr.flush();
+    LoadDataArgs args;
+    args.changeRatio = ratio;
+    args.fileName = stemFile;
+    args.stopWordsDict = stopIn;
+    args.stopWordsStore = stopOut;
+    logger::log("Loading data");
+    parser.loadData(args);
+    logger::log("Counting tfidf");
     parser.countTfidf();
-    std::cerr << "Counted tfidf" << std::endl;
-    std::cerr.flush();
+    logger::log("Storing data");
     parser.storeTfidfInFile(tfidfFile);
-    std::cerr << "Storing data" << std::endl;
-    std::cerr.flush();
 }
 
 void performClustering(int argc, char *argv[])
@@ -118,7 +122,7 @@ void produceClusteringData()
 void man()
 {
     std::cout << "please add args:" << std::endl;
-    std::cout << "-stem stemmed_file_name -stop stop_wrods_file_name -tfidf output_file_name -ratio double_number" << std::endl
+    std::cout << "-stem stemmed_file_name -stop stop_wrods_file_name -tfidf output_file_name -ratio double_number -istop stop_words_file_name" << std::endl
         << "\t\t -ratio is used when generating stop words to determine what should be acceptance ratio for a stop word" << std::endl
         << "\t\t where ratio is maximum ratio between standard devation and mean value of word occurences per document." << std::endl
         << "\t for genereting tfidf file based on stemmed documents set." << std::endl;
@@ -133,6 +137,7 @@ int main(int argc, char *argv[])
 //    testArgs();
 //    testClustering();
     Globals::DIMENSIONS = 2045;
+    logger::init_logger(std::cerr);
     DensePoint::InitializeKeys(Globals::DIMENSIONS);
     std::cerr << "started" << std::endl;
     std::cerr.flush();
@@ -152,6 +157,7 @@ int main(int argc, char *argv[])
         man();
     std::cerr << "done" << std::endl;
     std::cerr.flush();
+    logger::close_logger();
     return EXIT_SUCCESS;
 
 }

@@ -1,12 +1,13 @@
 #include "stopwordsmanager.h"
 
+#include "commons/logger.h"
 #include "commons/globals.h"
 
 StopWordsManager::StopWordsManager(double changeFactor) :
     _changeRatio(changeFactor)
 {
-//    this->_stopWords = new std::unordered_map<size_t, StopWordDetector*>(Globals::MAX_UNIQUE_WORDS);
-    this->_stopWords = new Hashtable<size_t, StopWordDetector*>(Globals::MAX_UNIQUE_WORDS);
+    this->_stopWords = new std::unordered_map<size_t, StopWordDetector*>(Globals::MAX_UNIQUE_WORDS);
+//    this->_stopWords = new Hashtable<size_t, StopWordDetector*>(Globals::MAX_UNIQUE_WORDS);
 }
 
 StopWordsManager::~StopWordsManager()
@@ -16,17 +17,12 @@ StopWordsManager::~StopWordsManager()
 
 void StopWordsManager::add_word(std::string word, size_t hash, unsigned docId)
 {
-    if (this->_stopWords->contains(hash))
+    if (this->_stopWords->count(hash) > 0)
     {
         StopWordDetector* detector = this->_stopWords->at(hash);
         if(detector != NULL && detector->is_stopword())
         {
             detector->add_word(docId);
-//            if (!detector->get_status())
-//            {
-//                delete detector;
-//                this->_stopWords[hash] = 0;
-//            }
         }
     }
     else
@@ -50,18 +46,22 @@ void StopWordsManager::finalize_statistics(unsigned docNumber)
 void StopWordsManager::store_stopwords(std::ofstream &out)
 {
     auto it = this->_stopWords->begin();
+    char str[100];
+    std::sprintf(str, "There is '%d' items in stop words", this->_stopWords->size());
+    logger::log(str);
     while(it != this->_stopWords->end())
     {
         if (it->second->is_stopword())
         {
             out << it->second->get_word() << std::endl;
         }
+        ++it;
     }
 }
 
 bool StopWordsManager::is_stopword(size_t hash) const
 {
-    if(this->_stopWords->contains(hash))
+    if(this->_stopWords->count(hash) > 0)
     {
         const StopWordDetector* detector = this->_stopWords->at(hash);
         if (detector == NULL)
