@@ -7,6 +7,7 @@ from nltk.tag import pos_tag
 from nltk.tokenize import sent_tokenize, word_tokenize
 from stemming.porter2 import stem
 
+import string
 import sys
 import re
 
@@ -232,6 +233,7 @@ class DocumentProcessor:
         print("Done preprocessing of {} lines".format(lineCounter))
     
     def __tokenize_single(self, fileInName):
+        pattern = re.compile('[\W_]+', re.UNICODE)
         with try_open(fileInName, 'r') as ctn_in:
             data = ctn_in.read()
             lmtzr = WordNetLemmatizer()
@@ -245,16 +247,17 @@ class DocumentProcessor:
                 words = word_tokenize(sentence)
                 tags = pos_tag(words)
                 for (word, type) in tags:
+                    word_fixed = pattern.sub('', word)
                     if type in ignoreTypes:
-                        ilem_res.write(word + ' ')
+                        ilem_res.write(word_fixed + ' ')
                         continue
-                    if word in stopwords.words('english'):
+                    if word_fixed in stopwords.words('english'):
                         continue
                     tag = get_wordnet_pos(type)
                     if tag == '':
-                        ilem_res.write(word + ' ')
+                        ilem_res.write(word_fixed + ' ')
                         continue
-                    lema = lmtzr.lemmatize(word, tag)
+                    lema = lmtzr.lemmatize(word_fixed, tag)
                     lem_res.write(lema + ' ')
                     stemW = stem(lema)
                     stem_res.write(stemW + ' ')

@@ -8,6 +8,7 @@
 
 #include "commons/densepoint.h"
 #include "commons/globals.h"
+#include "commons/logger.h"
 
 //#include "pickers/randomcenterpickerut.h"
 //#include "pickers/sequentialcenterspickerut.h"
@@ -16,6 +17,7 @@
 
 int main(int argc, char** argv)
 {
+    logger::init_logger(std::cerr);
     if (argc > 1)
     {
         const bool bSuite = strcmp("suite", argv[1]) == 0;
@@ -75,6 +77,7 @@ int main(int argc, char** argv)
 
         UnitTest::TestReporterStdout reporter;
         UnitTest::TestRunner runner(reporter);
+        logger::close_logger();
         return runner.RunTestsIf( selectedTests, 0, UnitTest::True(), 0 );
     }
     else
@@ -94,11 +97,11 @@ int main(int argc, char** argv)
             UnitTest::TestReporterStdout reporter;
             UnitTest::TestRunner runner(reporter);
             return runner.RunTestsIf(allTests, 0, UnitTest::True(), 0 );
-            return UnitTest::RunAllTests();
         }
         catch (std::exception const &b)
         {
             std::cerr << b.what() << std::endl;
+            logger::close_logger();
         }
     }
 }

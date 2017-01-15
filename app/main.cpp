@@ -29,7 +29,7 @@ void createTfIdfFile(int argc, char *argv[])
     char *stopOut = NULL;
     char *stopIn = NULL;
     char *tfidfFile = NULL;
-    double ratio;
+    double ratio, docfreq;
     for(unsigned i = 1; i < argc; i += 2)
     {
         if (!strcmp(argv[i], "-stem"))
@@ -40,8 +40,10 @@ void createTfIdfFile(int argc, char *argv[])
             stopIn = argv[i+1];
         else if(!strcmp(argv[i], "-tfidf"))
             tfidfFile = argv[i+1];
-        else if(!strcmp(argv[i], "-ratio"))
+        else if(!strcmp(argv[i], "-min_variation"))
             ratio = atof(argv[i+1]);
+        else if(!strcmp(argv[i], "-min_docfreq"))
+            docfreq = atof(argv[i+1]);
     }
     logger::log("Assigned names - going to load data");
 
@@ -50,12 +52,15 @@ void createTfIdfFile(int argc, char *argv[])
     args.fileName = stemFile;
     args.stopWordsDict = stopIn;
     args.stopWordsStore = stopOut;
+    args.docFreqPerc = docfreq;
     logger::log("Loading data");
     parser.loadData(args);
     logger::log("Counting tfidf");
     parser.countTfidf();
     logger::log("Storing data");
     parser.storeTfidfInFile(tfidfFile);
+    std::string terms = parser.get_terms();
+    logger::log(terms.c_str());
 }
 
 void performClustering(int argc, char *argv[])
@@ -122,9 +127,10 @@ void produceClusteringData()
 void man()
 {
     std::cout << "please add args:" << std::endl;
-    std::cout << "-stem stemmed_file_name -stop stop_wrods_file_name -tfidf output_file_name -ratio double_number -istop stop_words_file_name" << std::endl
+    std::cout << "-stem stemmed_file_name -stop stop_wrods_file_name -tfidf output_file_name -min_variation double_number -min_docfreq -istop stop_words_file_name" << std::endl
         << "\t\t -ratio is used when generating stop words to determine what should be acceptance ratio for a stop word" << std::endl
-        << "\t\t where ratio is maximum ratio between standard devation and mean value of word occurences per document." << std::endl
+        << "\t\t where min_variation is a minimal variation on the word allowed (if too low the word is considered meaningless)." << std::endl
+        << "\t\t and where min_docfreq is a percentage of documents in which word has to appear to be considered meaningfull." << std::endl
         << "\t for genereting tfidf file based on stemmed documents set." << std::endl;
     std::cout << "-res input_file_name output_prerand_file_name output_results_file_name" << std::endl
         << "\t for generating results of clustering, pre rand indexes and mean square error." << std::endl;

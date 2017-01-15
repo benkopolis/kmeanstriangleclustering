@@ -12,9 +12,10 @@
 
 struct LoadDataArgs
 {
+    double docFreqPerc;
+    double changeRatio;
     const char *fileName;
     const char *stopWordsStore;
-    double changeRatio;
     const char *stopWordsDict;
 
     LoadDataArgs()
@@ -23,6 +24,7 @@ struct LoadDataArgs
         this->stopWordsDict = NULL;
         this->stopWordsStore = NULL;
         this->changeRatio = 0;
+        this->docFreqPerc = 0;
     }
 };
 
@@ -37,12 +39,12 @@ public:
 
     void countTfidf();
 
-    bool storeStopWords(const char *fileName);
-
     bool storeTfidfInFile(const char* fileName);
 
     inline std::list<std::unordered_map<unsigned, double>*>& getTfIdfResults() { return this->tfIdfResults; }
     inline std::vector<std::string>& getFileIds() { return this->_fileIds; }
+
+    std::string get_terms() const;
 
 protected:
 
@@ -54,6 +56,7 @@ protected:
     double minimalValue;
     double quant;
     std::vector<std::string> _fileIds;
+    std::unordered_map<unsigned int, std::string> _coordsToRealWords;
     std::unordered_map<std::size_t, unsigned int> _wordsToCoords;
     std::unordered_map<unsigned int, std::size_t> _coordsToWords;
     std::unordered_map<std::size_t, unsigned int> _globalWordsCount;

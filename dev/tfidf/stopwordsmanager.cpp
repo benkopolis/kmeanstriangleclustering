@@ -3,8 +3,10 @@
 #include "commons/logger.h"
 #include "commons/globals.h"
 
-StopWordsManager::StopWordsManager(double changeFactor) :
-    _changeRatio(changeFactor)
+StopWordsManager::StopWordsManager(double minimalVariation, double minimalDocFreqPerc) :
+    _minVariation(minimalVariation),
+    _minDocFreqPerc(minimalDocFreqPerc),
+    _sw_num(0)
 {
     this->_stopWords = new std::unordered_map<size_t, StopWordDetector*>(Globals::MAX_UNIQUE_WORDS);
 //    this->_stopWords = new Hashtable<size_t, StopWordDetector*>(Globals::MAX_UNIQUE_WORDS);
@@ -38,7 +40,9 @@ void StopWordsManager::finalize_statistics(unsigned docNumber)
     auto it = this->_stopWords->begin();
     while(it != this->_stopWords->end())
     {
-        it->second->count(double(docNumber), this->_changeRatio);
+        it->second->count(double(docNumber), this->_minVariation, this->_minDocFreqPerc);
+        if(it->second->is_stopword())
+            this->_sw_num += 1;
         ++it;
     }
 }

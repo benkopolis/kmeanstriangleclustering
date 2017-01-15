@@ -15,7 +15,7 @@ public:
     inline bool is_stopword() const throw() { return this->_is_stopword; }
 
     void add_word(unsigned docId);
-    void count(double docNumber, double ratio);
+    void count(double docNumber, double minVariation, double minDocFreqPerc);
 
 private:
 

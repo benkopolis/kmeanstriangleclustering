@@ -41,7 +41,7 @@ def getFiles():
     for (dirpath, dirnames, filenames) in walk(mypath):
         print("{} {} {}\n".format(dirpath, dirnames, filenames))
         for fname in filenames:
-            if fname.endswith('.txt'):
+            if fname.endswith('.txt') and 'for_r' not in dirpath:
                 yield (dirpath, fname)
 
 
@@ -51,9 +51,9 @@ if __name__ == "__main__":
     N = 11
     result = []
     while True:
-        if len(sys.argv) > 1:
+        if len(sys.argv) > 1 and sys.argv[1] == 'text':
             res = p.map(initProcessor, itertools.islice(toProc, N))
-        else:
+        elif len(sys.argv) > 1 and sys.argv[1] == 'merge':
             res = p.map(process, itertools.islice(toProc, N))
         if res:
             result.extend(res)

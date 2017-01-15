@@ -1,6 +1,8 @@
-#include "stopwordsdetector.h"
+  #include "stopwordsdetector.h"
+#include "commons/logger.h"
 
 #include <cmath>
+#include <cstdio>
 
 StopWordDetector::StopWordDetector(std::string word):
     _docs(0),
@@ -13,7 +15,6 @@ void StopWordDetector::add_word(unsigned docId)
 {
     if (this->_docs.size() == 0)
         this->_docs.insert({docId, 1});
-        //this->_mean = double(occurences);
     else
     {
         if(this->_docs.count(docId) == 0)
@@ -27,9 +28,9 @@ void StopWordDetector::add_word(unsigned docId)
     }
 }
 
-void StopWordDetector::count(double docNumber, double ratio)
+void StopWordDetector::count(double docNumber, double minVariation, double minDocFreqPerc)
 {
-    double mean = 0, standardDeviation = 0;
+    double mean = 0, variation = 0;
     auto it = this->_docs.begin();
     while(it != this->_docs.end())
     {
@@ -42,13 +43,23 @@ void StopWordDetector::count(double docNumber, double ratio)
 
     while(it != this->_docs.end())
     {
-        standardDeviation = standardDeviation + pow(mean - it->second, 2.0);
+        variation = variation + pow(mean - it->second, 2.0);
         ++it;
     }
 
-    standardDeviation = standardDeviation / docNumber;
-    standardDeviation = sqrt(standardDeviation);
-
-    this->_is_stopword = (standardDeviation / mean) > ratio;
+    variation = variation / docNumber;
+    char buffer[160];
+    std::snprintf(
+                buffer,
+                sizeof(buffer),
+                "%s: %.4f < %.4f || ((%d / %d) < %d)",
+                this->_word.c_str(),
+                variation,
+                minVariation,
+                int(docNumber),
+                int(minDocFreqPerc),
+                int(this->_docs.size()));
+    logger::log(buffer, __LINE__, __FILE__);
+    this->_is_stopword =  variation < minVariation || ((docNumber / minDocFreqPerc) > double(this->_docs.size()));
 }
 

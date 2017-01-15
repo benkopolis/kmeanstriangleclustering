@@ -13,7 +13,6 @@
 #include <string>
 #include <sstream>
 
-
 //#include <QMap>
 /// We don't care for DBL_MIN, so quantization has to be at 2*DBL_MIN,
 /// so smallest values have to be 4*DBL_MIN, so minimal value has to be bigger
@@ -43,6 +42,22 @@ StemmedFileInMemoryParser::~StemmedFileInMemoryParser()
     }
 }
 
+void split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss;
+    ss.str(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+}
+
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+}
+
 bool StemmedFileInMemoryParser::loadData(const LoadDataArgs &args)
 {
     std::ifstream in(args.fileName, std::ios::in);
@@ -55,7 +70,7 @@ bool StemmedFileInMemoryParser::loadData(const LoadDataArgs &args)
     else if (args.stopWordsStore != NULL)
     {
         logger::log("Creating stop words manager");
-        this->_swManager = new StopWordsManager(args.changeRatio);
+        this->_swManager = new StopWordsManager(args.changeRatio, args.docFreqPerc);
     }
     if(!in.is_open())
         return false;
@@ -68,9 +83,8 @@ bool StemmedFileInMemoryParser::loadData(const LoadDataArgs &args)
         std::getline(in, line); // reading a document - there is one per line
         if(line.empty())
             continue;
-        std::stringstream inner(std::ios::in);
-        inner.str(line);
-        inner.seekg(0, std::ios_base::beg);
+        std::transform(line.begin(), line.end(), line.begin(), ::tolower);
+        std::istringstream inner(line);
         inner >> docId; // reading the 'docId:' thingy
         docId = docId.substr(0, docId.length() - 1);
         this->_fileIds.push_back(docId);
@@ -81,7 +95,8 @@ bool StemmedFileInMemoryParser::loadData(const LoadDataArgs &args)
         {
             std::string word;
             inner >> word;
-            std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+            if(word.empty())
+                continue;
             ++lineLen;
             size_t hash = this->hash_fn(word);
             if (this->_stopWordsDict != NULL && this->_stopWordsDict->contains(hash))
@@ -89,8 +104,12 @@ bool StemmedFileInMemoryParser::loadData(const LoadDataArgs &args)
             else if (this->_swManager != NULL)
                 this->_swManager->add_word(word, hash, docNumber);
 
-            if(this->_wordsToCoords.count(hash) == 0)
-                this->_wordsToCoords.insert({hash, _nextCoord++});
+            if(this->_wordsToCoords.count(hash) < 1)
+            {
+                this->_wordsToCoords.insert({hash, this->_nextCoord});
+                this->_coordsToRealWords.insert({this->_nextCoord, word});
+                this->_nextCoord += 1;
+            }
             if(doc->count(hash) == 0)
                 doc->insert({hash, 1});
             else
@@ -124,6 +143,9 @@ bool StemmedFileInMemoryParser::loadData(const LoadDataArgs &args)
         logger::log("finalizing stats");
         this->_swManager->finalize_statistics(this->_docsLens.size());
         this->_swManager->store_stopwords(outsw);
+        char buffer[100];
+        std::snprintf(buffer, sizeof(buffer), "There is '%d' stopwords", this->_swManager->stopwords_count());
+        logger::log(buffer, __LINE__, __FILE__);
     }
 
     return true;
@@ -151,10 +173,9 @@ void StemmedFileInMemoryParser::countTfidf()
     for(auto wordPerDocPair : this->_wordsCountPerDocument)
     { // for all docs
         std::unordered_map<unsigned, double>* map = new std::unordered_map<unsigned, double>();
-        for(auto word : *(wordPerDocPair.second))
+        std::unordered_map<std::size_t, unsigned>* doc = wordPerDocPair.second;
+        for(auto word : *(doc))
         { // for all words in doc - counting tfidf
-            if (this->_swManager != NULL && this->_swManager->is_stopword(word.first))
-                continue; // ignor all stop wrods
             double tfidfOfWord = this->tfidf(word.first, wordPerDocPair.first);
             if(tfidfOfWord < this->minimalValue && tfidfOfWord > MinimalValueLowerBound)
                 this->minimalValue = tfidfOfWord;
@@ -166,18 +187,13 @@ void StemmedFileInMemoryParser::countTfidf()
     this->quant = this->minimalValue / 4;
 }
 
-bool StemmedFileInMemoryParser::storeStopWords(const char *fileName)
-{
-
-}
-
 bool StemmedFileInMemoryParser::storeTfidfInFile(const char *fileName)
 {
     std::ofstream out(fileName, std::ios::trunc | std::ios::out);
     if(!out.is_open())
         return false;
-    out << _wordsCountPerDocument.size() << " "
-        << _nextCoord << " " << this->quant << std::endl; // header format: <number of vectors> <number of dimensions> <quantization value>
+    out << this->_wordsCountPerDocument.size() << " "
+        << this->_nextCoord << " " << this->quant << std::endl; // header format: <number of vectors> <number of dimensions> <quantization value>
     unsigned index = 0;
     for(auto map : this->tfIdfResults)
     { // for all docs
@@ -194,4 +210,21 @@ bool StemmedFileInMemoryParser::storeTfidfInFile(const char *fileName)
     out << std::ends;
     out.flush();
     out.close();
+    char buffer[100];
+    std::snprintf(buffer, sizeof(buffer), "There is '%d' terms", this->_nextCoord);
+    logger::log(buffer, __LINE__, __FILE__);
+    return true;
+}
+
+std::string StemmedFileInMemoryParser::get_terms() const
+{
+    std::string str;
+    std::ostringstream oss(str);
+    oss << std::endl;
+    for(auto pair : this->_coordsToRealWords)
+    {
+        oss << pair.first << " : " << pair.second << std::endl;
+    }
+
+    return str;
 }
