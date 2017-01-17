@@ -9,9 +9,8 @@
 #include "pickers/abstractcenterspicker.h"
 #include "spaces/abstractpointsspace.h"
 
-template<class Point, class Distance>
+template<class Point>
 class AbstractAlgorithm :
-        private Utils::Where<Distance, AbstractDistance>,
         private Utils::Where<Point, AbstractPoint>
 {
 public:
@@ -25,7 +24,7 @@ public:
 
 protected:
 
-    AbstractAlgorithm(Distance *distance,
+    AbstractAlgorithm(AbstractDistance *distance,
                       AbstractCentersPicker<Point> *picker,
                       AbstractPointsSpace<Point> *space);
 
@@ -40,27 +39,27 @@ protected: // fields
 
 };
 
-template<class Point, class Distance>
-AbstractAlgorithm<Point, Distance>::~AbstractAlgorithm()
+template<class Point>
+AbstractAlgorithm<Point>::~AbstractAlgorithm()
 {
-    if(this->_centers != NULL)
+    if(this->_centers != nullptr)
         delete this->_centers;
-    this->_centers = NULL;
+    this->_centers = nullptr;
 
-    if(this->_partition != NULL)
+    if(this->_partition != nullptr)
         delete this->_partition;
-    this->_partition = NULL;
+    this->_partition = nullptr;
 }
 
-template<class Point, class Distance>
-AbstractAlgorithm<Point, Distance>::AbstractAlgorithm(Distance* distance,
+template<class Point>
+AbstractAlgorithm<Point>::AbstractAlgorithm(AbstractDistance* distance,
         AbstractCentersPicker<Point> *picker,
         AbstractPointsSpace<Point> *space) :
     _distance(distance),
     _space(space),
     _picker(picker),
-    _centers(0),
-    _partition(0)
+    _centers(nullptr),
+    _partition(nullptr)
 {
 }
 

@@ -12,6 +12,11 @@ logger::logger(std::ostream &log_stream):
 {
 }
 
+logger::~logger()
+{
+    this->_log.flush();
+}
+
 void logger::log_timestamp()
 {
     std::chrono::system_clock::time_point now = std::chrono::system_clock::now();

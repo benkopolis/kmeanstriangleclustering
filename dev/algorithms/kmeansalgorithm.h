@@ -16,11 +16,11 @@
 #include "abstractalgorithm.h"
 #include "commons/clustercalculator.h"
 
-template<class Point, class Distance>
-class KMeansAlgorithm : public AbstractAlgorithm<Point, Distance>
+template<class Point>
+class KMeansAlgorithm : public AbstractAlgorithm<Point>
 {
 public:
-    KMeansAlgorithm(Distance *distance,
+    KMeansAlgorithm(AbstractDistance *distance,
                     AbstractCentersPicker<Point> *picker,
                     AbstractPointsSpace<Point> *space,
                     unsigned clusters,
@@ -39,21 +39,21 @@ protected:
     std::unordered_map<std::pair<unsigned, unsigned>, double> _distanceValues;
 };
 
-template<class Point, class Distance>
-KMeansAlgorithm<Point, Distance>::KMeansAlgorithm(Distance *distance,
+template<class Point>
+KMeansAlgorithm<Point>::KMeansAlgorithm(AbstractDistance *distance,
         AbstractCentersPicker<Point> *picker,
         AbstractPointsSpace<Point> *space,
         unsigned clusters,
         unsigned iterations) :
-    AbstractAlgorithm<Point, Distance>(distance, picker, space),
+    AbstractAlgorithm<Point>(distance, picker, space),
     _numClusters(clusters),
     _iterations(iterations)
 {
 }
 
 
-template<class Point, class Distance>
-void KMeansAlgorithm<Point, Distance>::execute()
+template<class Point>
+void KMeansAlgorithm<Point>::execute()
 {
     this->_partition = this->_picker->performInitialPartition(
                 this->_numClusters,

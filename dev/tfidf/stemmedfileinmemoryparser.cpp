@@ -218,13 +218,12 @@ bool StemmedFileInMemoryParser::storeTfidfInFile(const char *fileName)
 
 std::string StemmedFileInMemoryParser::get_terms() const
 {
-    std::string str;
-    std::ostringstream oss(str);
+    std::ostringstream oss(std::ostringstream::ate);
     oss << std::endl;
     for(auto pair : this->_coordsToRealWords)
     {
-        oss << pair.first << " : " << pair.second << std::endl;
+        oss << pair.first << " : " << pair.second << ";\t";
     }
 
-    return str;
+    return oss.str();
 }

@@ -48,6 +48,8 @@ AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(std::istream *in) thr
             line_in >> c;
             p->insert(coordtIndex++, c);
         }
+        if (p->size() == 0)
+            continue;
         if(coordtIndex != numD) throw InvalidFileFormat("Point has wrong number of coordinates", __FILE__, __LINE__);
         space->insertPoint(p, pointIndex);
         ++pointIndex;

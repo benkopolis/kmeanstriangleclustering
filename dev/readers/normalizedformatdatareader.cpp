@@ -44,6 +44,8 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::is
             if(!p->contains(coordtIndex))
                 p->insert(coordtIndex, c);
         }
+        if (p->size() == 0)
+            continue;
         space->insertPoint(p, pointIndex);
         ++pointIndex;
     }

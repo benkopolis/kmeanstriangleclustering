@@ -13,6 +13,7 @@ protected:
     logger(std::ostream& log_stream);
     logger(const logger&) = delete;
     logger(logger&&) = delete;
+    ~logger();
 
     static logger* _logger;
 
