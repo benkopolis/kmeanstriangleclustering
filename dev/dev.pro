@@ -44,7 +44,10 @@ SOURCES += \
     tfidf/stopwordsmanager.cpp \
     tfidf/stopwordsdetector.cpp \
     commons/logger.cpp \
-    tfidf/stopwordsdict.cpp
+    tfidf/stopwordsdict.cpp \
+    exceptions/invalidconversiontype.cpp \
+    analysis/randindexprocessor.cpp \
+    exceptions/differentdatasets.cpp
 HEADERS += \
     algorithms/abstractalgorithm.h \
     algorithms/kmeansalgorithm.h \
@@ -96,6 +99,9 @@ HEADERS += \
     tfidf/stopwordsdetector.h \
     commons/hashtable.h \
     commons/logger.h \
-    tfidf/stopwordsdict.h
+    tfidf/stopwordsdict.h \
+    exceptions/invalidconversiontype.h \
+    analysis/randindexprocessor.h \
+    exceptions/differentdatasets.h
 
 FORMS +=

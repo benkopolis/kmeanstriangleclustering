@@ -12,12 +12,14 @@ template<typename T>
 NormalizedPointsSpace<T>::NormalizedPointsSpace(unsigned num_points, unsigned num_dimensions) :
     AbstractPointsSpace<T>(num_points, num_dimensions)
 {
+    this->_convertedTo = nullptr;
 }
 
 template<typename T>
 NormalizedPointsSpace<T>::NormalizedPointsSpace(const NormalizedPointsSpace& another) :
     AbstractPointsSpace<T>(another.num_points__, another.num_dimensions__)
 {
+    this->_convertedTo = nullptr;
     for(unsigned int i=0; i<this->num_points__; ++i)
     {
         T* point = new T(i);
@@ -36,6 +38,8 @@ NormalizedPointsSpace<T>::~NormalizedPointsSpace()
         delete points__[pair.first];
         points__[pair.first] = 0;
     }
+
+    delete this->_convertedTo;
 }
 
 template<typename T>
@@ -93,36 +97,6 @@ void NormalizedPointsSpace<T>::savePointsSpace(const char* fileName)
 
 	out.flush();
     out.close();
-}
-
-template<typename T>
-void NormalizedPointsSpace<T>::loadPointsSpace(const char* fileName)
-{
-    std::ifstream in(fileName);
-    if(!in.is_open())
-		return;
-    in >> this->num_points__ >> this->num_dimensions__ >> this->quant;
-    this->lines__ = this->num_points__;
-    int counter = 0, coordId=0, pointId=0;
-	Coord tmp;
-	in >> pointId;
-    char separator;
-    while(!in.eof())
-	{
-        T* point = new T(counter);
-        std::string line;
-        std::getline(in, line);
-        std::stringstream inner(std::ios::in);
-        inner.str(line);
-        inner.seekg(0, std::ios_base::beg);
-        while(!inner.eof())
-		{
-            inner >> coordId >> separator >> tmp;
-            point->insert(coordId, tmp);
-		}
-        points__.insert({counter, dynamic_cast<AbstractPoint*>(point)});
-	}
-    in.close();
 }
 
 

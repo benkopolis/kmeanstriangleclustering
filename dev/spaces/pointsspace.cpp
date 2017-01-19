@@ -95,27 +95,4 @@ void PointsSpace<T>::savePointsSpace(const char* fileName)
     out.close();
 }
 
-template<typename T>
-void PointsSpace<T>::loadPointsSpace(const char* fileName)
-{
-    std::ifstream in(fileName, std::ios::in);
-    if(!in.is_open())
-        return;
-    in >> this->num_points__;
-    in >> this->num_dimensions__;
-    in >> this->quant;
-    for(unsigned int i=0; i<this->num_points__; ++i)
-	{
-		Coord tmp =0;
-        T* point = new T(i);
-        for(unsigned int j=0; j<this->num_dimensions__; ++j)
-		{
-			in >> tmp;
-            point->insert(j, tmp);
-		}
-        points__.insert({i, dynamic_cast<PtrCAbstractPoint>(point)});
-	}
-    in.close();
-}
-
 #endif //POINTSPACE_CPP

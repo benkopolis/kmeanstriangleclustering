@@ -105,35 +105,20 @@ void PartitionData::printClusters(std::ostream &stream) const
     }
 }
 
-void PartitionData::countPreRandIndex()
+void PartitionData::printClustersTransposed(const char *fileName) const
 {
-    unsigned numPoints = (unsigned)this->pointsData.size();
-    for(unsigned i=0; i < numPoints - 1; ++i)
-    {
-        int tmp = numPoints - 1;
-        if(this->pointsData[i] == this->pointsData[tmp])
-            this->pre_rand_index__[std::make_pair(i, tmp)] = true;
-        for(unsigned j= i+1; j < numPoints - 1; ++j)
-            if(this->pointsData[i] == this->pointsData[j])
-                this->pre_rand_index__[std::make_pair(i, j)] = true;
-    }
+    std::ofstream file;
+    file.open(fileName, std::ofstream::out);
+    this->printClustersTransposed(file);
+    file.close();
 }
 
-bool PartitionData::storePreRandIndex(const std::string &fileName) const
+void PartitionData::printClustersTransposed(std::ostream &stream) const
 {
-    unsigned numPoints = (unsigned)this->pointsData.size();
-    std::fstream file(fileName, std::ios_base::out);
-    if(this->pre_rand_index__.size() == 0)
-        return false;
-    if(!file.is_open())
-        return false;
-    file << numPoints << ' ' << this->clustersData.size() << ' ' << numPoints << std::endl;
-    std::unordered_map<std::pair<unsigned, unsigned>, bool>::const_iterator ii = this->pre_rand_index__.begin();
-    for(; ii != this->pre_rand_index__.end(); ++ii)
-        file << (*ii).first.first << ':' << (*ii).first.second << std::endl; // write only those pairs that are in the same cluster - rest is in different clusters
-    file.flush();
-    file.close();
-    return true;
+    for(auto pidToCid : this->pointsData)
+    {
+        stream << pidToCid.first << " " << pidToCid.second << std::endl;
+    }
 }
 
 void PartitionData::printClustersSize(std::ostream &stream) const

@@ -32,15 +32,19 @@ public:
     unsigned assigned_points() const throw();
 
     const std::unordered_set<unsigned> &getPoints(unsigned cluster) const throw();
+    inline const std::unordered_map<unsigned, unsigned> &getPoints() const throw() { return this->pointsData; }
 
     inline unsigned getNumberOfClusters() const throw() { return this->clustersData.size(); }
     inline void setNumberOfClusters(unsigned nclusters) throw() { this->clustersData.resize(nclusters); }
 
     void printDifferences(const PartitionData* from, std::ostream &stream) const;
+
+    void printClustersTransposed(const char* fileName) const;
+    void printClustersTransposed(std::ostream& stream) const;
+
     void printClusters(const char* fileName) const;
     void printClusters(std::ostream& stream) const;
-    void countPreRandIndex();
-    bool storePreRandIndex(const std::string& fileName) const;
+
     void printClustersSize(std::ostream& stream) const;
     bool printClusteringResults(const std::string& fileName) const;
     bool printCentroids(const std::string& fileName) const;

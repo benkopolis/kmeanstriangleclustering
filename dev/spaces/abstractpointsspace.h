@@ -33,7 +33,6 @@ public:
     virtual unsigned getNumOfInsertedPoints() const = 0;
 
     virtual void savePointsSpace(const char* fileName) = 0;
-    virtual void loadPointsSpace(const char* fileName) = 0;
 
     double getQuant() const;
     void setQuant(double value);

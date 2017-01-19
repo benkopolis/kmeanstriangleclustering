@@ -116,7 +116,7 @@ void performClustering(int argc, char *argv[])
             new KMeansAlgorithm<SparsePoint>(distance, picker, space, 10, 25);
     algo->execute();
     const PartitionData* partData = algo->getPartitionData();
-    partData->printClusters(resFile);
+    partData->printClustersTransposed(resFile);
     std::cerr << "KMeansCorrectDataRandomPickerCosineDist " << algo->getNumberOfIterations() << std::endl;
     delete distance;
     delete picker;

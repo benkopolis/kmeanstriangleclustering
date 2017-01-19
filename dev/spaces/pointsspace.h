@@ -22,7 +22,6 @@ public:
     virtual unsigned getNumOfInsertedPoints() const;
 
     virtual void savePointsSpace(const char *fileName);
-    virtual void loadPointsSpace(const char *fileName);
 
 
 protected:
