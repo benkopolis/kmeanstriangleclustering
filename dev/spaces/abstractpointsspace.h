@@ -6,6 +6,7 @@
 #include "commons/utils.h"
 #include "commons/sparsepoint.h"
 #include "commons/densepoint.h"
+#include "commons/partitiondata.h"
 
 #include <list>
 
@@ -33,6 +34,7 @@ public:
     virtual unsigned getNumOfInsertedPoints() const = 0;
 
     virtual void savePointsSpace(const char* fileName) = 0;
+    virtual PartitionData* convertTo(unsigned clusters) const = 0;
 
     double getQuant() const;
     void setQuant(double value);

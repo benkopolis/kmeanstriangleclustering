@@ -35,7 +35,9 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::is
         SparsePoint* p = new SparsePoint(pointIndex);
         std::string id;
         line_in >> id;
-        p->setFileId(id);
+        id = id.substr(0, 1);
+        unsigned clusterId = std::strtoul(id.c_str(), nullptr, 0);
+        p->setArbitraryClusterId(clusterId);
         while(!line_in.eof())
         {
             line_in >> coordtIndex >> separator >> c;

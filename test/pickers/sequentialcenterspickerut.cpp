@@ -15,10 +15,10 @@ SUITE(SequentialCentersPickerUT)
         AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("/home/zby/MAGISTERKA/kmeanstriangleclustering/test/sample_data_sparse.txt");
         SequentialCentersPicker<SparsePoint> picker;
         PartitionData *p = picker.performInitialPartition(5, space);
-        int pointsNum = 0;
+        unsigned pointsNum = 0;
         for(unsigned int i = 0; i<5; ++i)
         {
-            pointsNum += p->getPoints(i).size();
+            pointsNum += unsigned(p->getPoints(i).size());
             CHECK(p->getPoints(i).size() == 5);
         }
         CHECK(pointsNum == space->getDeclaredNumPoints());

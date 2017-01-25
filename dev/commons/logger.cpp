@@ -47,7 +47,7 @@ void logger::log(const char *message, int line, const char *file) throw(IOExcept
     if(_logger == NULL)
         throw IOException("Log not opened", __FILE__, __LINE__);
     _logger->log_timestamp();
-    _logger->_log << "At line '" << line << "' in file '" << "'\t " << message << std::endl;
+    _logger->_log << "At line '" << line << "' in file '" << file << "'\t " << message << std::endl;
 }
 
 void logger::init_logger(std::ostream &output)

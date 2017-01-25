@@ -11,7 +11,12 @@ CentersData *AbstractCentersPicker<PointType>::getInitialCentersData()
 
 template<class PointType>
 AbstractCentersPicker<PointType>::AbstractCentersPicker():
-    initialData(0)
+    initialData(nullptr)
+{
+}
+
+template<class PointType>
+AbstractCentersPicker<PointType>::~AbstractCentersPicker()
 {
 }
 

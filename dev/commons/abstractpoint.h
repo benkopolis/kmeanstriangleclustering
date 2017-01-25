@@ -8,24 +8,25 @@
 
 #include <iterator>
 #include <list>
-#include <string>
 
 class AbstractPoint
 {
 protected:
     AbstractPoint(unsigned pid);
+    AbstractPoint(const AbstractPoint& other);
+    AbstractPoint(AbstractPoint&& other);
 
-    unsigned pointId;
+    unsigned _pointId;
 
-    std::string _fileId;
+    unsigned _userClusterId;
 
 public:
 
     virtual ~AbstractPoint();
 
-    inline unsigned getPointId() { return this->pointId; }
-    inline std::string getFileId() const throw() { this->_fileId; }
-    inline void setFileId(std::string fileId) throw() { this->_fileId = fileId; }
+    unsigned getPointId();
+    unsigned getArbitraryClusterId() const throw();
+    void setArbitraryClusterId(unsigned userClusterId) throw();
 
     virtual double& operator [] (const unsigned& index) throw(BadIndex) = 0;
     virtual double operator [] (const unsigned& index) const throw(BadIndex) = 0;

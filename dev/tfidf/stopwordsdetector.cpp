@@ -60,6 +60,6 @@ void StopWordDetector::count(double docNumber, double minVariation, double minDo
                 int(minDocFreqPerc),
                 int(this->_docs.size()));
     logger::log(buffer, __LINE__, __FILE__);
-    this->_is_stopword =  variation < minVariation || ((docNumber / minDocFreqPerc) > double(this->_docs.size()));
+    this->_is_stopword =  variation < minVariation;
 }
 

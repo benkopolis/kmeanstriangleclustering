@@ -8,6 +8,7 @@ class SequentialCentersPicker : public AbstractCentersPicker<PointType>
 {
 public:
     SequentialCentersPicker() {}
+    virtual ~SequentialCentersPicker() {}
 
     virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType>* ps)
     {

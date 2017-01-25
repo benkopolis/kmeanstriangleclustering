@@ -51,7 +51,7 @@ void StopWordsManager::store_stopwords(std::ofstream &out)
 {
     auto it = this->_stopWords->begin();
     char str[100];
-    std::sprintf(str, "There is '%d' items in stop words", this->_stopWords->size());
+    std::sprintf(str, "There is '%d' items in stop words", int(this->_stopWords->size()));
     logger::log(str);
     while(it != this->_stopWords->end())
     {

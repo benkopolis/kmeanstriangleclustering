@@ -1,5 +1,6 @@
 #include "main.hpp"
 #include "algorithms/kmeansalgorithm.h"
+#include "analysis/randindexprocessor.h"
 #include "commons/sparsepoint.h"
 #include "commons/globals.h"
 #include "commons/partitiondata.h"
@@ -117,6 +118,10 @@ void performClustering(int argc, char *argv[])
     algo->execute();
     const PartitionData* partData = algo->getPartitionData();
     partData->printClustersTransposed(resFile);
+    PartitionData* original = space->convertTo(clusters);
+    RandIndexProcessor rand_proc;
+    double rand = rand_proc.process(partData, original);
+    std::cout << "Rand index: " << rand << std::endl;
     std::cerr << "KMeansCorrectDataRandomPickerCosineDist " << algo->getNumberOfIterations() << std::endl;
     delete distance;
     delete picker;

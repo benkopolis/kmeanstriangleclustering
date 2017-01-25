@@ -99,5 +99,29 @@ void NormalizedPointsSpace<T>::savePointsSpace(const char* fileName)
     out.close();
 }
 
+template<typename T>
+PartitionData *NormalizedPointsSpace<T>::convertTo(unsigned clusters) const
+{
+    if (this->_convertedTo != nullptr)
+        return this->_convertedTo;
+    unsigned num_of_iters = 0;
+    PartitionData* data = new PartitionData(clusters, this->num_points__);
+    std::unordered_map<unsigned, PtrCAbstractPoint>::const_iterator ii = this->points__.begin();
+    while(ii != this->points__.end())
+    {
+        PtrCAbstractPoint tmp = ii->second;
+        unsigned fileId = tmp->getArbitraryClusterId();
+        unsigned pointId = ii->first;
+        data->assign_unsafe(pointId, fileId);
+        ++ii;
+        ++num_of_iters;
+    }
+
+    this->_convertedTo = data;
+    if (num_of_iters > this->points__.size())
+        throw 1;
+    return data;
+}
+
 
 #endif //NORMALIZEDPOINTSPACE_CPP

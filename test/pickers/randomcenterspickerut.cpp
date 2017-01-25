@@ -17,10 +17,10 @@ SUITE(RandomCentersPickerUT)
         AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         RandomCenterPicker<SparsePoint> picker;
         PartitionData *p = picker.performInitialPartition(5, space);
-        int pointsNum = 0;
+        unsigned pointsNum = 0;
         for(unsigned int i = 0; i<5; ++i)
         {
-            pointsNum += p->getPoints(i).size();
+            pointsNum += unsigned(p->getPoints(i).size());
         }
         CHECK(pointsNum == space->getDeclaredNumPoints());
         CHECK(pointsNum == space->getNumOfInsertedPoints());

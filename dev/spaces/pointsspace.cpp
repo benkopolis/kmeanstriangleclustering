@@ -3,6 +3,8 @@
 #ifndef POINTSPACE_CPP
 #define POINTSPACE_CPP
 
+#include "commons/partitiondata.h"
+
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -93,6 +95,12 @@ void PointsSpace<T>::savePointsSpace(const char* fileName)
         out << std::endl;
 	}
     out.close();
+}
+
+template<typename T>
+PartitionData *PointsSpace<T>::convertTo(unsigned clusters) const
+{
+    throw clusters;
 }
 
 #endif //POINTSPACE_CPP

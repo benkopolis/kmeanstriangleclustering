@@ -2,6 +2,7 @@
 #define POINTSSPACE_H
 
 #include "abstractpointsspace.h"
+#include "commons/partitiondata.h"
 
 // This class stores all the points available in the model
 template<typename T>
@@ -22,6 +23,7 @@ public:
     virtual unsigned getNumOfInsertedPoints() const;
 
     virtual void savePointsSpace(const char *fileName);
+    virtual PartitionData* convertTo(unsigned clusters) const;
 
 
 protected:

@@ -28,22 +28,7 @@ public:
 
     virtual void savePointsSpace(const char *fileName);
 
-    PartitionData* convertTo(unsigned clusters) const
-    {
-        if (this->_convertedTo != nullptr)
-            return this->_convertedTo;
-        PartitionData* data = new PartitionData(clusters);
-        for(auto p: this->points__)
-        {
-            PtrCAbstractPoint tmp = p.second;
-            std::string fileId = tmp->getFileId();
-            unsigned clusterId = std::strtoul(fileId.substr(0, 1).c_str(), nullptr, 0);
-            data->assign(p.first, clusterId);
-        }
-
-        this->_convertedTo = data;
-        return data;
-    }
+    virtual PartitionData* convertTo(unsigned clusters) const;
 
 protected:
 
@@ -52,7 +37,7 @@ protected:
 
 private:
 
-    PartitionData* _convertedTo;
+    mutable PartitionData* _convertedTo;
 
 };
 

@@ -7,7 +7,6 @@
 #include <utility>
 #include <iostream>
 #include <string>
-#include "spaces/abstractpointsspace.h"
 #include "commons/pair_hash.h"
 
 class PartitionData
