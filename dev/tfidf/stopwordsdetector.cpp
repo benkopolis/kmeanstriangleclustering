@@ -28,6 +28,38 @@ void StopWordDetector::add_word(unsigned docId)
     }
 }
 
+void StopWordDetector::count(double docNumber, double minVariation, double minDocFreqPerc, std::ofstream &stats)
+{
+    double mean = 0, variation = 0;
+    auto it = this->_docs.begin();
+    while(it != this->_docs.end())
+    {
+        mean = mean + it->second;
+        ++it;
+    }
+
+    mean = mean / docNumber;
+    it = this->_docs.begin();
+
+    while(it != this->_docs.end())
+    {
+        variation = variation + pow(mean - it->second, 2.0);
+        ++it;
+    }
+
+    variation = variation / docNumber;
+    char buffer[160];
+    std::snprintf(
+                buffer,
+                sizeof(buffer),
+                "%s %.4f %d",
+                this->_word.c_str(),
+                variation,
+                int(this->_docs.size()));
+    logger::log(buffer, __LINE__, __FILE__, stats);
+    this->_is_stopword =  variation < minVariation;
+}
+
 void StopWordDetector::count(double docNumber, double minVariation, double minDocFreqPerc)
 {
     double mean = 0, variation = 0;
@@ -52,12 +84,9 @@ void StopWordDetector::count(double docNumber, double minVariation, double minDo
     std::snprintf(
                 buffer,
                 sizeof(buffer),
-                "%s: %.4f < %.4f || ((%d / %d) < %d)",
+                "%s %.4f %d",
                 this->_word.c_str(),
                 variation,
-                minVariation,
-                int(docNumber),
-                int(minDocFreqPerc),
                 int(this->_docs.size()));
     logger::log(buffer, __LINE__, __FILE__);
     this->_is_stopword =  variation < minVariation;

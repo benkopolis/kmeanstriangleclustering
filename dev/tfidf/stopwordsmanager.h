@@ -16,6 +16,7 @@ public:
 
     void add_word(std::string word, size_t hash, unsigned docId);
 
+    void finalize_statistics(unsigned docNumber, const char *statsFile);
     void finalize_statistics(unsigned docNumber);
 
     void store_stopwords(std::ofstream& out);

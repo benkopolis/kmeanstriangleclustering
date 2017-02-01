@@ -33,10 +33,11 @@ void createTfIdfFile(int argc, char *argv[])
 
     StemmedFileInMemoryParser parser;
     logger::log("Created parser");
-    char *stemFile = NULL;
-    char *stopOut = NULL;
-    char *stopIn = NULL;
-    char *tfidfFile = NULL;
+    char *stemFile = nullptr;
+    char *stopOut = nullptr;
+    char *stopIn = nullptr;
+    char *tfidfFile = nullptr;
+    char* stopStats = nullptr;
     double ratio, docfreq;
     for(unsigned i = 1; i < argc; i += 2)
     {
@@ -44,6 +45,8 @@ void createTfIdfFile(int argc, char *argv[])
             stemFile = argv[i+1];
         else if (!strcmp(argv[i], "-stop"))
             stopOut = argv[i+1];
+        else if (!strcmp(argv[i], "-stop_stats"))
+            stopStats = argv[i+1];
         else if (!strcmp(argv[i], "-istop"))
             stopIn = argv[i+1];
         else if(!strcmp(argv[i], "-tfidf"))
@@ -59,10 +62,14 @@ void createTfIdfFile(int argc, char *argv[])
     args.changeRatio = ratio;
     args.fileName = stemFile;
     args.stopWordsDict = stopIn;
-    args.stopWordsStore = stopOut;
     args.docFreqPerc = docfreq;
     logger::log("Loading data");
     parser.loadData(args);
+    if (stopOut != nullptr)
+    {
+        logger::log("Stroing stop wrods");
+        parser.storeStopWords(stopOut, stopStats);
+    }
     logger::log("Counting tfidf");
     parser.countTfidf();
     logger::log("Storing data");

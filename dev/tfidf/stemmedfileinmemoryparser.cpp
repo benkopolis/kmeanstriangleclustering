@@ -67,11 +67,9 @@ bool StemmedFileInMemoryParser::loadData(const LoadDataArgs &args)
         this->_stopWordsDict = new StopWordsDict();
         this->_stopWordsDict->load(args.stopWordsDict);
     }
-    else if (args.stopWordsStore != NULL)
-    {
-        logger::log("Creating stop words manager");
-        this->_swManager = new StopWordsManager(args.changeRatio, args.docFreqPerc);
-    }
+
+    logger::log("Creating stop words manager");
+    this->_swManager = new StopWordsManager(args.changeRatio, args.docFreqPerc);
     if(!in.is_open())
         return false;
     unsigned docNumber = 0;
@@ -134,20 +132,6 @@ bool StemmedFileInMemoryParser::loadData(const LoadDataArgs &args)
     }
     in.close();
 
-    if(this->_swManager != NULL)
-    {
-        logger::log("Opening sw stream with some words");
-        std::ofstream outsw(args.stopWordsStore, std::ios::out);
-        if (outsw.is_open() == false)
-            throw IOException("Can not open stopWords file to wrtie\n", __FILE__, __LINE__);
-        logger::log("finalizing stats");
-        this->_swManager->finalize_statistics(this->_docsLens.size());
-        this->_swManager->store_stopwords(outsw);
-        char buffer[100];
-        std::snprintf(buffer, sizeof(buffer), "There is '%d' stopwords", this->_swManager->stopwords_count());
-        logger::log(buffer, __LINE__, __FILE__);
-    }
-
     return true;
 }
 
@@ -185,6 +169,23 @@ void StemmedFileInMemoryParser::countTfidf()
         this->tfIdfResults.push_back(map);
     }
     this->quant = this->minimalValue / 4;
+}
+
+void StemmedFileInMemoryParser::storeStopWords(const char *swFile, const char *statsFile)
+{
+    if(this->_swManager != NULL)
+    {
+        logger::log("Opening sw stream with some words");
+        std::ofstream outsw(swFile, std::ios::out);
+        if (outsw.is_open() == false)
+            throw IOException("Can not open stopWords file to wrtie\n", __FILE__, __LINE__);
+        logger::log("finalizing stats");
+        this->_swManager->finalize_statistics(this->_docsLens.size(), statsFile);
+        this->_swManager->store_stopwords(outsw);
+        char buffer[100];
+        std::snprintf(buffer, sizeof(buffer), "There is '%d' stopwords", this->_swManager->stopwords_count());
+        logger::log(buffer, __LINE__, __FILE__);
+    }
 }
 
 bool StemmedFileInMemoryParser::storeTfidfInFile(const char *fileName)

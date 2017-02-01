@@ -112,9 +112,6 @@ PartitionData *DimensionBasedCentersPicker<PointType>::performInitialPartition(u
         {
             gensClusters = 0;
             ++currMinDist;
-            std::cerr << "MinDist increased: " << *currMinDist << std::endl
-                      << "Looped in while: " << loopCount << std::endl
-                      << "Looped in for: " << innerLoop << std::endl;
         }
     }
 

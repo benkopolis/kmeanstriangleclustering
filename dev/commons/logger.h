@@ -19,12 +19,15 @@ protected:
 
     std::ostream& _log;
 
+    void log_timestamp(std::ofstream &out);
     void log_timestamp();
 
 public:
 
     static void log(const char* message) throw(IOException);
     static void log(const char* message, int line, const char* file) throw(IOException);
+    static void log(const char* message, std::ofstream& out) throw(IOException);
+    static void log(const char* message, int line, const char* file, std::ofstream& out) throw(IOException);
 
     static void init_logger(std::ostream& output);
     static void close_logger();

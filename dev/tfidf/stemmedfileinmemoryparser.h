@@ -15,14 +15,12 @@ struct LoadDataArgs
     double docFreqPerc;
     double changeRatio;
     const char *fileName;
-    const char *stopWordsStore;
     const char *stopWordsDict;
 
     LoadDataArgs()
     {
         this->fileName = NULL;
         this->stopWordsDict = NULL;
-        this->stopWordsStore = NULL;
         this->changeRatio = 0;
         this->docFreqPerc = 0;
     }
@@ -38,6 +36,8 @@ public:
     bool loadData(const LoadDataArgs& args);
 
     void countTfidf();
+
+    void storeStopWords(const char *swFile, const char* statsFile);
 
     bool storeTfidfInFile(const char* fileName);
 

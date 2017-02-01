@@ -1,8 +1,9 @@
 #ifndef STOPWORDSGROUP_H
 #define STOPWORDSGROUP_H
 
-#include <string>
+#include <iostream>
 #include <list>
+#include <string>
 #include <unordered_map>
 
 class StopWordDetector
@@ -15,6 +16,7 @@ public:
     inline bool is_stopword() const throw() { return this->_is_stopword; }
 
     void add_word(unsigned docId);
+    void count(double docNumber, double minVariation, double minDocFreqPerc, std::ofstream &stats);
     void count(double docNumber, double minVariation, double minDocFreqPerc);
 
 private:

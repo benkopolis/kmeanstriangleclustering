@@ -35,6 +35,19 @@ void StopWordsManager::add_word(std::string word, size_t hash, unsigned docId)
     }
 }
 
+void StopWordsManager::finalize_statistics(unsigned docNumber, const char* statsFile)
+{
+    std::ofstream stats_out(statsFile, std::ios::out);
+    auto it = this->_stopWords->begin();
+    while(it != this->_stopWords->end())
+    {
+        it->second->count(double(docNumber), this->_minVariation, this->_minDocFreqPerc, stats_out);
+        if(it->second->is_stopword())
+            this->_sw_num += 1;
+        ++it;
+    }
+}
+
 void StopWordsManager::finalize_statistics(unsigned docNumber)
 {
     auto it = this->_stopWords->begin();
