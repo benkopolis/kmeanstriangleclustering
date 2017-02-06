@@ -47,7 +47,14 @@ SOURCES += \
     tfidf/stopwordsdict.cpp \
     exceptions/invalidconversiontype.cpp \
     analysis/randindexprocessor.cpp \
-    exceptions/differentdatasets.cpp
+    exceptions/differentdatasets.cpp \
+    readers/partitions/abstractpartitionreader.cpp \
+    readers/partitions/normalpartitionreader.cpp \
+    readers/partitions/transposedpartitionreader.cpp \
+    algorithms/indices/randindex.cpp \
+    algorithms/indices/silhouetteindex.cpp \
+    algorithms/indices/abstractindexexternal.cpp \
+    algorithms/indices/abstractindexinternal.cpp
 HEADERS += \
     algorithms/abstractalgorithm.h \
     algorithms/kmeansalgorithm.h \
@@ -102,6 +109,13 @@ HEADERS += \
     tfidf/stopwordsdict.h \
     exceptions/invalidconversiontype.h \
     analysis/randindexprocessor.h \
-    exceptions/differentdatasets.h
+    exceptions/differentdatasets.h \
+    readers/partitions/abstractpartitionreader.h \
+    readers/partitions/normalpartitionreader.h \
+    readers/partitions/transposedpartitionreader.h \
+    algorithms/indices/randindex.h \
+    algorithms/indices/silhouetteindex.h \
+    algorithms/indices/abstractindexexternal.h \
+    algorithms/indices/abstractindexinternal.h
 
 FORMS +=

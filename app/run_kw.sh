@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Getting tfidf for keywords"
-time -p ./app -stem ../../keywords.txt -tfidf ../../MGR/results/keywords.tfidf &> ../../MGR/results_stats/kw_stats.txt 
+time -p ./app -stem ../../keywords.txt -tfidf ../../MGR/results/keywords.tfidf -stop ../../MGR/results/keywords.stem.stop -stop_stats ../../MGR/results_stats/keywords.stop.stats -min_variation 5 -min_docfreq 40 &> ../../MGR/results_stats/kw_stats.txt 
 
 echo "Running only for keywords..."
 echo "Starting clustering ... (10x25, random pickers, euclidean)"

@@ -123,6 +123,7 @@ void performClustering(int argc, char *argv[])
     KMeansAlgorithm<SparsePoint> * algo =
             new KMeansAlgorithm<SparsePoint>(distance, picker, space, 10, 25);
     algo->execute();
+    std::cout << "Iterations: " << algo->getNumberOfIterations();
     const PartitionData* partData = algo->getPartitionData();
     partData->printClustersTransposed(resFile);
     PartitionData* original = space->convertTo(clusters);
