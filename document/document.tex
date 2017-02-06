@@ -1,5 +1,6 @@
+
 \documentclass{article}
-\usepackage{polski}
+\usepackage[polish]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{textcomp,gensymb}
@@ -7,19 +8,44 @@
 \usepackage[breaklinks,hidelinks]{hyperref}
 \usepackage{natbib}
 \usepackage{graphicx}
+\usepackage{geometry}
+	\geometry{a4paper,total={170mm,257mm},inner=30mm,outer=20mm}
 \usepackage{soul, color}
 \usepackage{mathtools}
 \usepackage{subcaption}
+\usepackage{float}
+\usepackage{titlesec}
 \usepackage[colorinlistoftodos]{todonotes}
 \graphicspath{ {/home/zby/MAGISTERKA/MGR/} }
 
 \title{Grupowanie dokumentów}
 \author{inż. Zbigniew Manasterski \\[15pt]\footnotesize Promotor: mgr inż. Rajmund Kożuszek}
 
-\linespread{1.25}
+
+\newfloat{maths}{h}{zma}
+\floatname{maths}{Formuła}
+
+\newcommand{\sectionbreak}{\clearpage}
+
+\newcommand{\needspace}[1]{%
+	\begingroup
+	\setlength{\dimen@}{#1}%
+	\vskip\z@\@plus\dimen@
+	\penalty -100\vskip\z@\@plus -\dimen@
+	\vskip\dimen@
+	\penalty 9999%
+	\vskip -\dimen@
+	\vskip\z@skip % hide the previous |\vskip| from |\addvspace|
+	\endgroup
+}
+
 \newcommand{\myparagraph}[1]{\paragraph{#1}\mbox{}\\}
+\newcommand{\mysubsection}[1]{\needspace{5\baselineskip}}
+\newcommand{\mysubsubsection}[1]{\needspace{5\baselineskip}}
 
 \begin{document}
+
+\linespread{1.5}\selectfont
 
 \renewcommand{\labelenumii}{\theenumii}
 \renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
@@ -30,19 +56,31 @@
 \newpage
 
 \section{Wstęp}
-Obecnie informacja jest bardzo łatwo dostępnym towarem. Wykorzystując Internet, można znaleźć wiele dokumentów, filmów i muzyki, mniej lub bardziej interesującel dla potecjanlnego odbiorcy. Ilość dostępnej informacji jest przytłaczająca i bardzo trudno dokonać poprawnej selekcji informacji, rozumianej jako dobór takich danych, które są faktycznie pożądane przez odbiorcę. W celu rozwiązania takich problemów zaczęły powstawać serwisy, które na podstawie muzycznych, filmowych czy książkowych kategorii, automatycznie proponowały użytkownikom nowe, pasujące do ich upodobań, utwory – pochodzące z tej samej kategorii, do której wcześniej już użytkownik sięgał. W takim podejściu, użytkownicy są obiektami otrzymującymi pewne etykiety na podstawie skonsumowanej treści – każdy użytkownik jest przydzielany do pewnej kategorii. Zbiór informacji o utworach po jakie użytkownik sięgał jest cechą danego użytkownika. Wadą tego procesu jest to, że jakieś treści, które nie dotrą do przynajmniej jednego użytkownika, nie będą dostępne dla żadnego z nich.
+Obecnie informacja jest bardzo łatwo dostępnym towarem. Wykorzystując Internet, można znaleźć wiele dokumentów, filmów i muzyki, mniej lub bardziej interesujące dla potencjalnego odbiorcy. Ilość dostępnej informacji jest przytłaczająca i bardzo trudno dokonać poprawnej selekcji informacji, rozumianej jako dobór takich danych, które są faktycznie pożądane przez odbiorcę. W celu rozwiązania takich problemów zaczęły powstawać serwisy, które na podstawie muzycznych, filmowych czy książkowych kategorii, automatycznie proponowały użytkownikom nowe, pasujące do ich upodobań, utwory – pochodzące z tej samej kategorii, do której wcześniej już użytkownik sięgał. W takim podejściu, użytkownicy są obiektami otrzymującymi pewne etykiety na podstawie skonsumowanej treści – każdy użytkownik jest przydzielany do pewnej kategorii. Zbiór informacji o utworach po jakie użytkownik sięgał jest cechą danego użytkownika. Wadą tego procesu jest to, że treści, które nie dotrą do przynajmniej jednego użytkownika, nie będą dostępne dla żadnego z nich.
 
 Drugim podejściem do problemu selekcji informacji jest umożliwienie użytkownikowi jej przeglądania za pomocą wzorca/klucza lub przykładu. Wzór może się ograniczać do pewnego zbioru podstawowych elementów, składających się razem na informację – na przykład słów. Rezultaty takiego podejścia mogą być bardzo niezadowalające, ponieważ – w zależności od zbioru danych w którym prowadzone jest przeglądanie – wyniki mogą zawierać treści tylko luźno powiązane z zadanym zbiorem. Dodatkowo, klucz może być użyty w kontekście różnym od takiego, jaki jest poszukiwany przez użytkownika. W podejściu tym istotna staje się konstrukcja zbioru informacji. Powinna ona dzielić możliwe rozległy zbiór informacji na odpowiednio małe grupy obiektów, które są do siebie podobne. Wtedy rozpoczynając przeglądanie od interesującego obiektu, otrzymuje się łatwy dostęp do innych obiektów z jego grupy, które mogą nas potencjalnie zainteresować.
 
 Pierwsze podejście do selekcjonowania i wyszukiwania informacji zaprezentowane w tym rozdziale nazywane jest klasyfikacją informacji. Nowych użytkowników serwisu muzycznego oznaczamy etykietą 'rock' jeżeli słucha muzyki rockowej, nie tworzymy nowych etykiet (grup), pozwalamy co najwyżej na kilka przyporządkowań jednego użytkownika do różnych etykiet. 
 
 Druga metoda nazywana jest grupowaniem – jest to nienadzorowany proces podziału wzorców (obserwacji, danych, wektorów cech) na grupy (klastry). Stosując grupowanie na całym zbiorze użytkowników serwisu muzycznego można odkryć, że osoby słuchające muzyki jazzowej oraz rockowej często lubią słuchać również bluesa. Na podstawie tak dobranych grup obiektów, (obiektem jest zbiór odsłuchiwanej przez użytkownika muzyki) inni użytkownicy mogliby odkryć utwory spoza ich ulubionego gatunku muzycznego, które również by im się spodobały.  Przedmiotem tej pracy będzie wyłącznie grupowanie, sposoby jego przyspieszenia oraz usprawnienia. Podjęta zostanie próba zdefiniowania takiego procesu grupowania, który da wyniki podobne do takich, jakie byłyby wynikiem ręcznego grupowania wykonanego przez użytkownika. Praca ograniczona będzie jedynie do analizy problemu grupowania dokumentów.
+Zaproponowany zostanie relatywnie nowy sposób wykorzystania algorytmu minimalnego drzewa rozpinającego do wyznaczenia podziału początkowego przy grupowaniu danych tekstowych. Omówiony będzie również współczynnik często używany do grupowania takich danych, jego zależność od wariancji występowania słów w zbiorze dokumentów oraz sposób, w jaki można to wykorzystać do przyspieszenia grupowania.
+
+\newpage
+\section{Podstawy grupowania}
+
+Wszystkie rodzaje grupowania mają pewne wspólne zagadnienia. Trzeba wybrać miarę podobieństwa odpowiednią dla używanych danych - szybką i dającą jednoznaczne wyniki. Następnie wykonać kilka kroków przygotowawczych i po zakończonym grupowaniu, jego wyniki powinny być ocenione. Wszystkie powyższe zagadnienia są przybliżone w tym rozdziale.
+
 \subsection{Zadania obejmujące grupowanie}
 Proces grupowania składa się z kilku kroków wspólnych dla wszystkich tych algorytmów [1].
 \begin{enumerate}
-	\item Wybór sposobu reprezentacji obiektów, liczby klas (grup), do których dane będą przydzielane, wybór cech obiektów (ewentualnie można przeprowadzić dodatkowy krok, który spośród wybranych cech wydzieli te, które są najbardziej istotne dla podziału danych).
+	\item Wybór sposobu reprezentacji obiektów.
+	\item Wybór parametrów takich jak:
+	\begin{itemize}
+		\item liczba grup, do których dane będą przydzielane;
+		\item istotne cechy obiektów.
+	\end{itemize}
 	\item Określenie miary podobieństwa odpowiedniej dla rodzaju porównywanych danych.
-	\item Wykonanie grupowania danych.
+	\item Wykonanie grupowania.
 	\item Stworzenie zwięzłej i prostej (dla człowieka, albo dla programu – w zależności od celu wykonywania grupowania) reprezentacji wyjściowych zbiorów danych.
 	\item Dokonanie oceny wyników grupowania.
 \end{enumerate}
@@ -51,10 +89,16 @@ Sposób reprezentacji obiektu odnosi się do sposobu opisu cech obiektu – repr
 
 Wybór cech obiektu może polegać na wyborze cech o najmniejszej wzajemnej korelacji, takich co do których wiadomo, że dają dobre wyniki grupowania przy określonym rodzaju algorytmu. Można również stworzyć nowe cechy na podstawie już istniejących, co może ułatwić i przyspieszyć porównywanie, pod warunkiem, że umiemy odpowiednio odwzorować kombinację dwóch lub więcej cech do nowej dziedziny. Dodatkowo, wybierając cechy do użycia podczas  grupowania, należy pamiętać o tym, że każda cecha to dodatkowy wymiar, który musi znaleźć się na wejściu funkcji obliczającej podobieństwo obiektów. Im mniej cech, tym większą szybkość będą miały algorytmy wrażliwe na liczbę wymiarów, jednocześnie wyniki grupowania mogą być trochę gorsze, bo z każdą odrzuconą cechą tracimy informacje o porównywanych obiektach.
 
-\subsubsection{Miara podobieństwa}
-Jest to najczęściej funkcja odległości pomiędzy dwoma obiektami. Jest wiele różnych funkcji odległości, z czego najpopularniejsza jest odległość Euklidesowa (stanowiąca szczególny przypadek odległości Minkowskiego dla liczby wymiarów równej 2).
 
-\[(\sum_{k=1}^{d} |x_{i,j} - y_{i,j}|^p)^\frac{1}{p}\]
+\subsection{Miara podobieństwa}
+Jest to najczęściej funkcja odległości pomiędzy dwoma obiektami. Jest wiele różnych funkcji odległości, z których najpopularniejsza jest odległość Euklidesowa (stanowiąca szczególny przypadek odległości Minkowskiego dla liczby wymiarów równej 2)\todo{Czy numerować wzory? Jak nazwać? Formuła, Wyrażenie, Wzór}.
+
+\begin{maths}
+	\centering
+	\[(\sum_{k=1}^{d} |x_{i,j} - y_{i,j}|^p)^\frac{1}{p}\]
+	\caption{Odległość Minkowskiego}
+	\label{mth:minkowski}
+\end{maths}
 
 
 Inną miarą odległości pomiędzy dwoma wektorami liczbowymi jest miara Mahalanobisa, wyrażona wzorem:
@@ -62,7 +106,7 @@ Inną miarą odległości pomiędzy dwoma wektorami liczbowymi jest miara Mahala
 \[\delta(x_{i}, x_{j}) = \sqrt{(x_{i} - x_{j})C^{-1}(x_{i} - x_{j})^T} \]
 gdzie C to macierz kowariancji mająca odzwierciedlać charakter klasy punktów.
 
-Podane powyżej przykłady miar są mało złożone. Takie funkcje można dodatkowo skomplikować i ulepszyć uwzględniając kontekst, czyli najbliższe otoczenie badanego obiektu. W zależności od kontekstu mogą zmienić się wartości opisujące tylko niektóre lub wszystkie cechy obiektu (kontekst nie musi dotyczyć wszystkich cech obiektu). Uwzględnienie kontekstu zwykle pozwala poprawić wyniki grupowania, jednak powoduje dodatkowy narzut obliczeniowy – porównywanie obiektów staje się bardziej kosztowne. Wprowadza również nowe problemy: jak szeroki kontekst brać pod uwagę, z jakimi wagami i dla jakich cech go uwzględniać. Odpowiedzi na te pytania można znaleźć wykonując eksperymenty – badając wyniki grupowania dla różnych wariantów i określając, które grupowanie dało lepsze wyniki (problem ocen wyników grupowanie będzie poruszony w dalszej części artykułu).
+Podane powyżej przykłady miar są mało złożone. Takie funkcje można dodatkowo skomplikować i ulepszyć uwzględniając kontekst, czyli najbliższe otoczenie badanego obiektu. W zależności od kontekstu mogą zmienić się wartości opisujące tylko niektóre lub wszystkie cechy obiektu (kontekst nie musi dotyczyć wszystkich cech obiektu). Uwzględnienie kontekstu zwykle pozwala poprawić wyniki grupowania, jednak powoduje dodatkowy narzut obliczeniowy – porównywanie obiektów staje się bardziej kosztowne. Wprowadza również nowe problemy: jak szeroki kontekst brać pod uwagę, z jakimi wagami i dla jakich cech go uwzględniać. Odpowiedzi na te pytania można znaleźć wykonując eksperymenty – badając wyniki grupowania dla różnych wariantów i określając, które grupowanie dało lepsze wyniki (problem ocen wyników grupowania będzie poruszony w dalszej części pracy).
 
 Kolejną możliwością porównywania obiektów jest zdefiniowanie dodatkowych, abstrakcyjnych kryteriów zależnych na przykład od globalnego kontekstu. Grupując punkty na płaszczyźnie można zwracać uwagę jedynie na ich odległości od siebie, ale można wykorzystać inne kryterium – punkty są do siebie podobne, jeżeli są częścią obwiedni tej samej figury geometrycznej. W takim przypadku należy najpierw określić, jakie figury są brane pod uwagę, oraz przeprowadzić wyszukiwanie tych figur w zbiorze danych. Takie podejście daje praktycznie nieograniczone możliwości grupowania treści, pomimo wprowadzenia dodatkowych kosztów obliczeniowych.
 
@@ -98,11 +142,11 @@ Przykładem na niedoskonałą ocenę człowieka są różnice, jakie występują
 Algorytmy grupowania można podzielić na kilka kategorii, ze względu na ich sposób działania. Wyróżnia się następujące sposoby działania algorytmów grupowania:
 
 \begin{enumerate}
-	\item Agregujące – dzielące: Algorytmy sumujące traktują początkowy zestaw danych jako zestaw zbiorów jednoelementowych i na podstawie zadanego kryterium łączą mniejsze zbiory w większe, dopóki nie zostanie osiągnięty warunek zakończenia (odpowiednia liczba zbiorów końcowych, odpowiednia średnia liczność elementów w zbiorach w aktualnej iteracji). Algorytmy dzielące przyjmują założenie, że dane początkowe, to jeden zbiór zawierający wszystkie obiekty. Zbiór ten jest dzielony na mniejsze według zadanego kryterium, którym może być na przykład średnia odległość grupy obiektów od pozostałych. Algorytm kończy się jeżeli osiągnie założone warunki podziału, podobnie jak w przypadku algorytmów sumujących.
+	\item Agregujące – dzielące: Algorytmy sumujące traktują początkowe dane jako zestaw zbiorów jednoelementowych i na podstawie zadanego kryterium łączą mniejsze zbiory w większe, dopóki nie zostanie osiągnięty warunek zakończenia (odpowiednia liczba zbiorów końcowych, oraz średnia liczność elementów w zbiorach, w aktualnej iteracji). Algorytmy dzielące przyjmują założenie, że dane początkowe, to jeden zbiór zawierający wszystkie obiekty. Zbiór ten jest dzielony na mniejsze według zadanego kryterium, którym może być na przykład średnia odległość grupy obiektów od pozostałych. Algorytm kończy się jeżeli osiągnie założone warunki podziału, podobnie jak w przypadku algorytmów agregujących.
 	\item Sekwencyjne – równoległe: W algorytmach typu sekwencyjnego każda cecha porównywana jest osobno – np. najpierw porównywane są współrzędne X punktu, a dopiero później współrzędne Y. Przy bardziej skomplikowanych wektorach cech może to prowadzić do gorszych wyników grupowania obiektów. Niektóre z algorytmów grupowania działające tą metodą w wyniku potrafią dać 2d grup, gdzie d jest liczbą wymiarów \todo{jain 5, 11str}. Przeciwnym podejściem do takiego grupowania jest grupowanie równoległe. Wiele lub wszystkie cechy porównywanych obiektów są jednocześnie brane pod uwagę – wzrasta minimalnie koszt obliczeniowy.
 	\item Dokładne – rozmyte: W grupowaniu dokładnym każdy obiekt jest przypisywany  do co najwyżej jednego zbioru (może być niesklasyfikowany, potraktowany jako szum, jeżeli nie mieści się w żadnym z przyjętych na początku zbiorów – kategorii obiektów). W grupowaniu rozmytym każdy obiekt może zostać przypisany do więcej niż jednego zbioru. Prezentacja wyników może być wtedy trochę bardziej złożona, ale za to wyniki grupowania mogą dokładniej odzwierciedlać rzeczywistość – rzadko da się przydzielić jakąś treść tylko do jednej kategorii.
 	\item Deterministyczne – stochastyczne: Algorytmy deterministyczne dla określonych warunków początkowych i danych wejściowych zwrócą zawsze takie same wyniki. Stochastyczne wprowadzają element losowości do swojego działania, dlatego kilkukrotne uruchomienie takiego algorytmu dla tych samych danych wejściowych i warunków początkowych może dać różne wyniki.
-	\item Przyrostowe – nieprzyrostowe: Różnica między tymi dwoma typami grupowania polega na wykorzystaniu zasobów. Duża część algorytmów grupowania powstawała w czasach kiedy nie było tak wiele informacji do klasyfikowania i w miarę jak ilość danych dostępnych dla człowieka rosła, to algorytmy te zaczęły zawodzić – były zbyt nieefektywny, działały w sposób nieprzyrostowy. Wszystkie dane porównywały jednocześnie, w jednym przebiegu. Odpowiedzią na potrzebę zwiększenia wydajności algorytmów grupowania była ich modyfikacja – wprowadzenie działania przyrostowego.
+	\item Przyrostowe – nieprzyrostowe: Różnica między tymi dwoma typami grupowania polega na wykorzystaniu cech obiektów podczas grupowania. W przypadku podejścia przyrostowego, algorytm grupujący nie porównywał obiektów przy użyciu ich wszystkich cech jednocześnie - tylko używał określonych cech w kolejnych iteracjach. Podejście to wynikało z ograniczeń jakie kiedyś nakładał dostępny sprzęt komputerowy. Obecnie używa się raczej algorytmów nieprzyrostowych - które przy porównywaniu obiektów zawsze biorą pod uwagę wszystkie ich cechy. 
 \end{enumerate}
 
 \subsection{Grupowanie hierarchiczne} 
@@ -112,9 +156,9 @@ Algorytmy grupowania, które produkują drzewo podziałów, nazywane są hierarc
 Grupowanie hierarchiczne można podzielić na dwa podtypy:
 
 \begin{enumerate}
-	\item Z wiązaniem pojedynczym (ang. single link):
+	\item Z wiązaniem pojedynczym (ang. \textit{single link}):
 	Do określania przynależności obiektu do zbioru (podobieństwa) używana jest najmniejsza odległość pomiędzy badanym obiektem, a obiektem znajdującym się w analizowanym zbiorze. Podejście takie umożliwia powstanie efektu łańcuchowego – niepoprawnego podziału obiektów na grupy.
-	\item Z wiązaniem pełnym (ang. complete link): 
+	\item Z wiązaniem pełnym (ang. \textit{complete link}): 
 	W przeciwieństwie do wiązania pojedynczego, tutaj brana jest pod uwagę największa odległość pomiędzy obiektem, a innym obiektem z badanej grupy. Wyklucza to możliwość powstania efektu łańcuchowego. Wyniki grupowania algorytmami tego typu są zwykle zbiorami gęstymi.
 \end{enumerate}
 
@@ -138,9 +182,9 @@ Działanie takiego algorytmu, działającego na zasadzie agregacji zbiorów moż
 
 Odległość pomiędzy dwoma grupami, które są liczniejsze niż jednoelementowe, jest obliczana według metody wiązania pojedynczego. Jest to najmniejsza odległość pomiędzy parą obiektów z tych grup, tak jak jest to opisane w rozdziale \ref{subsec:grupHier}. Na rysunku \ref{fig:grupHPng} można zaobserwować wady tego algorytmu - obecność efektu łańcuchowego w wynikach grupowania.
 
-\begin{figure} \
+\begin{figure}[H]
 	\centering
-	\includegraphics[]{hierarchiczneGrupowanie.png}
+	\includegraphics[scale=0.9]{hierarchiczneGrupowanie.png}
 	\caption{Wyniki grupowania obiektów za pomocą algorytmu hierarchicznego z wiązaniem pojedynczym - 1 i 2 to dwa rodzaje obiektów, * to obiekty stanowiące szum, łączące oba zbiory. Obwódkami zakreślone są powstałe grupy.}
 	\label{fig:grupHPng}
 \end{figure}
@@ -149,9 +193,9 @@ Odległość pomiędzy dwoma grupami, które są liczniejsze niż jednoelementow
 
 Kroki tego algorytmu wyglądają identycznie jak algorytmu opisanego powyżej. Różnicę pomiędzy nimi stanowi sposób określania odległości pomiędzy dwoma grupami. Jest ona wyznaczana na podstawie największej odległości pomiędzy dwoma obiektami z porównywanych grup, tak jak zostało to opisane w rozdziale \ref{subsec:grupHier}. Mimo, że jest to jedyna różnica, wyraźnie ona wpływa na jakość uzyskiwanych wyników, co widać na rysunku \ref{fig:grupHChain}.
 
-\begin{figure} 
+\begin{figure}[H] 
 	\centering
-	\includegraphics[]{grupHChain.png}
+	\includegraphics[scale=0.9]{grupHChain.png}
 	\caption{Wyniki grupowania obiektów za pomocą algorytmu hierarchicznego z wiązaniem pełnym - 1 i 2 to dwa rodzaje obiektów, * to obiekty stanowiące szum, łączące oba zbiory. Obwódkami zakreślone są powstałe grupy.}
 	\label{fig:grupHChain}
 \end{figure}
@@ -194,9 +238,9 @@ Najczęściej stosowanym algorytmem typu partycjonującego jest algorytm k-środ
 
 K-środków jest bardzo wrażliwy na podział początkowy. Przy złym podziale pewne punkty  mogą utknąć w grupie z mało podobnymi do siebie punktami, ale ze środkiem bliższym, niż środek innej grupy, która mogłaby zawierać punkty bardziej podobne. Wspomniana sytuacja została przedstawiona na rysunku \ref{fig:kmeansInitCenters}.
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
-	\includegraphics[]{kmeansInitCenters.png}
+	\includegraphics[scale=0.9]{kmeansInitCenters.png}
 	\caption{Przykładowy podział początkowy obiektów grupowanych za pomocą algorytmu k-średnich. Punkt A leży bliżej punktu B niż punkt C, ale przy przedstawionym podziale początkowym środek grupy zawierającej punkty B i C będzie bliżej punktu B niż środek grupy zawierającej punkt A. Z tego powodu punkt B nie znajdzie się w grupie z najbardziej podobnym do niego punktem A.}
 	\label{fig:kmeansInitCenters}
 \end{figure}
@@ -236,28 +280,28 @@ Algorytm grupowania kontekstowego, zwany jest też grupowaniem najbliższego są
 Typowe podejście do grupowania produkuje podziały, w których każdy obiekt należy do co najwyżej jednej grupy – jest to grupowanie dokładne, grupy są zawsze rozłączne. W podejściu alternatywnym pojęcie przynależności jest rozszerzane – poprzez użycie funkcji członkostwa próbuje się powiązać obiekt z każdą grupą, często opisując taką relację pewną wagą. Rezultatem wykonania takiego algorytmu jest pewien zbiór informacji o przynależności obiektów do grup, a nie jednoznaczny podział. Można opisać taki algorytm (z wysokiego poziomu abstrakcji) za pomocą następujących kroków:
 
 \begin{itemize}
-	\item Wybierz początkowy podział rozmyty N obiektów i K grup, tworząc macierz przynależności wymiarach \[N\times K\] dalej oznaczaną symbolem U. Element $u_{i,j}$ tej macierzy reprezentuje stopień przynależności obiektu $x_{i}$ do grupy $c_{j}$. Zwykle \[u_{i,j} \in <0, 1> \]
+	\item Wybierz początkowy podział rozmyty N obiektów i K grup, tworząc macierz przynależności o wymiarach \[N\times K\] dalej oznaczaną symbolem U. Element $u_{i,j}$ tej macierzy reprezentuje stopień przynależności obiektu $x_{i}$ do grupy $c_{j}$. Zwykle \[u_{i,j} \in <0, 1> \]
 	\item Wykorzystując U obliczyć wartość funkcji stanowiącej kryterium przydziału rozmytego, np. błąd średni kwadratowy. Możliwą rozmytą funkcją kryterium jest:
 	\[E^2(X, U) = \sum_{i=1}^{N}\sum_{k=i}^{K}u_{i,j}||x_{i}-c_{k}||^2 \], gdzie \[ c_{k} = \sum_{i=1}^{N}u_{i,k}x_{i} \] jest k-tym rozmytym centrum grupy. Następnie przydziel obiekty do grupy tak, żeby zoptymalizować wartość funkcji kryterium i uaktualnij macierz U.
 	\item Powtarzaj powyższy krok aż wszystkie wpisy w macierzy U nie będą się (znacznie) zmieniać.
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
-	\includegraphics[]{rozmytewyniki.png}
+	\includegraphics[scale=0.9]{rozmytewyniki.png}
 	\caption{Wyniki grupowania rozmytego. Wszystkie grupy zostały przydzielone do każdej grupy - czerwonej, zielonej i szarej}
 	\label{fig:rozmytewyniki}
 \end{figure}
 
 W grupowaniu rozmytym każda grupa to zbiór wszystkich obiektów. Przykładowe wyniki takiego grupowania są przedstawione na rysunku \ref{fig:rozmytewyniki}. Wchodząc głębiej w szczegóły takich wyników, można również założyć przykładowe wartości przynależności do każdej grupy:
 
-\begin{table}
+\begin{table}[H]
 	\centering
 	\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
 		Grupa: & A & B & C & D & E & F & G & H & I & J \\ \hline
-		czerwona & 100\% & 55\% & 74\% & 32\% & 25\% & 33\% & 19\% & 15\% & 8\% & 9\% \\ \hline
-		zielona & 12\% & 45\% & 23\% & 24\% & 35\% & 57\% & 100\% & 78\% & 21\% & 22\% \\ \hline
-		szara & 35\% & 87\% & 25\% & 78\% & 85\% & 67\% & 28\% & 38\% & 99\% & 98\%
+		czerwona & 50\% & 31\% & 74\% & 18\% & 25\% & 36\% & 19\% & 15\% & 8\% & 9\% \\ \hline
+		zielona & 12\% & 11\% & 23\% & 14\% & 35\% & 17\% & 53\% & 58\% & 21\% & 22\% \\ \hline
+		szara & 38\% & 58\% & 3\% & 68\% & 40\% & 47\% & 28\% & 27\% & 71\% & 69\%
 	\end{tabular}
 	\caption{Przykładowe wartości przynależności obiektów do grup w grupowaniu rozmytym.}
 	\label{tab:rozmytewyniki}
@@ -277,21 +321,21 @@ Sztuczne sieci neuronowe (dalej nazywane skrótem SN) powstał w oparciu o biolo
 
 Do grupowania obiektów wejściowych często wykorzystywane są konkurujące SN (zwane też zwycięzca-bierze-wszystko, ang: winner-takes-all). W uczeniu konkurującym, obiekty podobne są grupowane przez całą sieć, a reprezentowane przez jeden neuron. Takie grupowanie wykonywane jest automatycznie na podstawie korelacji danych. \todo{Bibliografia, albo z jain albo z tego drugiego}
 
-Dobrze znanymi przykładami SN wykorzystywanymi w grupowaniu jest sieć z kwantyzacją wektora uczącego (LVQ, ang: learning vector quantization), oraz samo-organizująca się mapa (SOM, ang: self-organizing map) jak również adaptacyjne modele teorii rezonansowej. Architektura takich sieci neuronowych jest prosta – są jednowarstwowe. Obiekty podawane na wejściu są powiązane z węzłami wyjściowymi. Wagi pomiędzy węzłami wejściowymi i wyjściowymi są zmieniane iteracyjnie ( w ramach procesu uczenia się) dopóki warunek zakończenia algorytmu nie będzie spełniony. Istnienie takiej metody uczenia się zostało stwierdzone w biologicznych sieciach neuronowych. Jednak procedura aktualizacji wag jest całkiem podobna do innych stosowanych w klasycznych algorytmach grupowania, na przykład o podobieństwie LVQ oraz k-średnich, co można przeczytać. \todo{Bibliografia}
+Dobrze znanymi przykładami SN wykorzystywanymi w grupowaniu jest sieć z kwantyzacją wektora uczącego (LVQ, ang: learning vector quantization), oraz samo-organizująca się mapa (SOM, ang: self-organizing map) jak również adaptacyjne modele teorii rezonansowej. Wagi pomiędzy węzłami wejściowymi i wyjściowymi są zmieniane iteracyjnie ( w ramach procesu uczenia się) dopóki warunek zakończenia algorytmu nie będzie spełniony. Istnienie takiej metody uczenia się zostało stwierdzone w biologicznych sieciach neuronowych.
 
-SN typu SOM jako rezultat zwracają dwu-wymiarową mapę wielowymiarowego zbioru danych, były z dobrymi wynikami używane do kwantyzacji wektorów oraz w algorytmach rozpoznawania mowy. Jednak ten tym SN generuje wyniki mogące nie być optymalnym podziałem na grupy – mają tendencję do zatrzymywania się w lokalnych optimach. Duży wpływ odgrywają tutaj parametry początkowe ustawiane jako wagi połączeń neuronów w sieci.
+SN typu SOM jako rezultat zwracają dwu-wymiarową mapę wielowymiarowego zbioru danych. Takie sieci z dobrymi wynikami używane do kwantyzacji wektorów oraz w algorytmach rozpoznawania mowy. Jednak ten typ SN generuje wyniki mogące nie być optymalnym podziałem na grupy – mają tendencję do zatrzymywania się w lokalnych optimach. Duży wpływ odgrywają tutaj parametry początkowe ustawiane jako wagi połączeń neuronów w sieci.
 
 \myparagraph{Grupowanie ewolucyjne}
 
 Jeszcze innym rodzajem jest grupowanie ewolucyjne, algorytmy tego typu powstały w oparciu o teorię ewolucji Darwina. Jeden podział nazywany jest chromosomem, zbiór podziałów jest populacją. Stosując operacje selekcji, mutacji i rekombinacji buduje się nowe zestawy podziałów. Na wejściu transformacji złożonej z kilku podstawowych operacji może być kilka podziałów, lub tylko jeden,  rezultatem zastosowanie transformacji również może być jeden lub kilka podziałów. Po pewnej liczbie iteracji algorytm powinien przynieść wyniki w postaci podziałów o stosunkowo wysokim współczynniku zdrowia (prawdopodobieństwa przeżycia). Przykładowe kroki takiego algorytmu można opisać w następujący sposób: 
 
 \begin{itemize}
-	\item Wybierz losową populację podziałów. Każdy podział odwzorowuje poprawny k-podział danych. Dla każdego podziału oblicz wartość współczynnika opisującego jego zdrowie i powiąż jego wartość z danym podziałem. Zwykle stosuje się współczynnik będący odwrotnością błędu kwadratowego. Podziały z mniejszym błędem mają większą wartość współczynniku zdrowia i tym samym większą szansę na przeżycie.
-	\item Zastosuj operacje ewolucyjne selekcji, rekombinacji i mutacji do wygenerowania następnej populacji podziałów. Oblicz wartości współczynników zdrowia dla całej populacji. 
+	\item Wybierz losową populację podziałów. Każdy podział odwzorowuje poprawny k-podział danych. Dla każdego podziału oblicz wartość współczynnika opisującego jego zdrowie i powiąż jego wartość z danym podziałem. Zwykle stosuje się współczynnik będący odwrotnością błędu kwadratowego. Podziały z mniejszym błędem mają większą wartość współczynnika zdrowia i tym samym większą szansę na przeżycie.
+	\item Zastosuj operacje ewolucyjne selekcji, krzyżowania i mutacji do wygenerowania następnej populacji podziałów. Oblicz wartości współczynników zdrowia dla całej populacji. 
 	\item Powtarzaj krok drugi dopóki nie będzie spełniony warunek zakończenia algorytmu (odpowiednio wysokie współczynniki przeżycie, bardzo podobne podziały w całej populacji).
 \end{itemize}
 
-Najbardziej znanymi technikami ewolucyjnymi są algorytmy genetyczne (zwane dalej GA, ang: genetic algorithms), strategie ewolucyjne (zwane dalej ES, ang: evolutionary strategies), oraz programowanie ewolucyjne (zwane dalej EP, ang: evolutionary programming). Z tych trzech metod GA jest najczęściej używane w grupowaniu. Punkty w przestrzeni poszukiwań (podziały) są reprezentowane jako łańcuchy binarne, stosowana jest operacja selekcji, rekombinacji (lekko zmodyfikowana – parę chromosomów łączy się dzieląc je na połowy i łącząc na krzyż) w celu przeszukania jak największej części przestrzeni podziałów. W celu upewnienia się, że cała przestrzeń została przejrzana, stosuje się również operację mutacji. ES i EP różnią się od GA stosowanymi operatorami i reprezentacją podziałów; w EP w ogóle nie jest stosowana operacja rekombinacji, w ES jest ona niezmodyfikowana – po prostu zamienia się losowo wybrane geny dwóch chromosomów. 
+Najbardziej znanymi technikami ewolucyjnymi są algorytmy genetyczne (zwane dalej GA, ang: genetic algorithms), strategie ewolucyjne (zwane dalej ES, ang: evolutionary strategies), oraz programowanie ewolucyjne (zwane dalej EP, ang: evolutionary programming). Z tych trzech metod w grupowaniu najczęściej używane jest GA. Punkty w przestrzeni poszukiwań (podziały) są reprezentowane jako łańcuchy binarne, stosowana jest operacja selekcji, rekombinacji (lekko zmodyfikowana – parę chromosomów łączy się dzieląc je na połowy i łącząc na krzyż) w celu przeszukania jak największej części przestrzeni podziałów. W celu upewnienia się, że cała przestrzeń została przejrzana, stosuje się również operację mutacji. ES i EP różnią się od GA stosowanymi operatorami i reprezentacją podziałów; w EP w ogóle nie jest stosowana operacja rekombinacji, w ES jest ona niezmodyfikowana – po prostu zamienia się losowo wybrane geny dwóch chromosomów. 
 
 GA pozwala na wykonanie grupowania z globalnym poszukiwaniem rozwiązania – większość metod grupowania polega na poszukiwaniu lokalnym – takie poszukiwanie jest popularne ponieważ pozwala na zmniejszenie liczby bardzo kosztownych porównań wielowymiarowych wektorów cech. Produkcja podziałów w GA może znaleźć rozwiązania zupełnie inne od tych w poprzedniej operacji, natomiast w przeważającej większości przedstawionych w tym rozdziale algorytmów grupowania w kolejnych iteracjach mogą one tylko trochę zmienić podział znaleziony w poprzedniej iteracji. 
 
@@ -304,10 +348,10 @@ Techniki wyszukiwania stosowane w celu wyznaczenia optymalnej wartości funkcji 
 	\item deterministyczne wyżarzanie (ang: deterministic annealing) – przestrzeń błędu osiąga ciągłość i dąży do optymalnej, jednak ta metoda nie gwarantuje wykrycia globalnego optimum.
 \end{itemize}
 
-Typowo metodom deterministycznym można nadać kategorię metodologii zachłannych oraz zstępujących. Podejście stochastyczne zezwala na istnienie w przestrzeni rozwiązań odchyleń poza lokalnym optimum z niezerowym prawdopodobieństwem. Metody stochastyczne można podzielić na sekwencyjne lub równoległe, przy czym algorytmy ewolucyjne są zaliczane do kategorii równoległych. Do tej drugiej kategorii można zaliczyć stochastyczną metodę zwaną symulowanym wyżarzaniem (zwany dalej SA, ang. Simulated annealing). Polega ona na dopuszczaniu, z pewnym prawdopodobieństwem, w kolejnej iteracji podziałów, które mają gorszą wartość funkcji kryterium. Prawdopodobieństwo akceptacji takiego podziały jest wyznaczone poprzez krytyczny parametr zwany temperaturą. Przykładowe kroki takiego algorytmy można opisać w następujący sposób:
+Typowo metodom deterministycznym można nadać kategorię metodologii zachłannych oraz zstępujących. Podejście stochastyczne zezwala na istnienie w przestrzeni rozwiązań odchyleń poza lokalnym optimum z niezerowym prawdopodobieństwem. Metody stochastyczne można podzielić na sekwencyjne lub równoległe, przy czym algorytmy ewolucyjne są zaliczane do kategorii równoległych. Do tej drugiej kategorii można zaliczyć stochastyczną metodę zwaną symulowanym wyżarzaniem (zwany dalej SA, ang. \textit{Simulated annealing}). Polega ona na dopuszczaniu, z pewnym prawdopodobieństwem, w kolejnej iteracji podziałów, które mają gorszą wartość funkcji kryterium. Prawdopodobieństwo akceptacji takiego podziału jest wyznaczone poprzez krytyczny parametr zwany temperaturą. Przykładowe kroki takiego algorytmu można opisać w następujący sposób:
 
 \begin{itemize}
-	\item Losowo wybierz początkowy podział $P_{0}$ oraz oblicz wartość błędu kwadratowego $E_{P0}$ dla tego podziału. Wybierz wartości kontrolnych parametrów, temperatury początkowej $T_{0}$ oraz temperatury końcowej (finalnej) $T_{f}$.
+	\item Losowo wybierz początkowy podział $P_{0}$ oraz oblicz wartość błędu kwadratowego $E_{P0}$ dla tego podziału. Wybierz wartości parametrów sterujących, temperatury początkowej $T_{0}$ oraz temperatury końcowej (finalnej) $T_{f}$.
 	\item Wybierz sąsiada $P_{0}$ oznacz go jako $P_{1}$ i oblicz dla niego wartość błędu kwadratowego $E_{P1}$ . Jeżeli $E_{P0}$ jest mniejsze od $E_{P1}$, to przypisz $P_{1}$ do $P_{0}$ z pewnym prawdopodobieństwem, zależnym od temperatury. W przeciwnym wypadku przypisz  $P_{1}$ do  $P_{0}$ . Powtarzaj ten krok ustaloną liczbę razy.
 	\item Zmniejsz wartość $T_{0}$ stosując pewną ustaloną wartość $c: T_{0} = cT_{0}$. Jeżeli $T_{0}$ jest większe od $T_{f}$ , to idź do poprzedniego kroku. W przeciwnym wypadku zakończ algorytm.
 \end{itemize}
@@ -318,7 +362,7 @@ Algorytm SA może być bardzo wolny w odnajdywaniu globalnego optimum, gdyż wym
 
 Założeniem leżącym u podstaw wyszukiwania wzorców jest to, że wszystkie obiekty w grupowanym zbiorze danych pochodzą od jednego z kilku obiektów wzorowych. Celem takiego algorytmu jest odnalezienie cech takiego obiektu oraz (czasem) liczby takich obiektów wzorowych. Większość prac w tej dziedzinie zakłada, że obiekty składające się na zbiór danych są składnikami nieokreślonej liczby dystrybuant Gaussa. Tradycyjne podejście do wykonania takiego algorytmu polega na tym, że iteracyjnie dopasowuje się parametry rozkładu Gaussa, oraz liczbę tych rozkładów (liczbę grup) tak, żeby uzyskać maksymalne prawdopodobieństwa wystąpienia wektorów opisujących obiekty w grupowanym zestawie danych.
 
-Jednym z algorytmów realizujących takie podejście jest algorytm Maksymalizacji Wartości Oczekiwanej (ang. Expectation Maximization). Generalnie stosuje się go do wyliczenia brakujących danych (np. podczas rekonstrukcji obrazków). Dla celów grupowania zakłada się, że parametry funkcji gęstości są nieznane, tak samo jak parametry mieszające – są one określane na podstawie obiektów. Procedura rozpoczyna się od przedstawienia początkowego wektora (wektorów) parametrów i na podstawie podobieństwa gęstości mieszaniny danych, które produkowane są poprzez zastosowanie tego wektora, ocenia się go przyrównując te dane do oryginalnego zbioru danych. Obiektom powstałym w sposób losowy nadaje się oceny (wagi) i tak zmodyfikowanych obiektów używa się do aktualizacji oszacowań parametrów. W kontekście grupowania oceny przyznane obiektom losowym (na podstawie ich podobieństwa do oryginalnych) mogą służyć do określenia, czy dany obiekt ze zbioru oryginalnego należy do grupy opisywanej przez dany wektor parametrów.
+Jednym z algorytmów realizujących takie podejście jest algorytm Maksymalizacji Wartości Oczekiwanej (ang. \textit{Expectation Maximization}). Generalnie stosuje się go do wyliczenia brakujących danych (np. podczas rekonstrukcji obrazków). Dla celów grupowania zakłada się, że parametry funkcji gęstości są nieznane, tak samo jak parametry mieszające – są one określane na podstawie obiektów. Procedura rozpoczyna się od przedstawienia początkowego wektora (wektorów) parametrów i na podstawie podobieństwa gęstości mieszaniny danych, które produkowane są poprzez zastosowanie tego wektora, ocenia się go przyrównując te dane do oryginalnego zbioru danych. Obiektom powstałym w sposób losowy nadaje się oceny (wagi) i tak zmodyfikowanych obiektów używa się do aktualizacji oszacowań parametrów. W kontekście grupowania oceny przyznane obiektom losowym (na podstawie ich podobieństwa do oryginalnych) mogą służyć do określenia, czy dany obiekt ze zbioru oryginalnego należy do grupy opisywanej przez dany wektor parametrów.
 
 Zostały również opracowane bezparametrowe metody grupowania z wykorzystaniem funkcji gęstości. Wzorowana na oknie Parzena – metodzie do bezparametrowego oszacowania gęstości – procedura grupowania poszukuje kontenerów z dużą liczbą elementów w wielowymiarowych histogramach wejściowego zbioru obiektów. Jeszcze inne algorytmy tego typu wykorzystują podejście hierarchiczne lub partycjonujące, gdzie funkcją odległości jest bezparametrowe oszacowanie funkcji odległości. \todo{Doprowadzić to do takiego stanu, żeby było o wiele bardziej zrozumiałe. Odniesienia do bibliografii – jain 5.3.}
 
@@ -329,7 +373,15 @@ Rozwiązanie takie może dać bardzo dokładne wyniki, odwzorowując faktyczne p
 
 \subsection{Sposoby reprezentacji grup}
 
-W programach, które mają za zadanie podzielić pewien zbiór danych na grupy, taki podział stanowi produkt wyjściowy. Rezultat działania takiego programu daje pojęcie o rozłączności danych, o ich gęstości, czy przydatne byłoby użycie grupowania z nadzorem, który założyłby pewną liczbę grup w zbiorze danych. Podział na grupy powinien być zapisany w taki sposób, żeby nie zajmował dużo pamięci i był łatwy do interpretacji przez programy, które potem analizują i prezentują takie wyniki. Pomimo istotnej wagi zagadnienia reprezentacji wyników grupowania, temat ten nie był \todo{Jain 5.6} przedmiotem wnikliwych badań. Spośród istniejących rozważań warto rozpatrzyć następujące:
+Rezultat działania programu grupującego dane, powinien pozwolić wnioskować o 
+ \begin{itemize}
+ 	\item rozłączności danych,
+ 	\item gęstości danych,
+ 	\item jakości grupowania (średni błąd, porównanie z innymi wynikami, wizualizacja).
+ \end{itemize}
+ Na przykład przy niskiej jakości wynikowego grupowania użytkownik mógłby ponowić procedurę zadając inne parametry wejściowe. 
+ \\
+ Dodatkowo taki program powinien pozwolić zapisać podział na grupy w taki sposób, żeby nie zajmował dużo pamięci i był łatwy do interpretacji przez inne programy. Pomimo istotnej wagi zagadnienia reprezentacji wyników grupowania, temat ten nie był \todo{Jain 5.6} przedmiotem wnikliwych badań. Spośród istniejących rozważań warto rozpatrzyć następujące:
 
 \begin{itemize}
 	\item Reprezentowanie grupy punktów poprzez środek tej grupy (Rysunek \ref{fig:gruparepsrod}) lub przez zbiór najbardziej odległych od siebie punktów (Rysunek \ref{fig:gruparepodlegle}).
@@ -338,25 +390,25 @@ W programach, które mają za zadanie podzielić pewien zbiór danych na grupy, 
 	\[ niebieska:[X<4,5]; czerwona:[X>4,5]\vee[Y>1,5]; żółta:[X>4,5]\vee[Y<1,5] \]
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{subfigure}{.5\textwidth}
 		\centering
-		\includegraphics[]{gruparepodlegle.png}
+		\includegraphics[scale=0.75]{gruparepodlegle.png}
 		\caption{Okręgiem zostały zakreślone najbardziej odległe od siebie punkty - stanowiące reprezentację przedstawionej grupy.}
 		\label{fig:gruparepodlegle}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
-		\includegraphics[]{gruparepsrod.png}
+		\includegraphics[scale=0.75]{gruparepsrod.png}
 		\caption{Okręgiem został zaznaczony punkt będący środkiem grupy.}
 		\label{fig:gruparepsrod}
 	\end{subfigure}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
-	\includegraphics[]{klasdrzewo.png}
+	\includegraphics[scale=0.75]{klasdrzewo.png}
 	\caption{Przykładowy podział na grupy i drzewo klasyfikacji}
 	\label{fig:klasdrzewo}
 \end{figure}
@@ -380,6 +432,7 @@ Reprezentacja danych jest istotnym zagadnieniem związanym z użyteczności algo
 	\label{fig:kompresjagrup}
 \end{figure}
 
+\newpage
 \section{Grupowanie dokumentów}
 
 Dokumenty różnią się trochę od innych rodzajów obiektów, szczególnie z punktu widzenia grupowania \todo{4}. Bez wątpienia można powiedzieć, że dwa dokumenty zawierające prawie identyczną sekwencję słów, powinny się znaleźć w jednej grupie. Jednak proces porównywania dokumentów jest bardzo kosztowny. Każde słowo w dokumencie jest kolejnym wymiarem – kolejną cechą w wektorze cech. Dodatkowo konieczna jest obróbka wstępna takich danych. Wyłuskanie treści z plików o różnych formatach i odpowiednie jej zachowanie. 
@@ -394,15 +447,30 @@ Po powyższych operacjach można zliczyć liczby wystąpień poszczególnych uni
 
 \subsection{Wektor cech}
 
-Właściwy wektor cech do porównywania dokumentów buduje się na podstawie indeksu tf*idf (ang. Term frequency – inverse document frequency). Indeks ten, wyraża się następującym wzorem \todo{1,3}:
+Właściwy wektor cech do porównywania dokumentów buduje się na podstawie indeksu tf*idf (ang. \textit{Term frequency – inverse document frequency}). Indeks ten, wyraża się następującym wzorem \todo{1,3}:
 
 \[ tf*idf(t, d, D) = tf(t, d)\times idf(t, D) \]
 
-Gdzie idf to: 
+Gdzie tf dla i-tego słowa w zbiorze, w n-tym dokumencie to (x oznacza liczność danego słowa):
 
-\[ idf(t, D) = \log(\frac{|D|}{|d \in D: t \in d|})  \]
+\[ tf(t_{i}, d) = x_{n,i} / \sum_{k=1}^{len(d_{n})}x_{n,k} \]
 
-tf to liczba wystąpień słowa w danym dokumencie, D – liczba dokumentów, w których rozpatrywane słowo występuje (lub jeden, jeżeli nie występuje w żadnym dokumencie – żeby nie dzielić przez zero).  Dodatkowym zabiegiem przy obliczaniu takiego wektora jest uwzględnienie semantyki słów. Przy pomocy słownika wyrazów bliskoznacznych automat jest w stanie zastąpić różne słowa o podobnym znaczeniu jednym i tym samym, modyfikując odpowiednio wagi w wektorze cech – poprzez dodanie nowych wartości podasz obliczania tf i idf, ewentualnie z wagami, żeby uwzględnić, że dane słowo może mieć trochę inne znaczenie \todo{2}.
+Dla współczynnika tf zachodzi zależność: \[ tf == 1 \leftrightarrow x_{n,i} == \sum_{k=1}^{len(d_{n})}x_{n,k} \]
+
+Oznacza to, że pierwsza część współczynnika $tf \times idf$ może być równa 1 tylko wtedy, jeżeli badane słowo jest jedynym słowem występującym w danym dokumencie. W każdym innym wypadku ta część będzie mniejsza niż 1. 
+
+Natomiast $idf$ to dla i-tego słowa w n-tym dokumencie to: 
+
+\[ idf(t, D) = \log(\frac{|D|}{|d \in D: t_{i} \in d|})  \]
+
+Jak widać, współczynnik $idf$ nie zależy od n-tego dokumentu, natomiast ułamek znajdujący się w logarytmie nigdy nie będzie przyjmować wartości mniejszych od 1:
+\begin{itemize}
+	\item $D$ to liczba wszystkich rozpatrywanych dokumentów
+	\item $|d \in D: t_{i} \in d|$ to liczba dokumentów w których występuje rozpatrywane słowo - z racji tego, że pod uwagę brane są tylko słowa, które znajdują się w zbiorze dokumentów, nie ma obawy, wartość ta będzie zero - i nie zajdzie dzielenie przez zero. 
+\end{itemize}
+Maksymalna wartość mianownika to $D$, co oznacza, że słowo występuje w każdym dokumencie w analizowanym zbiorze. Argument logarytmu $\log(\frac{|D|}{|d \in D: t_{i} \in d|})$ sprowadza się wtedy do wartości $1$, co oznacza, że cały współczynnik $tf \times idf$ będzie równy 0.
+
+Dodatkowym zabiegiem przy obliczaniu takiego wektora jest uwzględnienie semantyki słów. Przy pomocy słownika wyrazów bliskoznacznych automat jest w stanie zastąpić różne słowa o podobnym znaczeniu jednym i tym samym, modyfikując odpowiednio wagi w wektorze cech – poprzez dodanie nowych wartości podczas obliczania tf i idf, ewentualnie z wagami, żeby uwzględnić, że dane słowo może mieć trochę inne znaczenie \todo{2}.
 
 Innym \todo{Podać przykład, albo odniesienie do bibliogrrafi [jain] albo coś o dokumentach } często stosowanym zabiegiem jest wykorzystanie słowników terminologii, do pozostawienia w wektorze cech tylko żądanych słów, lub usunięcia niepożądanych. W przypadku zbioru wejściowego w postaci tekstów z dziedziny medycyny, traktujących o różnych nowotworach, pomogłoby to usunąć część treści, które nie dotyczy bezpośrednio nowotworów i umożliwiłoby grupowanie wyłącznie ze względu na rodzaje nowotworów.
 
@@ -421,7 +489,7 @@ Drugą metodą jest porównywanie dokumentów za pomocą ich bibliografii. Każd
 	\item liczebności pozycji w ramach jednego odniesienia, w którym występuje interesująca nas pozycja
 	\item miejsce w dokumencie, w którym wystąpiło odniesienie (analiza wyników takiego grupowania mogłaby wykazać, że na przykład ważniejsze są odniesienia ze środkowych rozdziałów, od tych z końcowych – tu jednak pojawia się problem identyfikacji różnych obszarów w dokumencie).
 \end{itemize}
-Tak określone wagi można wykorzystać jako odległości pomiędzy dokumentami. Między dwoma artykułami, które nawzajem siebie cytują, odległości mogłyby być różne w zależności od tego, na podstawie którego z nich były liczone. Posiadając takie informacje można zbudować graf sąsiedztwa dokumentów, z wagami które opisywałyby stopień sąsiedztwa – im większy tym dokumenty są bliżej do siebie. 
+Tak określone wagi można wykorzystać jako odległości pomiędzy dokumentami. Posiadając takie informacje można zbudować graf sąsiedztwa dokumentów, z wagami które opisywałyby stopień sąsiedztwa – im większy tym dokumenty są bliżej do siebie. 
 
 W celu zgrupowania takich dokumentów na podstawie jakiejś zadanej kategorii, trzeba byłoby dla części tych dokumentów wprowadzić tagi – słowa kluczowe, lub treść abstraktu. Nadanie takich słownych znaczników tylko części dokumentów w grafie wystarczyłoby, ponieważ reszta oznaczeń propagowałaby się na inne dokumenty na podstawie podobieństwa. Zagadnieniem, które należałoby rozwiązać jest liczba dokumentów, które trzeba oznaczyć w grafie, żeby wyniki grupowania były dobre, oraz dobór takich dokumentów – czy lepiej brać dokumenty znajdujące się w wierzchołkach o wyższych stopniach, czy może lepiej te, które są w wierzchołkach o niskim stopniu.
 
@@ -441,58 +509,202 @@ Każdy obiekt trzeba porównać ze wszystkimi środkami (w najgorszym wypadku), 
 	podobieństwo cosinusowe nie spełnia nierówności trójkąta – źródło jak wyżej
 	takie wektory można próbować sprowadzać do wektorów skwantowanych – testy z wartością kwantyzacji, dobieranie heurystycznie na podstawie mediany wartości wszystkich współrzędnych, albo na podstawie średniej wszystkich współrzędnych, albo na podstawie średniej / mediany współrzędnych dla każdego wektora osobno.}
 
+\newpage
 \section{Implementacja rozwiązania}
-\todo{stare, do zmiany w zależności od efektów kodowania}
-W celu zbadania skuteczności metod grupowania zaimplementowany został algorytm k-średnich, w dwóch wersjach. Pierwszą wersję stanowi standardowy algorytm, taki jak opisany w rozdziale \todo{czy opisałem, podać rozdział}. Druga wersja zawiera pewne operacje księgowe, mające na celu zmniejszenie liczby obliczeń odległości pomiędzy wektorami.
+W celu zbadania skuteczności metod grupowania zaimplementowany został algorytm k-średnich, z kilkoma rodzajami wyboru początkowego:
+\begin{itemize}
+	\item Wybór losowy - funkcja prawdopodobieństwa o rozkładzie jednostajnym jest użyta aby przypisać każdy punkt do jednej z grup.
+	\item Wybór sekwencyjny - punkty po kolei są dodawane do kolejnych grup. Przy 3 grupach i 8 punktach (załóżmy że są indeksowane od 0 do 7), punkty o indeksach 0, 3 i 6 będą w pierwszej grupie, punkty o indeksach 1, 4, 7 znajdą się w drugiej grupie, a do grupy trzeciej trafią punkty o indeksach 2 i 5.
+	\item Wybór na podstawie minimalnego drzewa rozpinającego dla l-pierwszych punktów - ten sposób wybierania podziału początkowego jest opisany w podrozdziale \todo{dodać ten podrozdział}
+\end{itemize}
 
-Obie wspomniane implementacje mogą stosować różne funkcje odległości: euklidesową, humminga i cosinusową. Dwa pierwsze rodzaje odległości spełniają równanie na nierówność trójkąta, trzeci nie spełnia jej \todo{http://math.stackexchange.com/questions/102924/cosine-similarity-distance-and-triangle-equation} dla pewnych wartości kątów (dodać referencję albo uzasadnienie).
+Dodatkowo zostały zaimplementowane funkcje do obliczania odległości hamiltona, hamminga, euclidesa i cosionusowej - wybór funkcji podobieństwa może wpłynąć na wyniki grupowania. W dalszej części pracy przedstawione będzie porównanie wyników ze względu na użytą funkcję odległości.
 
-Wersja szybsza algorytmu wykorzystuje nierówność trójkąta w celu przyspieszenia obliczeń, dlatego nie jest właściwe zastosowanie w niej odległości cosinusowej.
-\todo{w części 3 napisać o niedoskonałości odległości cosinusowej, dlaczego niespełnia; napisać że hamminga spełnia – binarna i nie}
+\subsection{Wybór podziału początkowego na podstawie minimalnego drzewa rozpinającego}
 
-\subsection{Przyspieszenie algorytmu k-średnich}
-Algorytm k-średnich można przyspieszyć poprzez zmniejszenie liczby wywołań fukcji obliczającej odległość pomiędzy dwoma punktami. Jest to kosztowne obliczenie, w szczególności wtedy, punkty posiadają ponad tysiąc współrzędnych. Usprawnienie polega na zastosowaniu nierówności trójkąta, przeprowadzając kilka dodatkowych operacji w każdej iteracji.
+Istnieją już wersje algorytmu k-means używające minimalnego drzewa rozpinającego, \todo{referencja do http://waset.org/publications/10006049/a-minimum-spanning-tree-based-method-for-initializing-the-k-means-clustering-algorithm} gdzie zaznaczono, że użycie takiego drzewa pozwala przyspieszyć i poprawić działanie algorytmu grupującego - na co wskazuje lepsza niż dla innych grupowań wartość indeksu grupowania asocjacyjnego. Jednak w przypadku danych tekstowych, których grupowanie jest przedmiotem tej pracy, użycie minimalnego drzewa rozpinającego może dać jeszcze większe przyspieszenie, a zbudowanie go będzie kosztować mniej, niż w przypadkach opisanych w artykule \todo{tym co wyżej}. 
+Dane tekstowe charakteryzują się:
+\begin{itemize}
+	\item dużą liczbą wymiarów - każdy wymiar to unikalne słowo znajdujące się w jednym z dokumentów będącym częścią grupowanego zbioru;
+	\item znaczącą liczbą wymiarów zerowych - w wielu korpusach dostępnych w internecie, spośród całej dziedziny słów dostępnej w korpusie, w dokumencie występuje średnio nie więcej niż 25\% wszystkich słów \todo{linki do korpusów i dokładna liczba}
+\end{itemize}
+Dzięki takiej charakterystyce, można użyć odległości hamminga dla wykonania podziału początkowego i tym samym przyspieszyć jego wygenerowanie. Każdorazowe obliczenie odległości hamminga jest szybsze niż obliczanie odległości euklidesowej.
+
+\subsubsection{Opis wyboru podziału początkowego}
+
+W tej wersji algorytmu podział początkowy wybierany na podstawie minimalnego drzewa rozpinającego oparty jest na algorytmie zachłannym i dopasowanym do zadanej na wejściu liczby wymiarów.
 
 \begin{enumerate}
-	\item Wyznaczenie odległości pomiędzy każdym ze środków grup.
-	\item Wyznaczenie górnych granic każdego z punktów (odległość od punktu do najbliższego środka – w danej iteracji).
-	\item Wyznaczenie górnych granic punktów (odległości pomiędzy punktem a każdym ze środków).
-	\item Wykorzystanie wymienionych wyżej informacji do określenia które ze wszystkich punktów mogą zmienić grupę. Na przykład jeżeli odległość pomiędzy dwoma środkami grup jest dwukrotnie większa od odległości punktu od jednego z tych centrów, to punkt ten na pewno nie zostanie przeniesiony do grupy z tym drugim środkiem.
-	\item Aktualizacja górnych i dolnych granic o różnice między nowymi a starymi środkami grup.
+	\item Pierwszym krokiem jest obliczenie odległości hamminga pomiędzy wszystkimi wektorami cech, i przypisanie każdemu wektorowi nowej cechy - jego sumarycznej odległości od wszystkich pozostałych punktów. Jednocześnie wybierana jest najmniejsza odległość między dwoma punktami, jaka występuje w tym zbiorze danych i odległość ta jest ustawiana jako aktualny dystans maksymalny.
+	\item Punkty są sortowane ze względu na swoją sumaryczną odległość od pozostałych - na początku ustawiane są punkty z najmniejszą wartością tego parametru.
+	\item Ustaw aktualnie obsługiwaną grupę na pierwszą.
+	\item Dla każdego punktu wykonywane są następujące kroki, dopóki każdy z punktów będzie miał przypisaną grupę:
+	\begin{enumerate}
+		\item \label{krok1} Wybierz punkt z początku listy - z najmniejszą sumaryczną odległością - i przypisz go do aktualnie obsługiwanej grupy, a następnie usuń go z tej listy.
+		\item \label{krok2} Dla wszystkich punktów, z którymi ten punkt sąsiaduje, sprawdź z czy dzieląca go odległość jest mniejsza lub równa od aktualnego dystansu maksymalnego.
+		\item Dla każdego punktu sąsiadującego który przeszedł to sprawdzenie, dodaj go do aktualnie obsługiwanej grupy i usuń z listy. Następnie dla każdego z nich powtórz krok \ref{krok2} i kolejne, aż do wyczerpania takich punktów.
+		\item Jeżeli żaden punkt nie przeszedł sprawdzenia z kroku \ref{krok2}, zmień aktualną grupę na kolejną.
+		\item Pod warunkiem, że wybrana grupa jeszcze nie była obsługiwana przy aktualnym dystansie minimalnym, przejdź do \ref{krok1}, w przeciwnym wypadku idź do kolejnego kroku.
+		\item Zwiększ aktualny dystans minimalny o odległość minimalną i przejdź do kroku \ref{krok1}.
+	\end{enumerate}
 \end{enumerate}
 
-Dzięki aktualizacji granic w ostatnim z powyższych punktów, można bez obliczania odległości porównać górną granicę danego punktu z jego wszystkimi dolnymi granicami. O ile warunek podany w punkcie 4. jest spełniony, a któraś z dolnych granic będzie mniejsza od górnej, oznacza to, że możliwe jest przemieszczenie punktu – dopiero w tym momencie należy obliczyć faktyczną odległość badanego punktu od środka grupy, z którą dolna granica była mniejsza od górnej.
+\newpage
+\section{Testy i wnioski}
 
-\subsubsection{Użyte struktury}
-Aby umożliwić wykonanie tych kilku dodatkowych kroków niezbędna było dodanie względem standardowej implementacji różnych pojemników na informacje.
+Testy były wykonane na zbiorze artykułów naukowych dotyczących różnych dziedzin prawa. Każdy z nich posiada wyróżnione sekcje na abstrakt, słowa kluczowe, i kolejne rozdziały. Wszystkie są w języku angielskim. Zostały pobrane ze strony \todo{http://reference.findlaw.com/lawandeconomics/contents.html}.
 
+\subsection{Obróbka danych tekstowych}
+
+Zanim jakiekolwiek grupowanie czy wybór podziałów początkowych mogą mieć miejsce, artykuły w plikach pdf trzeba sprowadzić do postaci wektorów cech tfidf. 
+Aby to osiągnąć potrzebne były następujące kroki:
+
+\begin{enumerate}
+	\item Pierwszym krokiem była konwersja każdego artykułu z formatu pdf, do formatu tekstowego. Użyto do tego jednej z liczny stron oferujących takie konwertery za darmo \todo{http://pdftotext.com/pl/}.
+	\item Kolejnym krokiem było napisanie i wywołanie skryptu w języku Python, który posiada biblioteki do procesowania języka naturalnego\todo{python nlp}. Zanim jednak można było użyć bibliotek do obróbki tekstu, trzeba było ujednolicić format plików, oraz pozbyć się artefaktów pozostałych po konwersji z formatu pdf na tekstowe:
+	\begin{enumerate}
+		\item Usunięcie numerów stron, stopek oraz nagłówków (zawierających np. tytuł artykułu, autorów, itp.).
+		\item Usunięcie znaków nie będących standardowymi dla zdań po angielsku (czyli różnych typów cudzysłowów, podłużnych myślników, itp.)
+		\item Podział logiczny dokumentu na części typowe dla artykułów naukowych: abstrakt, słowa kluczowe, wstęp i kolejne rozdziały, bibliografia.
+	\end{enumerate}
+	\item Po zakończonej wstępnej obróbce, powstawały 4 dokumenty, na każdy artykuł, zawierające:
+	\begin{itemize} \label{doc_types}
+		\item tylko abstrakt artykułu;
+		\item wstęp i pozostałe rozdziały - bez bibliografii;
+		\item słowa kluczowe
+		\item abstrakt, wstęp oraz wszystkie rozdziały, bez bibliografii.
+	\end{itemize}
+	\item każdy z wymienionych wynikowych zbiorów danych został poddany następującej obróbce: 
+	\begin{enumerate}
+		\item podział artykułu na zdania, przy użyciu \textit{nltk.tokenize},
+		\item rozbicie zdań na słowa i oznaczenie tych słów częściami mowy i zdania przy użyciu modułu j.w.,
+		\item sprowadzenie formy fleksyjne słów do postaci słownikowej, na podstawie przydzielonych im oznaczeń części mowy i zdania, przy użyciu lematyzera \textit{WordNet},
+		\item usunięcie wyrazów pospolitych (ang. \textit{stopwords}) za pomocą słownika z modułu \textit{nltk.corpus.stopwords}
+		\item przekształcenie formy słownikowej do rdzenia z wykorzystaniem modułu \textit{stemming.porter2}.
+	\end{enumerate}
+\end{enumerate}
+
+Po zakończonym procesie nastąpił etap ręcznego sprawdzenia wynikowych dokumentów - w celu zweryfikowania jakości procesu. W sytuacji, gdy w zbiorze słów znajdowały się słowa nie sprowadzone do rdzenia (na przykład przez przylegający do nich zestaw cudzysłowów dolnych, przechylonych w lewo), implementowane były poprawki do skryptu (na przykład usuwające określone znaki z tekstu), mające na celu tą jakość poprawić. 
+
+Ostatecznie otrzymano następujące zbiory słów:
 \begin{itemize}
-	\item tablica dwuwymiarowa zawierająca połówki odległości pomiędzy różnymi środkami
-	\item dwuwymiarowa tablica zawierająca całe odległości pomiędzy centrami,
-	\item tablica jednowymiarowa przechowująca przez pewien czas nowe środki – w celu obliczenia odległości o jaką przesunęły się środki od poprzedniej iteracji,
-	\item jednowymiarowa tablica zawierająca górne granice każdego z punktów,
-	\item dwuwymiarowa tablica zawierająca dla każdego punktu spis jego górnych granic ze wszystkimi środkami grup,
-	\item jednowymiarowa tablica informująca o wszystkich punktach, czy w danej iteracji dla określonego z punktów już była obliczana odległość pomiędzy nim, a dowolnym środkiem.
+	\item Abstrakty - 1841 słów
+	\item Rozdziały - 36907 słów
+	\item Całość - 36938 słów
+	\item Słowa kluczowe - 559 słów.
+\end{itemize} 
+Tak powstałe dokumenty można było przerobić na wektory cech dokumentów, używając wskaźnika \[tf \times idf \] do przekształcenia zbiorów słów na liczby.
+Jednak zanim ten krok zostanie wykonany, należy zwrócić uwagę na to, że liczba unikalnych słów dla każdego z tych typów dokumentów ciągle jest duża, i na pewno znajdują się tam słowa, które można pominąć. 
+Dla każdego słowa została policzona jego wariancja - biorąc pod uwagę liczność występowania słowa w całym zbiorze artykułów. Na podstawie wyliczonej wariancji stworzone zostały dodatkowe zbiory dokumentów do analizy:
+\begin{itemize}
+	\item Abstrakty, gdzie minimalna dopuszczalna wariancja to 1, liczba słów to
+	\item Rozdziały, gdzie minimalna dopuszczalna wariancja to 1, liczba słów to
+	\item Rozdziały, gdzie minimalna dopuszczalna wariancja to 5, liczba słów to
+	\item Całość, gdzie minimalna dopuszczalna wariancja to 1, liczba słów to
+	\item Całość, gdzie minimalna dopuszczalna wariancja to 10, liczba słów to
+	\item Całość, gdzie minimalna dopuszczalna wariancja to 20, liczba słów to
+	\item Całość, gdzie minimalna dopuszczalna wariancja to 40, liczba słów to
 \end{itemize}
 
-W standardowej wersji algorytmu został użyte następujące struktury, które są również wykorzystywane przez wersję przyspieszoną:
+\subsection{Wyniki grupowania porównawczego}
 
-\begin{itemize}
-	\item tablica jednowymiarowa zawierająca indeks grupy, do której jest przydzielony dany punkt,
-	\item tablica jednowymiarowa indeksowana numerem grupy, zawierająca zbiory punktów przypisanych do danej grupy,
-	\item tablica jednowymiarowa zawierająca wektory współrzędnych każdego środka,
-	\item tablica jednowymiarowa zawierająca wektory współrzędnych każdego punktu,
-	\item wektory współrzędnych punktów zrealizowane są poprzez mapy, gdzie kluczem jest indeks współrzędnej, a wartością jest dana współrzędna.
-\end{itemize}
+Do grupowania porównawczego użyty został algorytm LDA \todo{opisać, napisać że trwał około 4-5h i dał RAND ~0,84}.
 
-\todo{[dodać dokładną informację o rodzaju tych struktur – z Qt, Qset, mapa z stla itp]
-	[framework, na początku]
-	[czemu taki dobór struktur]}
+\subsection{Wyniki grupowania}
 
+\begin{table}[H]
+	\centering
+	\begin{tabular}{c|c|c}
+		(w sekundach) & $tf \times idf$ i generowanie słownika & $tf \times idf$ na podstawie słownika \\ \hline
+		Abstrakty: & 0,47 & 0,03 \\ \hline
+		Rozdziały & 13,82 & 3,81 \\ \hline
+		Całość & 14,46 & 3,52 \\ \hline
+	\end{tabular}
+	\caption{Czasy obliczenia tfidf i wygenerowania słownika słów ignorowanych, oraz wykonania tfidf na postawie słownika.}
+	\label{tab:tfidfczas}
+\end{table}
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{c|c|c}
+		Indeks RAND & odległość Hamminga & odległość euklidesowa \\ \hline
+		P.p. sekwencyjny: & 0,792857 & 0,792857 \\ \hline
+		P.p. losowy: & 0,792857 & 0,802521  \\ \hline
+		P.p. MST: & 0,339076 & 0,339076 \\hline
+		P.p. sekwencyjny, Varx = 1: & 0,707563 & 0,686275 \\ \hline
+		P.p. losowy, Varx = 1: & 0,714846 & 0,732073  \\ \hline
+		P.p. MST, Varx = 1: & 0,714426 & 0,714426
+		\end{tabular}
+		\caption{Wyniki grupowania na podstawie abstraktów. P.p - podział początkowy; MST -na podstawie minimalnego drzewa rozpinającego. Słowa były odcinane przy wariancji równej 1.}
+		\label{tab:abstraktywyniki}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{c|c|c}
+		Indeks RAND & odległość Hamminga & odległość euklidesowa \\ \hline
+		P.p. sekwencyjny: & 0,736835 & 0,763025 \\ \hline
+		P.p. losowy: & 0,758683 & 0,671569 \\ \hline
+		P.p. MST: & 0,675910 & 0,560224 \\ \hline
+		P.p. sekwencyjny, Varx = 1: & 0,754342 & 0,652241 \\ \hline
+		P.p. losowy, Varx = 1: & 0,743978 & 0,593557 \\ \hline
+		P.p. MST, Varx = 1: & 0,795238 & 0,635154 \\ \hline
+		P.p. sekwencyjny, Varx = 5: & 0,668768 & 0,643557 \\ \hline
+		P.p. losowy, Varx = 5: & 0,139776 & 0,62535  \\ \hline
+		P.p. MST, Varx = 5: & 0,709384 & 0,702241
+	\end{tabular}
+	\caption{Wyniki grupowania na podstawie rozdziałów. P.p - podział początkowy; MST -na podstawie minimalnego drzewa rozpinającego; VarX - odcięcie słów przy danej wariancji.}
+	\label{tab:rozwyniki}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{c|c|c}
+		Indeks RAND & odległość Hamminga & odległość euklidesowa \\ \hline
+		P.p. sekwencyjny: & 0,736835 & 0,754622 \\ \hline
+		P.p. losowy: & 0,758403 & 0,647619  \\ \hline
+		P.p. MST: & 0,649020 & 0,649020 \\ \hline
+		P.p. sekwencyjny, Varx = 1: & 0,776331 & 0,658543 \\ \hline
+		P.p. losowy, Varx = 1: & 0,751541 & 0,602381  \\ \hline
+		P.p. MST, Varx = 1: & 0,658263 & 0,658263 \\ \hline
+		P.p. sekwencyjny, Varx = 10: & 0,637255 & 0,661905 \\ \hline
+		P.p. losowy, Varx = 10: & 0,602941 & 0,540476  \\ \hline
+		P.p. MST, Varx = 10: & 0,741176 & 0,741176 \\ \hline
+		P.p. sekwencyjny, Varx = 20: & 0,601120 & 0,674650 \\ \hline
+		P.p. losowy, Varx = 20: & 0,609384 & 0,523529  \\ \hline
+		P.p. MST, Varx = 20: & 0,627871 & 0,627871 \\ \hline
+		P.p. sekwencyjny, Varx = 40: & 0,511905 & 0,596359 \\ \hline
+		P.p. losowy, Varx = 40: & 0,570028 & 0,551120  \\ \hline
+		P.p. MST, Varx = 40: & 0,690756 & 0,690756
+	\end{tabular}
+	\caption{Wyniki grupowania na podstawie całości. P.p - podział początkowy; MST -na podstawie minimalnego drzewa rozpinającego; VarX - odcięcie słów przy danej wariancji.}
+	\label{tab:calwyniki}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{c|c|c}
+		Indeks RAND & odległość Hamminga & odległość euklidesowa \\ \hline
+		P.p. sekwencyjny: & 0,744398 & 0793137, \\ \hline
+		P.p. losowy: & 0,799440 & 0,800560  \\ \hline
+		P.p. MST: & 0,200980 & 0,589776 
+	\end{tabular}
+	\caption{Wyniki grupowania na podstawie słów-kluczy. P.p - podział początkowy; MST -na podstawie minimalnego drzewa rozpinającego. Grupowanie było wykonane bez usuwania terminów, jako że słów kluczowych było od początku bardzo mało.}
+	\label{tab:keywordswyniki}
+\end{table}
+
+We wszystkich tabelach \ref{tab:abstraktywyniki}, \ref{tab:rozwyniki}, \ref{tab:calwyniki} wartości zostały zaokrąglone do 6-tego miejsca po przecinku. Stąd niektóre z wartości wyglądają tak samo - na przykład w tabeli \ref{tab:calwyniki} grupowanie przy użyciu podziału opartym na minimalnym drzewie rozpinającym ma takie same wartości indeksu RAND, bez względu na rodzaj użytej funkcji odległości. Możliwe, że algorytm wpada w lokalne minimum i nie da lepszego wyniku \todo{dodać liczbę użytych iteracji do wyników, dodać czasy wykonania}. 
+
+Wszystkie algorytmy odcinały słowa, o wariancji liczności mniejszej niż jeden, lub większej - jak podane w tabelkach. Widać, że zbyt duże odcięcie nie poprawia wyników grupowania\todo{Ciekawe, poprawić wariancje - do niższej, sprawdzić}.
+
+\newpage
+\section{notatki robocze}
 W rozdziale 2 dodać teorię.
-	
-	2. Implementacja rozwiązania
-	1. Opis obu algorytmów, albo odniesienie do wcześniejszego opisu, dodanego na przykład w rozdziale 3 (k-średnie często się wykorzystuje do grupowania dokumentów). Tutaj ew. Opisać tylko ulepszenie polegające na wprowadzeniu nierówności trójkąta.
+	6.02 spotkanie o 17
+	1. Dodać bez wariancji
+	1.1 Jak ocenić grupowanie, podobieństwo
+	1.2 Rodział cały o ocenie grupowania
 	2. Uzasadnić wybór funkcji odległości – opisać działaniu ich obu, odniesienie do bibliografii. Prezentacja testów ich wydajności ze względu na liczbę wymiarów, gęstość wektorów, rodzaj implementacji. Można pokusić się o analizę pamięciową.
 	3. Porównanie wyników działania (wydajność i sposób dzielenia na zbiory) obu implementacji algorytmu.
 	1. Błąd kwadratowy w każdej grupie. 
@@ -504,5 +716,8 @@ W rozdziale 2 dodać teorię.
 	4. Wizualizacja wyników grupowania. Może być istniejąca implementacja POSZUKAĆ.
 	1. Wykres obrazujący liczbę obiektów w poszczególnych grupach.
 	2. Rzutowanie grup na płaszczyznę 2D (konfigurowalny dobór współrzędnych użytych do rzutowania, oraz przydziału ich do rzędnych lub odciętych.
+	Wersja szybsza algorytmu wykorzystuje nierówność trójkąta w celu przyspieszenia obliczeń, dlatego nie jest właściwe zastosowanie w niej odległości cosinusowej.
+	\todo{w części 3 napisać o niedoskonałości odległości cosinusowej, dlaczego niespełnia; napisać że hamminga spełnia – binarna i nie}
+	
 
 \end{document}
