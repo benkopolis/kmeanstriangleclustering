@@ -78,7 +78,7 @@ SUITE(ReadersUT)
         FullDataReader fdr;
         ReadersUTHelper helper;
         std::istream* stream = helper.getFullDataStream();
-        AbstractPointsSpace<DensePoint> * aps = fdr.parseFile(stream);
+        AbstractPointsSpace * aps = fdr.parseFile(stream);
         delete stream;
         CHECK(aps != NULL);
         CHECK(aps->getNumDimensions() == 3); // in helper string
@@ -95,7 +95,7 @@ SUITE(ReadersUT)
         FullDataReader fdr;
         ReadersUTHelper helper;
         std::istream* stream = helper.getEmptyStream();
-        AbstractPointsSpace<DensePoint> * aps = fdr.parseFile(stream);
+        AbstractPointsSpace * aps = fdr.parseFile(stream);
         delete stream;
         CHECK(aps == 0);
     }
@@ -103,7 +103,7 @@ SUITE(ReadersUT)
     TEST(FullDataReaderNullStream)
     {
         FullDataReader fdr;
-        AbstractPointsSpace<DensePoint> * aps = fdr.parseFile(0);
+        AbstractPointsSpace * aps = fdr.parseFile(0);
         CHECK(aps == 0);
     }
 
@@ -122,7 +122,7 @@ SUITE(ReadersUT)
         NormalizedFormatDataReader nfdr;
         ReadersUTHelper helper;
         std::istream* stream = helper.getNormalizedDataStream();
-        AbstractPointsSpace<SparsePoint> * aps = nfdr.parseFile(stream);
+        AbstractPointsSpace * aps = nfdr.parseFile(stream);
         delete stream;
         CHECK(aps != NULL);
         CHECK(aps->getNumDimensions() == 10); // in helper string
@@ -139,7 +139,7 @@ SUITE(ReadersUT)
         NormalizedFormatDataReader nfdr;
         ReadersUTHelper helper;
         std::istream* stream = helper.getEmptyStream();
-        AbstractPointsSpace<SparsePoint> * aps = nfdr.parseFile(stream);
+        AbstractPointsSpace * aps = nfdr.parseFile(stream);
         delete stream;
         CHECK(aps == 0);
     }
@@ -147,7 +147,7 @@ SUITE(ReadersUT)
     TEST(SparseDataReaderNullStream)
     {
         NormalizedFormatDataReader nfdr;
-        AbstractPointsSpace<SparsePoint> * aps = nfdr.parseFile(0);
+        AbstractPointsSpace * aps = nfdr.parseFile(0);
         CHECK(aps == NULL);
     }
 

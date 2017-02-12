@@ -14,11 +14,11 @@ public:
     ClusterCalculator() {}
     virtual ~ClusterCalculator() {}
 
-    void recalculateCenters(CentersData* centers, PartitionData* partition, AbstractPointsSpace<Point>* space);
+    void recalculateCenters(CentersData* centers, PartitionData* partition, AbstractPointsSpace* space);
 };
 
 template<class Point>
-void ClusterCalculator<Point>::recalculateCenters(CentersData *centers, PartitionData *partition, AbstractPointsSpace<Point>* space)
+void ClusterCalculator<Point>::recalculateCenters(CentersData *centers, PartitionData *partition, AbstractPointsSpace* space)
 {
     unsigned center = 0;
     for (DensePoint* p : *centers)

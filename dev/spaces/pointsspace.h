@@ -5,8 +5,7 @@
 #include "commons/partitiondata.h"
 
 // This class stores all the points available in the model
-template<typename T>
-class PointsSpace : public AbstractPointsSpace<T> {
+class PointsSpace : public AbstractPointsSpace {
 public:
 
     PointsSpace(unsigned num_points, unsigned num_dimensions);
@@ -17,7 +16,7 @@ public:
     virtual PtrCAbstractPoint operator [] (const unsigned& pid) throw(BadIndex);
     virtual PtrCAbstractPoint operator [] (const unsigned& pid) const throw(BadIndex);
 
-    virtual void insertPoint(T* p, unsigned index);
+    virtual void insertPoint(AbstractPoint *p, unsigned index);
     virtual PtrCAbstractPoint getPoint(unsigned index) const;
     virtual bool contains(unsigned index) const;
     virtual unsigned getNumOfInsertedPoints() const;
@@ -30,7 +29,5 @@ protected:
 
     std::unordered_map<unsigned int, PtrCAbstractPoint> points__;
 };
-
-#include "pointsspace.cpp"
 
 #endif // POINTSSPACE_H

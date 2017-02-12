@@ -4,35 +4,42 @@
 #define POINTSPACE_CPP
 
 #include "commons/partitiondata.h"
+#include "commons/densepoint.h"
+#include "commons/sparsepoint.h"
 
 #include <string>
 #include <iostream>
 #include <sstream>
 #include <fstream>
 
-template<typename T>
-PointsSpace<T>::PointsSpace(unsigned num_points, unsigned num_dimensions) :
-    AbstractPointsSpace<T>(num_points, num_dimensions)
+PointsSpace::PointsSpace(unsigned num_points, unsigned num_dimensions) :
+    AbstractPointsSpace(num_points, num_dimensions)
 {
 
 }
 
-template<typename T>
-PointsSpace<T>::PointsSpace(const PointsSpace& another) :
-    AbstractPointsSpace<T>(another.num_points__, another.num_dimensions__)
+PointsSpace::PointsSpace(const PointsSpace& another) :
+    AbstractPointsSpace(another.num_points__, another.num_dimensions__)
 {
     for(unsigned int i=0; i < this->num_points__; ++i)
     {
-        T* point = new T(i);
-        const T& src = another.getPoint(i);
+        AbstractPoint* point = nullptr;
+        PtrCAbstractPoint src = another.getPoint(i);
+        if (typeid(src) == typeid(DensePoint))
+            point = new DensePoint(i);
+        else if (typeid(src) == typeid(SparsePoint))
+            point = new SparsePoint(i);
+        else throw 1;
         for(unsigned int j=0; j < this->num_dimensions__; ++j)
-            point->insert(j, src.value(j));
-        points__.insert({i, dynamic_cast<PtrCAbstractPoint>(point)});
+        {
+            if(src->contains(j))
+                point->insert(j, src->get(j));
+        }
+        points__.insert({i, point});
     }
 }
 
-template<typename T>
-PointsSpace<T>::~PointsSpace()
+PointsSpace::~PointsSpace()
 {
     for(auto pair: points__)
     {
@@ -41,48 +48,41 @@ PointsSpace<T>::~PointsSpace()
     }
 }
 
-template<typename T>
-PtrCAbstractPoint PointsSpace<T>::operator [](const unsigned &pid) throw(BadIndex)
+PtrCAbstractPoint PointsSpace::operator [](const unsigned &pid) throw(BadIndex)
 {
     if(this->points__.count(pid) == 0)
         throw BadIndex(__FILE__, __LINE__);
     return this->points__[pid];
 }
 
-template<typename T>
-PtrCAbstractPoint PointsSpace<T>::operator [](const unsigned &pid) const throw(BadIndex)
+PtrCAbstractPoint PointsSpace::operator [](const unsigned &pid) const throw(BadIndex)
 {
     if(this->points__.count(pid) == 0)
         throw BadIndex(__FILE__, __LINE__);
     return this->points__.at(pid);
 }
 
-template<typename T>
-void PointsSpace<T>::insertPoint(T *p, unsigned index)
+void PointsSpace::insertPoint(AbstractPoint *p, unsigned index)
 {
     this->points__.insert({index, p});
 }
 
-template<typename T>
-PtrCAbstractPoint PointsSpace<T>::getPoint(unsigned index) const
+PtrCAbstractPoint PointsSpace::getPoint(unsigned index) const
 {
     return this->points__.at(index);
 }
 
-template<typename T>
-bool PointsSpace<T>::contains(unsigned index) const
+bool PointsSpace::contains(unsigned index) const
 {
     return this->points__.count(index) > 0;
 }
 
-template<typename T>
-unsigned PointsSpace<T>::getNumOfInsertedPoints() const
+unsigned PointsSpace::getNumOfInsertedPoints() const
 {
     return this->points__.size();
 }
 
-template<typename T>
-void PointsSpace<T>::savePointsSpace(const char* fileName)
+void PointsSpace::savePointsSpace(const char* fileName)
 {
     std::ofstream out(fileName, std::ios::out | std::ios::trunc);
     if(!out.is_open())
@@ -97,8 +97,7 @@ void PointsSpace<T>::savePointsSpace(const char* fileName)
     out.close();
 }
 
-template<typename T>
-PartitionData *PointsSpace<T>::convertTo(unsigned clusters) const
+PartitionData *PointsSpace::convertTo(unsigned clusters) const
 {
     throw clusters;
 }

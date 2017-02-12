@@ -9,8 +9,7 @@
 #include <typeinfo>
 #include <unordered_map>
 
-template<typename T>
-class NormalizedPointsSpace : public AbstractPointsSpace<T>
+class NormalizedPointsSpace : public AbstractPointsSpace
 {
 public:
     NormalizedPointsSpace(unsigned num_points, unsigned num_dimensions);
@@ -21,7 +20,7 @@ public:
     virtual PtrCAbstractPoint operator [](const unsigned& pid) throw(BadIndex);
     virtual PtrCAbstractPoint operator [](const unsigned& pid) const throw(BadIndex);
 
-    virtual void insertPoint(T *p, unsigned index);
+    virtual void insertPoint(AbstractPoint *p, unsigned index);
     virtual PtrCAbstractPoint getPoint(unsigned index) const;
     virtual bool contains(unsigned index) const;
     virtual unsigned getNumOfInsertedPoints() const;
@@ -41,6 +40,5 @@ private:
 
 };
 
-#include "normalizedpointsspace.cpp"
 
 #endif // NORMALIZEDPOINTSSPACE_H

@@ -5,12 +5,13 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 NormalizedFormatDataReader::NormalizedFormatDataReader()
 {
 }
 
-AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::istream *in) throw (InvalidFileFormat)
+AbstractPointsSpace *NormalizedFormatDataReader::parseFile(std::istream *in) throw (InvalidFileFormat)
 {
     if(in == NULL || in->eof() || in->peek() == std::istream::traits_type::eof())
         return 0;
@@ -20,7 +21,7 @@ AbstractPointsSpace<SparsePoint> * NormalizedFormatDataReader::parseFile(std::is
     unsigned int numP=0, numD=0;
     *in >> numP >> numD;
     in->ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    NormalizedPointsSpace<SparsePoint> * space = new NormalizedPointsSpace<SparsePoint>(numP, numD);
+    NormalizedPointsSpace * space = new NormalizedPointsSpace(numP, numD);
     Coord c = 0.0;
     char separator;
     while(!in->eof())

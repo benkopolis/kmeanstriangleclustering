@@ -27,4 +27,5 @@ SOURCES += \
     distances/manhattandistanceut.cpp \
     pickers/dimensionbasedcenterspicker.cpp \
     tfidf/stemmedinmemoryfileparserut.cpp \
-    commons/hashtableut.cpp
+    commons/hashtableut.cpp \
+    analysis/variationofinformationindextest.cpp

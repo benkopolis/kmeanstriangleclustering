@@ -26,12 +26,12 @@ protected:
 
     AbstractAlgorithm(AbstractDistance *distance,
                       AbstractCentersPicker<Point> *picker,
-                      AbstractPointsSpace<Point> *space);
+                      AbstractPointsSpace *space);
 
 protected: // fields
 
     AbstractDistance* _distance;
-    AbstractPointsSpace<Point> * _space;
+    AbstractPointsSpace * _space;
     AbstractCentersPicker<Point> * _picker;
     CentersData* _centers;
     PartitionData* _partition;
@@ -54,7 +54,7 @@ AbstractAlgorithm<Point>::~AbstractAlgorithm()
 template<class Point>
 AbstractAlgorithm<Point>::AbstractAlgorithm(AbstractDistance* distance,
         AbstractCentersPicker<Point> *picker,
-        AbstractPointsSpace<Point> *space) :
+        AbstractPointsSpace *space) :
     _distance(distance),
     _space(space),
     _picker(picker),

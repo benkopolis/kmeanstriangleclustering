@@ -13,7 +13,7 @@ AbstractDataReader<T>::AbstractDataReader()
 }
 
 template<typename T>
-AbstractPointsSpace<T> *AbstractDataReader<T>::readPointSpaceFromFile(const char* fileName)
+AbstractPointsSpace *AbstractDataReader<T>::readPointSpaceFromFile(const char* fileName)
 {
     std::ifstream *in = new std::ifstream(fileName, std::ios::in);
     if(!in->is_open())
@@ -22,6 +22,8 @@ AbstractPointsSpace<T> *AbstractDataReader<T>::readPointSpaceFromFile(const char
         return 0;
     }
     return parseFile(in);
+    in->close();
+    delete in;
 }
 
 #endif //ABSTRACTDATAREADER_CPP

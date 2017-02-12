@@ -45,7 +45,7 @@ void TfidfHistogramGenerator::generateHistograms(const char *tfidfFileName) thro
     if(!in.is_open())
         throw IOException(Utils::getInstance()->concatenate(tfidfFileName, " can't be open to read."), __FILE__, __LINE__);
     NormalizedFormatDataReader reader;
-    AbstractPointsSpace<SparsePoint> * space = reader.parseFile(&in);
+    AbstractPointsSpace * space = reader.parseFile(&in);
     for(unsigned i = 0; i < space->getDeclaredNumPoints(); ++i) {
         PtrCAbstractPoint p = space->getPoint(i);
         if(this->nonZeroCoordsFrequency.count(p->size()) == 0)

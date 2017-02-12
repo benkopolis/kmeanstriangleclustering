@@ -25,9 +25,9 @@ public:
      * @param container - the points' space object.
      * @return The points' space filled with points read from the opened file.
      */
-    AbstractPointsSpace<T> * readPointSpaceFromFile(const char *fileName);
+    AbstractPointsSpace * readPointSpaceFromFile(const char *fileName);
 
-    virtual AbstractPointsSpace<T> * parseFile(std::istream *in) throw (InvalidFileFormat) = 0;
+    virtual AbstractPointsSpace * parseFile(std::istream *in) throw (InvalidFileFormat) = 0;
 
 	virtual ~AbstractDataReader() {}
 

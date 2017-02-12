@@ -5,3 +5,7 @@ AbstractIndexInternal::AbstractIndexInternal()
 
 }
 
+AbstractIndexInternal::~AbstractIndexInternal()
+{
+}
+

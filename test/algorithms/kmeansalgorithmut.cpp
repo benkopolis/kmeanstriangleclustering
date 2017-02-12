@@ -29,7 +29,7 @@ SUITE(KMeansTests)
         CosineDistance* distance = new CosineDistance();
         RandomCenterPicker<SparsePoint>* picker = new RandomCenterPicker<SparsePoint>();
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint> * algo =
                 new KMeansAlgorithm<SparsePoint>(distance, picker, space, 5, 5);
         algo->execute();
@@ -47,7 +47,7 @@ SUITE(KMeansTests)
         EuclideanDistance* distance = new EuclideanDistance();
         RandomCenterPicker<SparsePoint>* picker = new RandomCenterPicker<SparsePoint>();
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint> * algo =
                 new KMeansAlgorithm<SparsePoint>(distance, picker, space, 5, 5);
         algo->execute();
@@ -65,7 +65,7 @@ SUITE(KMeansTests)
         HamiltonDistance* distance = new HamiltonDistance();
         RandomCenterPicker<SparsePoint>* picker = new RandomCenterPicker<SparsePoint>();
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint> * algo =
                 new KMeansAlgorithm<SparsePoint>(distance, picker, space, 5, 5);
         algo->execute();
@@ -83,7 +83,7 @@ SUITE(KMeansTests)
         ManhattanDistance* distance = new ManhattanDistance();
         RandomCenterPicker<SparsePoint>* picker = new RandomCenterPicker<SparsePoint>();
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint> * algo =
                 new KMeansAlgorithm<SparsePoint>(distance, picker, space, 5, 5);
         algo->execute();
@@ -101,7 +101,7 @@ SUITE(KMeansTests)
         CosineDistance* distance = new CosineDistance();
         SequentialCentersPicker<SparsePoint>* picker = new SequentialCentersPicker<SparsePoint>();
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint> * algo =
                 new KMeansAlgorithm<SparsePoint>(distance, picker, space, 5, 5);
         algo->execute();
@@ -119,7 +119,7 @@ SUITE(KMeansTests)
         EuclideanDistance* distance = new EuclideanDistance();
         SequentialCentersPicker<SparsePoint>* picker = new SequentialCentersPicker<SparsePoint>();
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint> * algo =
                 new KMeansAlgorithm<SparsePoint>(distance, picker, space, 5, 5);
         algo->execute();
@@ -137,7 +137,7 @@ SUITE(KMeansTests)
         HamiltonDistance* distance = new HamiltonDistance();
         SequentialCentersPicker<SparsePoint>* picker = new SequentialCentersPicker<SparsePoint>();
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint> * algo =
                 new KMeansAlgorithm<SparsePoint>(distance, picker, space, 5, 5);
         algo->execute();
@@ -155,7 +155,7 @@ SUITE(KMeansTests)
         ManhattanDistance* distance = new ManhattanDistance();
         SequentialCentersPicker<SparsePoint>* picker = new SequentialCentersPicker<SparsePoint>();
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint> * algo =
                 new KMeansAlgorithm<SparsePoint>(distance, picker, space, 5, 5);
         algo->execute();
@@ -173,7 +173,7 @@ SUITE(KMeansTests)
         CosineDistance* distance = new CosineDistance();
         DimensionBasedCentersPicker<SparsePoint>* picker = new DimensionBasedCentersPicker<SparsePoint>();
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint> * algo =
                 new KMeansAlgorithm<SparsePoint>(distance, picker, space, 5, 5);
         algo->execute();
@@ -191,7 +191,7 @@ SUITE(KMeansTests)
         EuclideanDistance* distance = new EuclideanDistance();
         DimensionBasedCentersPicker<SparsePoint>* picker = new DimensionBasedCentersPicker<SparsePoint>();
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint> * algo =
                 new KMeansAlgorithm<SparsePoint>(distance, picker, space, 5, 5);
         algo->execute();
@@ -209,7 +209,7 @@ SUITE(KMeansTests)
         HamiltonDistance* distance = new HamiltonDistance();
         DimensionBasedCentersPicker<SparsePoint>* picker = new DimensionBasedCentersPicker<SparsePoint>();
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint> * algo =
                 new KMeansAlgorithm<SparsePoint>(distance, picker, space, 5, 5);
         algo->execute();
@@ -227,7 +227,7 @@ SUITE(KMeansTests)
         ManhattanDistance* distance = new ManhattanDistance();
         DimensionBasedCentersPicker<SparsePoint>* picker = new DimensionBasedCentersPicker<SparsePoint>();
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         KMeansAlgorithm<SparsePoint> * algo =
                 new KMeansAlgorithm<SparsePoint>(distance, picker, space, 5, 5);
         algo->execute();

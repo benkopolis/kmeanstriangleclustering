@@ -13,7 +13,7 @@ class KMeansAlgorithm : public AbstractAlgorithm<Point>
 public:
     KMeansAlgorithm(AbstractDistance *distance,
                     AbstractCentersPicker<Point> *picker,
-                    AbstractPointsSpace<Point> *space,
+                    AbstractPointsSpace *space,
                     unsigned clusters,
                     unsigned iterations);
 
@@ -33,7 +33,7 @@ protected:
 template<class Point>
 KMeansAlgorithm<Point>::KMeansAlgorithm(AbstractDistance *distance,
         AbstractCentersPicker<Point> *picker,
-        AbstractPointsSpace<Point> *space,
+        AbstractPointsSpace *space,
         unsigned clusters,
         unsigned iterations) :
     AbstractAlgorithm<Point>(distance, picker, space),

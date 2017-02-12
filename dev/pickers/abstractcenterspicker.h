@@ -11,7 +11,7 @@ class AbstractCentersPicker : private Utils::Where<PointType, AbstractPoint>
 public:
 
     virtual ~AbstractCentersPicker();
-    virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType>* ps) = 0;
+    virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace* ps) = 0;
     CentersData *getInitialCentersData();
 
 protected:

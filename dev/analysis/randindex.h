@@ -1,12 +1,12 @@
 #ifndef RANDINDEXPROCESSOR_H
 #define RANDINDEXPROCESSOR_H
 
-#include "commons/partitiondata.h"
+#include "abstractindexexternal.h"
 
-class RandIndexProcessor
+class RandIndex : public AbstractIndexExternal
 {
 public:
-    RandIndexProcessor();
+    RandIndex();
 
     double process(const PartitionData* one, const PartitionData* two);
 };

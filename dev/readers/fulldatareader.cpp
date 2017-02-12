@@ -19,7 +19,7 @@ FullDataReader::~FullDataReader()
 
 }
 
-AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(std::istream *in) throw (InvalidFileFormat)
+AbstractPointsSpace *FullDataReader::parseFile(std::istream *in) throw (InvalidFileFormat)
 {
     if(in == NULL || in->eof() || in->peek() == std::istream::traits_type::eof())
         return 0;
@@ -29,7 +29,7 @@ AbstractPointsSpace<DensePoint> *FullDataReader::parseFile(std::istream *in) thr
     double quant = 0.0;
     *in >> numP >> numD;
     in->ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    PointsSpace<DensePoint> *space = new PointsSpace<DensePoint>(numP, numD);
+    PointsSpace *space = new PointsSpace(numP, numD);
     space->setQuant(quant);
     Coord c = 0.0;
     while(!in->eof())

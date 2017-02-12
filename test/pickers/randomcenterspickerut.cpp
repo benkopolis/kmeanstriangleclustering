@@ -14,7 +14,7 @@ SUITE(RandomCentersPickerUT)
     TEST(SampleDataOkPickRandom)
     {
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("sample_data_sparse.txt");
         RandomCenterPicker<SparsePoint> picker;
         PartitionData *p = picker.performInitialPartition(5, space);
         unsigned pointsNum = 0;

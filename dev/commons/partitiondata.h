@@ -36,6 +36,8 @@ public:
     inline unsigned getNumberOfClusters() const throw() { return this->clustersData.size(); }
     inline void setNumberOfClusters(unsigned nclusters) throw() { this->clustersData.resize(nclusters); }
 
+    inline unsigned getNumberOfPoints() const throw() { return this->pointsData.size(); }
+
     void printDifferences(const PartitionData* from, std::ostream &stream) const;
 
     void printClustersTransposed(const char* fileName) const;

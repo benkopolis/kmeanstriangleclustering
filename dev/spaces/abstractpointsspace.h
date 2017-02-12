@@ -10,8 +10,7 @@
 
 #include <list>
 
-template<class T>
-class AbstractPointsSpace : private Utils::Where<T, AbstractPoint>
+class AbstractPointsSpace
 {
 public:
 
@@ -28,7 +27,7 @@ public:
 		return num_dimensions__;
 	}
 
-    virtual void insertPoint(T* p, unsigned index) = 0;
+    virtual void insertPoint(AbstractPoint* p, unsigned index) = 0;
     virtual PtrCAbstractPoint getPoint(unsigned index) const = 0;
     virtual bool contains(unsigned index) const = 0;
     virtual unsigned getNumOfInsertedPoints() const = 0;
@@ -48,9 +47,6 @@ protected:
 
     double quant;
 
-private:
 };
-
-#include "abstractpointsspace.cpp"
 
 #endif // ABSTRACTPOINTSSPACE_H

@@ -1,14 +1,14 @@
-#include "randindexprocessor.h"
+#include "randindex.h"
 
 #include "exceptions/differentdatasets.h"
 #include "commons/logger.h"
 
-RandIndexProcessor::RandIndexProcessor()
+RandIndex::RandIndex()
 {
 
 }
 
-double RandIndexProcessor::process(const PartitionData *one, const PartitionData *two)
+double RandIndex::process(const PartitionData *one, const PartitionData *two)
 {
     if (one->assigned_points() != two->assigned_points()
             || one->getNumberOfClusters() != two->getNumberOfClusters())

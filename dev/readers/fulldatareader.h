@@ -19,7 +19,7 @@ public:
      * <integer:number of points> <integer:number of dimensions> \n(white space separated)
      * <double:coordinate value>{dimensions,dimensions} \n(white space separated)
      */
-    virtual AbstractPointsSpace<DensePoint> * parseFile(std::istream *in) throw (InvalidFileFormat);
+    virtual AbstractPointsSpace* parseFile(std::istream *in) throw (InvalidFileFormat);
 
 private:
 

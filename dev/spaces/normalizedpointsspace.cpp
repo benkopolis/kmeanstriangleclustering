@@ -8,30 +8,32 @@
 #include <sstream>
 #include <string>
 
-template<typename T>
-NormalizedPointsSpace<T>::NormalizedPointsSpace(unsigned num_points, unsigned num_dimensions) :
-    AbstractPointsSpace<T>(num_points, num_dimensions)
+NormalizedPointsSpace::NormalizedPointsSpace(unsigned num_points, unsigned num_dimensions) :
+    AbstractPointsSpace(num_points, num_dimensions)
 {
     this->_convertedTo = nullptr;
 }
 
-template<typename T>
-NormalizedPointsSpace<T>::NormalizedPointsSpace(const NormalizedPointsSpace& another) :
-    AbstractPointsSpace<T>(another.num_points__, another.num_dimensions__)
+NormalizedPointsSpace::NormalizedPointsSpace(const NormalizedPointsSpace& another) :
+    AbstractPointsSpace(another.num_points__, another.num_dimensions__)
 {
     this->_convertedTo = nullptr;
     for(unsigned int i=0; i<this->num_points__; ++i)
     {
-        T* point = new T(i);
-        const T* src = another.getPoint(i);
+        AbstractPoint* point = nullptr;
+        PtrCAbstractPoint src = another.getPoint(i);
+        if (typeid(src) == typeid(DensePoint))
+            point = new DensePoint(i);
+        else if (typeid(src) == typeid(SparsePoint))
+            point = new SparsePoint(i);
+        else throw 1;
         for(unsigned int j=0; j<this->num_dimensions__; ++j)
-            point->insert({j, src.value(j)});
-        points__.insert({i, dynamic_cast<AbstractPoint*>(point)});
+            point->insert(j, src->get(j));
+        points__.insert({i, point});
     }
 }
 
-template<typename T>
-NormalizedPointsSpace<T>::~NormalizedPointsSpace()
+NormalizedPointsSpace::~NormalizedPointsSpace()
 {
     for(auto pair : points__)
     {
@@ -42,48 +44,41 @@ NormalizedPointsSpace<T>::~NormalizedPointsSpace()
     delete this->_convertedTo;
 }
 
-template<typename T>
-PtrCAbstractPoint NormalizedPointsSpace<T>::operator [](const unsigned &pid) throw(BadIndex)
+PtrCAbstractPoint NormalizedPointsSpace::operator [](const unsigned &pid) throw(BadIndex)
 {
     if(this->points__.count(pid) == 0)
         throw BadIndex(__FILE__, __LINE__);
     return this->points__[pid];
 }
 
-template<typename T>
-PtrCAbstractPoint NormalizedPointsSpace<T>::operator [](const unsigned &pid) const throw(BadIndex)
+PtrCAbstractPoint NormalizedPointsSpace::operator [](const unsigned &pid) const throw(BadIndex)
 {
     if(!this->points__.count(pid) == 0)
         throw BadIndex(__FILE__, __LINE__);
     return this->points__.at(pid);
 }
 
-template<typename T>
-void NormalizedPointsSpace<T>::insertPoint(T *p, unsigned index)
+void NormalizedPointsSpace::insertPoint(AbstractPoint *p, unsigned index)
 {
     points__.insert({index, p});
 }
 
-template<typename T>
-PtrCAbstractPoint NormalizedPointsSpace<T>::getPoint(unsigned index) const
+PtrCAbstractPoint NormalizedPointsSpace::getPoint(unsigned index) const
 {
     return this->points__.at(index);
 }
 
-template<typename T>
-bool NormalizedPointsSpace<T>::contains(unsigned index) const
+bool NormalizedPointsSpace::contains(unsigned index) const
 {
     return this->points__.count(index) > 0;
 }
 
-template<typename T>
-unsigned NormalizedPointsSpace<T>::getNumOfInsertedPoints() const
+unsigned NormalizedPointsSpace::getNumOfInsertedPoints() const
 {
     return this->points__.size();
 }
 
-template<typename T>
-void NormalizedPointsSpace<T>::savePointsSpace(const char* fileName)
+void NormalizedPointsSpace::savePointsSpace(const char* fileName)
 {
     std::ofstream out(fileName, std::ios::out | std::ios::trunc);
     if(!out.is_open())
@@ -99,8 +94,7 @@ void NormalizedPointsSpace<T>::savePointsSpace(const char* fileName)
     out.close();
 }
 
-template<typename T>
-PartitionData *NormalizedPointsSpace<T>::convertTo(unsigned clusters) const
+PartitionData *NormalizedPointsSpace::convertTo(unsigned clusters) const
 {
     if (this->_convertedTo != nullptr)
         return this->_convertedTo;

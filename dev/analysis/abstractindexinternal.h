@@ -4,15 +4,15 @@
 #include "commons/partitiondata.h"
 #include "spaces/abstractpointsspace.h"
 
-class AbstractIntexInternal
+class AbstractIndexInternal
 {
 protected:
-    AbstractIntexInternal();
+    AbstractIndexInternal();
 
 public:
-    AbstractIntexInternal(const AbstractIntexInternal&) = delete;
-    AbstractIntexInternal(AbstractIntexInternal&&) = delete;
-    virtual ~AbstractIntexInternal();
+    AbstractIndexInternal(const AbstractIndexInternal&) = delete;
+    AbstractIndexInternal(AbstractIndexInternal&&) = delete;
+    virtual ~AbstractIndexInternal();
 
     virtual double count(const PartitionData* partition, const AbstractPointsSpace* space) = 0;
 };

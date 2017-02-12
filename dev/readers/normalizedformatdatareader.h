@@ -22,7 +22,7 @@ public:
      * <integer:number of points> <integer:number of dimensions>\n(white space separated)
      * <integer:dimension ordinate number>:<double:coordinate value>{1,dimensions} \n(white space separated)
      */
-    AbstractPointsSpace<SparsePoint> *parseFile(std::istream *in) throw (InvalidFileFormat);
+    AbstractPointsSpace *parseFile(std::istream *in) throw (InvalidFileFormat);
 };
 
 //#include "normalizedformatdatareader.cpp"

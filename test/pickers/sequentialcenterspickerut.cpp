@@ -12,7 +12,7 @@ SUITE(SequentialCentersPickerUT)
     TEST(SampleDataOkPickSeq)
     {
         NormalizedFormatDataReader reader;
-        AbstractPointsSpace<SparsePoint> * space = reader.readPointSpaceFromFile("/home/zby/MAGISTERKA/kmeanstriangleclustering/test/sample_data_sparse.txt");
+        AbstractPointsSpace * space = reader.readPointSpaceFromFile("/home/zby/MAGISTERKA/kmeanstriangleclustering/test/sample_data_sparse.txt");
         SequentialCentersPicker<SparsePoint> picker;
         PartitionData *p = picker.performInitialPartition(5, space);
         unsigned pointsNum = 0;
