@@ -62,8 +62,8 @@ Drugim podejściem do problemu selekcji informacji jest umożliwienie użytkowni
 
 Pierwsze podejście do selekcjonowania i wyszukiwania informacji zaprezentowane w tym rozdziale nazywane jest klasyfikacją informacji. Nowych użytkowników serwisu muzycznego oznaczamy etykietą 'rock' jeżeli słucha muzyki rockowej, nie tworzymy nowych etykiet (grup), pozwalamy co najwyżej na kilka przyporządkowań jednego użytkownika do różnych etykiet. 
 
-Druga metoda nazywana jest grupowaniem – jest to nienadzorowany proces podziału wzorców (obserwacji, danych, wektorów cech) na grupy (klastry). Stosując grupowanie na całym zbiorze użytkowników serwisu muzycznego można odkryć, że osoby słuchające muzyki jazzowej oraz rockowej często lubią słuchać również bluesa. Na podstawie tak dobranych grup obiektów, (obiektem jest zbiór odsłuchiwanej przez użytkownika muzyki) inni użytkownicy mogliby odkryć utwory spoza ich ulubionego gatunku muzycznego, które również by im się spodobały.  Przedmiotem tej pracy będzie wyłącznie grupowanie, sposoby jego przyspieszenia oraz usprawnienia. Podjęta zostanie próba zdefiniowania takiego procesu grupowania, który da wyniki podobne do takich, jakie byłyby wynikiem ręcznego grupowania wykonanego przez użytkownika. Praca ograniczona będzie jedynie do analizy problemu grupowania dokumentów.
-Zaproponowany zostanie relatywnie nowy sposób wykorzystania algorytmu minimalnego drzewa rozpinającego do wyznaczenia podziału początkowego przy grupowaniu danych tekstowych. Omówiony będzie również współczynnik często używany do grupowania takich danych, jego zależność od wariancji występowania słów w zbiorze dokumentów oraz sposób, w jaki można to wykorzystać do przyspieszenia grupowania.
+Druga metoda nazywana jest grupowaniem – nienadzorowany proces podziału wzorców (obserwacji, danych, wektorów cech) na grupy (klastry). Stosując grupowanie na całym zbiorze użytkowników serwisu muzycznego można odkryć, że osoby słuchające muzyki jazzowej oraz rockowej często lubią słuchać również bluesa. Na podstawie tak dobranych grup obiektów, (obiektem jest zbiór odsłuchiwanej przez użytkownika muzyki) inni użytkownicy mogliby odkryć utwory spoza ich ulubionego gatunku muzycznego, które również by im się spodobały.  Przedmiotem tej pracy będzie wyłącznie grupowanie, sposoby jego przyspieszenia oraz usprawnienia. Podjęta zostanie próba zdefiniowania takiego procesu grupowania, który da wyniki podobne do takich, jakie byłyby wynikiem ręcznego grupowania wykonanego przez użytkownika. Praca ograniczona będzie jedynie do analizy problemu grupowania dokumentów.
+Zaproponowane zostanie wykorzystania algorytmu minimalnego drzewa rozpinającego do wyznaczenia podziału początkowego przy grupowaniu danych tekstowych. Omówiony będzie również współczynnik $tf \times idf$ często używany do określania cech grupowanych dokumentów, zależność tego współczynnika od wariancji występowania słów w zbiorze dokumentów oraz sposób, w jaki można to wykorzystać do przyspieszenia grupowania.
 
 \newpage
 \section{Podstawy grupowania}
@@ -71,7 +71,7 @@ Zaproponowany zostanie relatywnie nowy sposób wykorzystania algorytmu minimalne
 Wszystkie rodzaje grupowania mają pewne wspólne zagadnienia. Trzeba wybrać miarę podobieństwa odpowiednią dla używanych danych - szybką i dającą jednoznaczne wyniki. Następnie wykonać kilka kroków przygotowawczych i po zakończonym grupowaniu, jego wyniki powinny być ocenione. Wszystkie powyższe zagadnienia są przybliżone w tym rozdziale.
 
 \subsection{Zadania obejmujące grupowanie}
-Proces grupowania składa się z kilku kroków wspólnych dla wszystkich tych algorytmów [1].
+Proces grupowania składa się z kilku kroków wspólnych dla wszystkich tych algorytmów \cite{jain_clustering}.
 \begin{enumerate}
 	\item Wybór sposobu reprezentacji obiektów.
 	\item Wybór parametrów takich jak:
@@ -112,29 +112,76 @@ Kolejną możliwością porównywania obiektów jest zdefiniowanie dodatkowych, 
 
 \subsection{Ocena wyników grupowania}
 
-Wyniki grupowania stanowią obiekty przydzielone do różnych zbiorów. Jeżeli w warunkach początkowych znalazły się parametry określające zbiory wyjściowe, to może się zdarzyć, że do niektórych z nich nie zostaną przydzielone żadne obiekty, albo że wszystkie obiekty będą przydzielone do jednego zbioru. Oba powyższe warianty wyników mogą być poprawne i pożądane. Aby to ocenić można próbować porównać uzyskane wyniki z wynikami otrzymywanymi za pomocą znanych implementacji podobnych algorytmów grupowania. Można też postawić pytanie, czy wyniki grupowana spełniają cel, który użytkownik chciał osiągnąć. Stwierdzenie czy możliwa jest łatwiejsza selekcja informacji wymaga przeprowadzenia eksperymentów na reprezentatywnej grupie potencjalnych odbiorców selekcjonowanych treści.
+Wyniki grupowania stanowią obiekty podzielone na - w najprostszym przypadku - rozłączne zbiory. Jeżeli w warunkach początkowych znalazły się parametry określające zbiory wyjściowe, to może się zdarzyć, że do niektórych z nich nie zostaną przydzielone żadne obiekty, albo że wszystkie znajdą się w tym samym zbiorze (reszta zbiorów pozostanie pusta). Oba powyższe warianty wyników mogą być poprawne i pożądane. Aby to ocenić można próbować porównać uzyskane wyniki z wynikami otrzymywanymi za pomocą znanych implementacji podobnych algorytmów grupowania. Można też postawić pytanie, czy wyniki grupowana spełniają cel, który użytkownik chciał osiągnąć. Stwierdzenie czy możliwa jest łatwiejsza selekcja informacji wymaga przeprowadzenia eksperymentów na reprezentatywnej grupie potencjalnych odbiorców selekcjonowanych treści. Jeżeli do grupowania zostały użyte metody oparte na statystyce, walidację wyników można wykonać tylko stosując odpowiednio dobrane metody analizy statystycznej\cite[1.2, p.~268]{jain_clustering}.
 
-Jeżeli do grupowania zostały użyte metody oparte na statystyce, walidację wyników można wykonać tylko stosując odpowiednio dobrane metody analizy statystycznej [odniesienie do Jain 1.2, 5str]
+A.K. Jain i R.C Dubes tak piszą o ocenianiu wyników grupowania: "Ocena struktur grup jest najtrudniejszą i najbardziej frustrującą częścią analizy wyników grupowania. Bez znaczącego wysiłku w tym kierunku, analiza wyników grupowania pozostanie tajemną sztuką znaną jedynie oddanym wyznawcom o wielkiej odwadze i doświadczeniu" (ang. \textit{The validation of clustering structures is the most difficult and frustrating part of cluster analysis. Without a strong effort in this direction, cluster analysis will remain a black art accessible only to those true believers who have experience and great courage.})\cite{clustering_book}. 
+Trudno uzyskać jednoznaczną ocenę, bardzo dużo zależy od wykorzystania wyników - czy mają posłużyć do wyszukiwania informacji, czy do odkrywania wzorców, kompresji danych, uczenia maszynowego, itp. W zależności od zastosowania, różne będą metody oceny, jej źródła, inne parametry będą świadczyły o jakości. Kryteria oceny wyników grupowania można podzielić na dwa rodzaje - zewnętrzne i wewnętrzne \cite{ir_book,validity_indices}. 
 
-Wyniki grupowania można oceniać ze względu na jakość przydziału obiektów do grup. Jeżeli w którejś z grup znajdują się obiekty znacznie odległe od siebie nawzajem, ale jednocześnie spokrewnione ze sobą, poprzez łańcuch podobieństw z innymi obiektami z tego zbioru, to mamy do czynienia z efektem łańcuchowym – błędem grupowania spowodowanym złym dobraniem algorytmu lub kryterium podobieństwa.
+\subsubsection{Kryteria zewnętrzne oceny}
 
-Do oceny grupowania stosuje się różnego rodzaju miary jakości grupowania. Jednym z najbardziej popularnych wskaźników jest miara Silhouette [5], wyrażona wzorem:
+Kryterium zewnętrzne polega na ocenie wyników grupowania przez grupę odbiorców (użytkowników), która te wyniki będzie wykorzystywać i na podstawie ich użyteczności wystawią ocenę. Ocena taka może też być wykonana przez grupę ekspertów \cite{validity_indices}. 
+
+Załóżmy, że danymi wejściowymi jest zbiór artykułów prezentowanych na konferencjach naukowych. Prezentacje zostały przez organizatorów (na podstawie znajomości treści lub abstraktów artykułów, recenzji, deklaracji autorów) podzielone na sekcje tematyczne. Być może algorytm przeprowadzający grupowanie powinien podzielić te artykuły na takie same grupy. Jednak należy pamiętać o tym, że podział wykonany przez człowieka nie musiał być najlepszym możliwym. 
+
+Przykładem na niedoskonałą ocenę człowieka są różnice, jakie występują przy doborze tagów dla dokumentów. Twórcy artykułów często oznaczają je słowami kluczowymi, które stosunkowo rzadko występują w tekście. Czytelnicy – wolontariusze, którzy mieli za zadanie oznaczać przeglądane materiały najczęściej dobierali inne zestawy słów kluczowych, ze zbioru takich słów, które częściej występowały w tekście\cite{user_experts_tags}.
+
+\myparagraph{Indeksy do porównywania różnych podziałów obiektów}
+
+Do porównanie wyników grupowania przeprowadzonego przez ludzi, z tym wykonanym przez maszynę można użyć następujących indeksów: 
+\begin{itemize}
+	\item indeks RAND'a - zliczane są 4 rodzaje par $x_{i}, x_{j}$ oraz $y_{i}, y{j}$, gdzie x to obiekty w grupowaniu wykonanym przez człowieka, a y to obiekty w grupowaniu wykonanym przez maszynę, reprezentujące ten sam byt (na przykład x to dokument, a y to jego reprezentacja w postaci wektora $tf \times idf$). Poszczególne rodzaje to:
+	\begin{itemize}
+		\item reprezentacje obiektów $i$ oraz $j$, które w obu wynikach grupowania występują w tej samej grupie.
+		\item reprezentacje obiektów $i$ oraz $j$, które w obu wynikach grupowania występują w różnych grupach.
+		\item reprezentacje obiektów $i$ oraz $j$, które w grupowaniu $X$ występują w jednej grupie, a w grupowaniu $Y$ występują w różnych grupach.
+		\item reprezentacje obiektów $i$ oraz $j$, które w grupowaniu $X$ występują w różnych grupach, a w grupowaniu $Y$ występują w jednej grupie.
+	\end{itemize}
+	\item indeks ARAND'a - dopasowany RAND (ang. \textit{Adjusted RAND index}). Z racji tego, że wartość indeksu RAND'a nigdy nie przyjmie wartości zero \cite{wagner2007comparing}, i słabo odzwierciedla kompletnie różne wyniki grupowania (nie ma jednej stałej wartości indeksu, która by oznaczała, że przydziały obiektów nastąpiły dokładnie różnie w badanych wynikach grupowania), wprowadzono dopasowany indeks RAND'a wyrażony wzorem: 
+	\[ R_{adj}(C,C') = \frac{\sum_{i=1}^{k}\sum_{j=1}^{k} {m_{i,j}\choose{2}} - t_{3}}{\frac{1}{2}(t_{1} + t_{2}) - t_{3}}  \]
+	\item indeks Jaccard'a - zdefiniowany jest jako liczność przecięcia dwóch skończonych zbiorów, podzielona przez liczność ich sumy: $ J(A,B) = \frac{|A \cap B|}{|A| + |B| - |A \cap B|} $.
+	Aby uzyskać wynik dla całej struktury powstałej na skutek grupowania przez człowieka i przez maszynę, trzeba wyliczyć indeks dla każdej pary zbiorów i je uśrednić \todo{tylko platne, poszukac dokladnie}. 
+	\item wariancja informacji - zdefiniowana jako suma entropii obu wyników grupowania i różnica dwu-krotności informacji wspólnej pomiędzy tymi wynikami: $ VI(X;Y) = H(X) + H(Y) - 2I(X,Y) $. Można ją również zdefiniować następującym wzorem: \[ VI(X;Y) = -\sum_{i,j=0}^{N}r_{i,j}[\log{r_{i,j}/p_{i}} + \log{r_{i,j}/q_{j}}] \]
+	, gdzie:
+	\begin{itemize}
+		\item $ r_{i,j} = |X_{i} \cap Y_{j}| / n$
+		\item $ p_{i} = |X_{i}|/n $
+		\item $ q_{i} = |Y_{j}|/n $
+		\item $ n = \sum_{i}^{N} |X_{i}| = \sum_{j}^{N} |Y_{j}| = |A|$
+	\end{itemize}
+\end{itemize}
+
+Eksperymenty przeprowadzone na ogólnie dostępnych zbiorach danych (np. iris), wykazały, że wyniki grupowania są najlepsze jakościowo (ze względu na kryteria zewnętrzne), jeżeli do porównywania uzyskanych grup z oryginalnymi używa się wariancji informacji \cite{validity_indices}.
+
+\subsubsection{Kryteria wewnętrzne}
+
+Wyniki grupowania można oceniać ze względu na jakość przydziału obiektów do grup. Przez jakość można rozumieć, że wszystkie obiekty przydzielone do tej samej grupy, mają podobne wartości cech, wybranych do reprezentacji tych obiektów. Co więcej pożądane jest, żeby obiekty które znalazły się w różnych grupach, faktycznie miały różne wartości badanych cech. 
+Jeżeli w którejś z grup znajdują się obiekty znacznie odległe od siebie nawzajem, ale jednocześnie spokrewnione ze sobą, poprzez łańcuch podobieństw z innymi obiektami z tego zbioru, to mamy do czynienia z efektem łańcuchowym – błędem grupowania spowodowanym złym dobraniem algorytmu lub kryterium podobieństwa.
+
+\myparagraph{Indeksy oceny pojedynczego podziału obiektów}
+
+Do oceny grupowania stosuje się różnego rodzaju miary jakości grupowania. Jednym z najbardziej popularnych wskaźników jest miara Silhouette \cite{silhouette_index}, wyrażona wzorem:
 
 \[s(i) = \frac{b(i) - a(i)}{max|a(i),b(i)|}\]
 
 Gdzie współczynniki a oraz b, to:
 
 \begin{itemize}
-	\item a(i) - średnia odległość pomiędzie obiektem i, a jego sąsiadami z grupy,
+	\item a(i) - średnia odległość pomiędzy obiektem i, a jego sąsiadami z grupy,
 	\item b(i) – najmniejsza średnia odległość pomiędzy obiektem i, a obiektami z innej grupy (nazywanej grupą sąsiadującą).
 \end{itemize}
 Parametry te można obliczyć dla jednej z grup lub całego zbioru. Średnie s(i)  dla jednej grupy określają jej gęstość, natomiast średnie s(i) obliczone dla całego analizowanego zbioru danych określają jakość grupowania.
 
 Wartości s(i) zmieniają się od -1 do 1. Jeżeli wartość jest bliżej -1 oznacza to, że element i powinien być zakwalifikowany do grupy sąsiadującej. Jeżeli wartość s(i) znajduje się bliżej 1, oznacza to, że obiekt i został poprawnie zgrupowany. Natomiast jeżeli wartość s(i) znajduje się w pobliżu  0, oznacza to, że obiekt i znajduje się na granicy dwóch odpowiednich dla niego grup (odrobinę powyżej zera – obiekt jest w lepszej grupie, odrobinę poniżej zera – obiekt jest w gorszej grupie).
 
-Rezultaty działania algorytmu grupowania mogą być również poddane ocenie poprzez porównanie ich, z wynikami grupowania wykonanego przez człowieka. Załóżmy, że danymi wejściowymi jest zbiór artykułów prezentowanych na konferencjach naukowych. Prezentacje zostały przez organizatorów (na podstawie znajomości treści lub abstraktów artykułów, recenzji, deklaracji autorów) podzielone na sekcje tematyczne. Być może algorytm przeprowadzający grupowanie powinien podzielić te artykuły na takie same grupy. Jednak należy pamiętać o tym, że podział wykonany przez człowieka nie musiał być najlepszym możliwym. 
+Innymi interesującymi indeksami są \cite{validity_indices}:
 
-Przykładem na niedoskonałą ocenę człowieka są różnice, jakie występują przy doborze tagów dla dokumentów. Twórcy artykułów często oznaczają je słowami kluczowymi, które stosunkowo rzadko występują w tekście. Czytelnicy – wolontariusze, którzy mieli za zadanie oznaczać przeglądane materiały najczęściej dobierali inne zestawy słów kluczowych, ze zbioru takich słów, które częściej występowały w tekście. [Potrzebne dobre uzasadnienie w bibliografii].
+\begin{itemize}
+	\item Dunn indeks
+	\item Calinski-Harabasz indeks
+	\item Gamma indeks
+	\item SV-indeks
+	\item OS-ineks \todo{opisać}
+\end{itemize}
 
 \newpage
 \section{Rodzaje grupowania}
@@ -143,7 +190,7 @@ Algorytmy grupowania można podzielić na kilka kategorii, ze względu na ich sp
 
 \begin{enumerate}
 	\item Agregujące – dzielące: Algorytmy sumujące traktują początkowe dane jako zestaw zbiorów jednoelementowych i na podstawie zadanego kryterium łączą mniejsze zbiory w większe, dopóki nie zostanie osiągnięty warunek zakończenia (odpowiednia liczba zbiorów końcowych, oraz średnia liczność elementów w zbiorach, w aktualnej iteracji). Algorytmy dzielące przyjmują założenie, że dane początkowe, to jeden zbiór zawierający wszystkie obiekty. Zbiór ten jest dzielony na mniejsze według zadanego kryterium, którym może być na przykład średnia odległość grupy obiektów od pozostałych. Algorytm kończy się jeżeli osiągnie założone warunki podziału, podobnie jak w przypadku algorytmów agregujących.
-	\item Sekwencyjne – równoległe: W algorytmach typu sekwencyjnego każda cecha porównywana jest osobno – np. najpierw porównywane są współrzędne X punktu, a dopiero później współrzędne Y. Przy bardziej skomplikowanych wektorach cech może to prowadzić do gorszych wyników grupowania obiektów. Niektóre z algorytmów grupowania działające tą metodą w wyniku potrafią dać 2d grup, gdzie d jest liczbą wymiarów \todo{jain 5, 11str}. Przeciwnym podejściem do takiego grupowania jest grupowanie równoległe. Wiele lub wszystkie cechy porównywanych obiektów są jednocześnie brane pod uwagę – wzrasta minimalnie koszt obliczeniowy.
+	\item Sekwencyjne – równoległe: W algorytmach typu sekwencyjnego każda cecha porównywana jest osobno – np. najpierw porównywane są współrzędne X punktu, a dopiero później współrzędne Y. Przy bardziej skomplikowanych wektorach cech może to prowadzić do gorszych wyników grupowania obiektów. Niektóre z algorytmów grupowania działające tą metodą w wyniku potrafią dać 2d grup, gdzie d jest liczbą wymiarów\cite[5. p.~274]{jain_clustering}. Przeciwnym podejściem do takiego grupowania jest grupowanie równoległe. Wiele lub wszystkie cechy porównywanych obiektów są jednocześnie brane pod uwagę – wzrasta minimalnie koszt obliczeniowy.
 	\item Dokładne – rozmyte: W grupowaniu dokładnym każdy obiekt jest przypisywany  do co najwyżej jednego zbioru (może być niesklasyfikowany, potraktowany jako szum, jeżeli nie mieści się w żadnym z przyjętych na początku zbiorów – kategorii obiektów). W grupowaniu rozmytym każdy obiekt może zostać przypisany do więcej niż jednego zbioru. Prezentacja wyników może być wtedy trochę bardziej złożona, ale za to wyniki grupowania mogą dokładniej odzwierciedlać rzeczywistość – rzadko da się przydzielić jakąś treść tylko do jednej kategorii.
 	\item Deterministyczne – stochastyczne: Algorytmy deterministyczne dla określonych warunków początkowych i danych wejściowych zwrócą zawsze takie same wyniki. Stochastyczne wprowadzają element losowości do swojego działania, dlatego kilkukrotne uruchomienie takiego algorytmu dla tych samych danych wejściowych i warunków początkowych może dać różne wyniki.
 	\item Przyrostowe – nieprzyrostowe: Różnica między tymi dwoma typami grupowania polega na wykorzystaniu cech obiektów podczas grupowania. W przypadku podejścia przyrostowego, algorytm grupujący nie porównywał obiektów przy użyciu ich wszystkich cech jednocześnie - tylko używał określonych cech w kolejnych iteracjach. Podejście to wynikało z ograniczeń jakie kiedyś nakładał dostępny sprzęt komputerowy. Obecnie używa się raczej algorytmów nieprzyrostowych - które przy porównywaniu obiektów zawsze biorą pod uwagę wszystkie ich cechy. 
@@ -162,13 +209,13 @@ Grupowanie hierarchiczne można podzielić na dwa podtypy:
 	W przeciwieństwie do wiązania pojedynczego, tutaj brana jest pod uwagę największa odległość pomiędzy obiektem, a innym obiektem z badanej grupy. Wyklucza to możliwość powstania efektu łańcuchowego. Wyniki grupowania algorytmami tego typu są zwykle zbiorami gęstymi.
 \end{enumerate}
 
-Analizując rezultaty algorytmów stosujących wiązanie pojedyncze można stwierdzić, że często dają grupy, które są poszarpane i wydłużone. Jednocześnie takie algorytmy są uznawane za bardziej wszechstronne, działające lepiej na nietypowych zbiorach danych \todo{jain, 5.1, 13, rysunek}, na których zastosowanie działania z wiązaniem pełnym nie przyniosłoby oczekiwanych rezultatów. Mimo tej zalety, uznaje się na podstawie wielu obserwacji \todo{jain}, że generalnie lepiej jest używać wiązania pełnego, daje ono zwykle lepsze, bardziej zwarte i użyteczne wyniki grupowania.
+Analizując rezultaty algorytmów stosujących wiązanie pojedyncze można stwierdzić, że często dają grupy, które są poszarpane i wydłużone. Jednocześnie takie algorytmy są uznawane za bardziej wszechstronne, działające lepiej na nietypowych zbiorach danych\cite[5.1, p.~276]{jain_clustering}, na których zastosowanie działania z wiązaniem pełnym nie przyniosłoby oczekiwanych rezultatów. Mimo tej zalety, uznaje się na podstawie wielu obserwacji\cite{jain_clustering}, że generalnie lepiej jest używać wiązania pełnego, daje ono zwykle lepsze, bardziej zwarte i użyteczne wyniki grupowania.
 
-Algorytmy hierarchiczne są bardziej uniwersalne od algorytmów partycjonujących.\todo{jain before 5.2} Wersja z wiązaniem pojedynczym działa dobrze dla danych nie-izotropowych, rozłącznych, łańcuchowych, lub też podzielonych na rozłączne skoncentrowane grupy. Natomiast typowy algorytm grupowania partycjonującego taki jak k-średnich działa dobrze tylko dla danych izotropowych – regularnych. Jednak trzeba zaznaczyć, że zwykle złożoność obliczeniowa i pamięciowa algorytmów partycjonujących jest mniejsza od złożoności algorytmów grupowania hierarchicznego. Jednocześnie jest możliwe zaprojektowanie algorytmu hybrydowego wykorzystującego zalety obu tych sposobów grupowania. \todo{Bibliografia, przed 5.2, jain Murty and Krishna 1980}
+Algorytmy hierarchiczne są bardziej uniwersalne od algorytmów partycjonujących\cite[5.1 p.~277]{jain_clustering}. Wersja z wiązaniem pojedynczym działa dobrze dla danych nie-izotropowych, rozłącznych, łańcuchowych, lub też podzielonych na rozłączne skoncentrowane grupy. Natomiast typowy algorytm grupowania partycjonującego taki jak k-średnich działa dobrze tylko dla danych izotropowych – regularnych. Jednak trzeba zaznaczyć, że zwykle złożoność obliczeniowa i pamięciowa algorytmów partycjonujących jest mniejsza od złożoności algorytmów grupowania hierarchicznego. Jednocześnie jest możliwe zaprojektowanie algorytmu hybrydowego wykorzystującego zalety obu tych sposobów grupowania\cite[5.1, p.~277]{jain_clustering}. \todo{Bibliografia, przed 5.2, jain Murty and Krishna 1980}
 
 \subsubsection{Przykłady algorytmów grupowania hierarchicznego}
 
-W tym rozdziale zaprezentowane zostaną przykładowe algorytmy grupowania hierarchicznego, z różnymi wiązaniami, działające agregująco. 
+W tym rozdziale zaprezentowane zostaną przykładowe algorytmy grupowania hierarchicznego, z różnymi typami wiązań, działające agregująco. 
 
 \myparagraph{Algorytm grupowania z wiązaniem pojedynczym}
 
@@ -184,18 +231,18 @@ Odległość pomiędzy dwoma grupami, które są liczniejsze niż jednoelementow
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.9]{hierarchiczneGrupowanie.png}
+	\includegraphics[scale=0.95]{hierarchiczneGrupowanie.png}
 	\caption{Wyniki grupowania obiektów za pomocą algorytmu hierarchicznego z wiązaniem pojedynczym - 1 i 2 to dwa rodzaje obiektów, * to obiekty stanowiące szum, łączące oba zbiory. Obwódkami zakreślone są powstałe grupy.}
 	\label{fig:grupHPng}
 \end{figure}
 
-\myparagraph{Alogrytmy grupowania z wiązaniem pełnym}
+\myparagraph{Algorytmy grupowania z wiązaniem pełnym}
 
 Kroki tego algorytmu wyglądają identycznie jak algorytmu opisanego powyżej. Różnicę pomiędzy nimi stanowi sposób określania odległości pomiędzy dwoma grupami. Jest ona wyznaczana na podstawie największej odległości pomiędzy dwoma obiektami z porównywanych grup, tak jak zostało to opisane w rozdziale \ref{subsec:grupHier}. Mimo, że jest to jedyna różnica, wyraźnie ona wpływa na jakość uzyskiwanych wyników, co widać na rysunku \ref{fig:grupHChain}.
 
 \begin{figure}[H] 
 	\centering
-	\includegraphics[scale=0.9]{grupHChain.png}
+	\includegraphics[scale=0.95]{grupHChain.png}
 	\caption{Wyniki grupowania obiektów za pomocą algorytmu hierarchicznego z wiązaniem pełnym - 1 i 2 to dwa rodzaje obiektów, * to obiekty stanowiące szum, łączące oba zbiory. Obwódkami zakreślone są powstałe grupy.}
 	\label{fig:grupHChain}
 \end{figure}
@@ -211,10 +258,10 @@ Kroki tego algorytmu wyglądają podobnie do obu opisanych powyżej, jednak ró�
 
 Dodatkowo nie zajmujemy się ponownie raz złączonymi obiektami, w przeciwieństwie do tego jak było we wcześniej opisanych algorytmach.
 
-W zależności od sposobu aktualizacji macierzy odległości w drugim kroku (obliczenia dystansu pomiędzy grupami, ewentualne ustalenie środka nowej grupy) można stworzyć różne wersje grupowania agregującego, hierarchicznego. Implementacja algorytmu dzielącego wyglądałaby bardzo podobnie – tylko rozpoczynałby on od grupy zawierającej wszystkie obiekty i dzielił je na dwie grupy wybierając obiekty do każdej z grup na podstawie jakiegoś zadanego kryterium. \todo{Odniesienie do jain – ewentualnie dać jedno na cały podrozdział}
+W zależności od sposobu aktualizacji macierzy odległości w drugim kroku (obliczenia dystansu pomiędzy grupami, ewentualne ustalenie środka nowej grupy) można stworzyć różne wersje grupowania agregującego, hierarchicznego. Implementacja algorytmu dzielącego wyglądałaby bardzo podobnie – tylko rozpoczynałby on od grupy zawierającej wszystkie obiekty i dzielił je na dwie grupy wybierając obiekty do każdej z grup na podstawie jakiegoś zadanego kryterium\cite{jain_clustering}.
 
-\subsection{Grupowanie partycjonujące}
-Ten sposób grupowania daje w wyniku pojedynczy podział obiektów na grupy. Nie są tworzone skomplikowane struktury takie jak drzewa/grafy podziałów opisywane w rozdziale 2.1.1. Dzięki temu takie podejście jest dobre szczególnie wtedy, kiedy algorytm ma działać na dużych, złożonych zbiorach danych – jest mniej czasochłonne, a wyniki zajmują mniej pamięci. Problemem związanym z zastosowaniem takiego sposobu grupowania danych jest wybór pożądanej liczby grup wyjściowych, jednak istnieją opracowania zawierające opis rozwiązaniu pozwalającego pomóc w doborze tego parametru. \todo{Dubes 1987 – from jain 5.2}
+\subsection{Grupowanie partycjonujące} \label{partition_clustering_section}
+Ten sposób grupowania daje w wyniku pojedynczy podział obiektów na grupy. Nie są tworzone skomplikowane struktury takie jak drzewa/grafy podziałów opisywane w rozdziale 2.1.1. Dzięki temu takie podejście jest dobre szczególnie wtedy, kiedy algorytm ma działać na dużych, złożonych zbiorach danych – jest mniej czasochłonne, a wyniki zajmują mniej pamięci. Problemem związanym z zastosowaniem takiego sposobu grupowania danych jest wybór pożądanej liczby grup wyjściowych, jednak istnieją opracowania zawierające opis rozwiązaniu pozwalającego pomóc w doborze tego parametru\cite[5.2]{jain_clustering,clustering_book}.
  
 Techniki partycjonujące najczęściej tworzą podziały wynikowe poprzez optymalizowanie kryterium, będącego jakiegoś rodzaju funkcją odległości. Kryterium to może być zdefiniowane lokalnie (dotyczyć tylko pewnego wybranego podzbioru obiektów) albo globalnie (dotyczyć wszystkich obiektów w przetwarzanym zbiorze danych). Kombinatoryczne poszukiwanie zbioru możliwych podziałów dla optymalnej wartości kryterium jest obliczeniowo bardzo złożone. Dlatego w praktyce algorytm wykonywany jest wielokrotnie dla różnych podziałów początkowych (np. uzyskanych po poprzednich przebiegach) i kończony jest gdy podział osiągnie pewną założoną wartość kryterium. Jeżeli kryterium było zdefiniowane lokalnie (np. odległość od punktu do centrów grup – reprezentujących tylko zbiory punktów) warunkiem zakończenia algorytmu może  być również brak zmian w podziale obiektów pomiędzy grupami. Często w implementacjach takich algorytmów warunkiem początkowym jest istnienie początkowej struktury podziałów – czasami jest ona budowana heurystycznie na początku algorytmu. 
 
@@ -223,7 +270,7 @@ Najpopularniejszym kryterium wykorzystywanym do określenia błędu podziału je
 \[ e^2(H,L) = \sum_{j=1}^{K}\sum_{i=1}^{n_{j}}||x_{i}^j - c_{j}||^2 \]
 Gdzie c to średni element w zbiorze j a $x_{i}$ to i-ty element tego zbioru.
 
-\subsubsection{Przykłady algorytmów partycjonujących}
+\subsubsection{Przykłady algorytmów partycjonujących} \label{partition_algo_examples_section}
 
 W tym rozdziale zaprezentowane zostaną przykładowe algorytmy partycjonujące. Do najpopularniejszych należą algorytmy k-średnich oraz błędu kwadratowego.
 
@@ -240,7 +287,7 @@ K-środków jest bardzo wrażliwy na podział początkowy. Przy złym podziale p
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.9]{kmeansInitCenters.png}
+	\includegraphics[scale=0.95]{kmeansInitCenters.png}
 	\caption{Przykładowy podział początkowy obiektów grupowanych za pomocą algorytmu k-średnich. Punkt A leży bliżej punktu B niż punkt C, ale przy przedstawionym podziale początkowym środek grupy zawierającej punkty B i C będzie bliżej punktu B niż środek grupy zawierającej punkt A. Z tego powodu punkt B nie znajdzie się w grupie z najbardziej podobnym do niego punktem A.}
 	\label{fig:kmeansInitCenters}
 \end{figure}
@@ -257,7 +304,7 @@ Ten algorytm działa na podobnej zasadzie co powyższy, można go opisać nastę
 	\item Można podzielić lub połączyć pewne grupy, bazując na jakichś informacjach heurystycznych (na znajomości grupowanych danych), następnie można dodatkowo powtórzyć krok drugi.
 \end{itemize}
 
-\subsection{Grupowanie oparte na grafach}
+\subsection{Grupowanie oparte na grafach} \label{graph_clustering_section}
 
 W dosyć długiej historii algorytmów grupowania powstało kilka takich, które korzystają z teorii grafów. Jednym z nich – chyba najpopularniejszym w tej kategorii – jest algorytm tworzący dla danych wejściowych minimalne drzewo rozpinające. Wagi krawędzi w takim drzewie są odpowiednio wyznaczane na podstawie odległości dwóch obiektów od siebie, przy pomocy wybranej wcześniej miary odległości. Krawędzie z największymi wagami są usuwane, co prowadzi do powstania rozłącznych pod-grafów – podziałów wynikowych. Kryterium zakończenia może stanowić liczba uzyskanych podziałów albo średnia waga krawędzi w zbiorze krawędzi nieusuniętych.
 
@@ -265,9 +312,9 @@ Algorytm ten ma jedną dosyć poważną wadę. Jego wyniki są podobne do algory
 
 Używanie tego podejścia w grupowaniu jest związane z podejściem hierarchicznym. Oprócz analogii pomiędzy opisanym wyżej algorytmem, a wykorzystaniem wiązania pojedynczego istnieje jeszcze kilka podobieństw. Grupy powstałem poprzez użycie wiązania pełnego są takie same jak maksymalne, pełne pod-grafy minimalnego drzewa rozpinającego i są związane z kolorowanie wierzchołków grafu. Bibliografia jain 5.2.2
 
-Aby otrzymać wyniki nie opisujące hierarchii podziałów można utworzyć graf Delaunay'a, \todo{Jain 5.2.2} który powstaje poprzez połączenie wszystkich par punktów, która są sąsiadami w rozumieniu kryterium Voronoi'a. Taki graf zawiera wszystkie informacje dotyczące sąsiedztwa zawarte w  algorytmie wykorzystującym minimalne drzewo rozpinające, oraz zawarte w grafie relatywnego sąsiedztwa.
+Aby otrzymać wyniki nie opisujące hierarchii podziałów można utworzyć graf Delaunay'a, \cite[5.2.2]{jain_clustering} który powstaje poprzez połączenie wszystkich par punktów, która są sąsiadami w rozumieniu kryterium Voronoi'a. Taki graf zawiera wszystkie informacje dotyczące sąsiedztwa zawarte w  algorytmie wykorzystującym minimalne drzewo rozpinające, oraz zawarte w grafie relatywnego sąsiedztwa.
 
-\subsection{Inne rodzaje grupowania}
+\subsection{Inne rodzaje grupowania} \label{other_clustering_methods_section}
 
 stnieją również inne sposoby wykonywania grupowania. Można je podzielić na takie jak grupowanie z wykorzystaniem kontekstu obiektu, z użyciem sieci neuronowych, ewolucyjne oraz na algorytmy stosujące pewne operacje w celu odnalezienia wzorców obiektów.
 
@@ -288,7 +335,7 @@ Typowe podejście do grupowania produkuje podziały, w których każdy obiekt na
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.9]{rozmytewyniki.png}
+	\includegraphics[scale=0.95]{rozmytewyniki.png}
 	\caption{Wyniki grupowania rozmytego. Wszystkie grupy zostały przydzielone do każdej grupy - czerwonej, zielonej i szarej}
 	\label{fig:rozmytewyniki}
 \end{figure}
@@ -319,7 +366,7 @@ Sztuczne sieci neuronowe (dalej nazywane skrótem SN) powstał w oparciu o biolo
 	\item SN mają zdolność do uczenia się – potrafią zmieniać wagi połączeń pomiędzy neuronami w swojej strukturze. Prowadzi to do tego, że SN mogą nadawać dodatkowe wagi poszczególnym cechom, lub nawet całkowicie wykluczyć niektóre z nich z grupowania.
 \end{itemize}
 
-Do grupowania obiektów wejściowych często wykorzystywane są konkurujące SN (zwane też zwycięzca-bierze-wszystko, ang: winner-takes-all). W uczeniu konkurującym, obiekty podobne są grupowane przez całą sieć, a reprezentowane przez jeden neuron. Takie grupowanie wykonywane jest automatycznie na podstawie korelacji danych. \todo{Bibliografia, albo z jain albo z tego drugiego}
+Do grupowania obiektów wejściowych często wykorzystywane są konkurujące SN (zwane też zwycięzca-bierze-wszystko, ang: winner-takes-all). W uczeniu konkurującym, obiekty podobne są grupowane przez całą sieć, a reprezentowane przez jeden neuron. Takie grupowanie wykonywane jest automatycznie na podstawie korelacji danych\cite[5.7]{jain_clustering}.
 
 Dobrze znanymi przykładami SN wykorzystywanymi w grupowaniu jest sieć z kwantyzacją wektora uczącego (LVQ, ang: learning vector quantization), oraz samo-organizująca się mapa (SOM, ang: self-organizing map) jak również adaptacyjne modele teorii rezonansowej. Wagi pomiędzy węzłami wejściowymi i wyjściowymi są zmieniane iteracyjnie ( w ramach procesu uczenia się) dopóki warunek zakończenia algorytmu nie będzie spełniony. Istnienie takiej metody uczenia się zostało stwierdzone w biologicznych sieciach neuronowych.
 
@@ -371,7 +418,7 @@ Zostały również opracowane bezparametrowe metody grupowania z wykorzystaniem 
 Warto zaznaczyć, że można również stosować algorytmy hybrydowe. Polega to na zastosowaniu do jednego zbioru danych różnych typów algorytmów, i ustaleniu wyniku na przykład poprzez głosowanie – nadając poszczególnym wynikom różne wagi, ustalone na drodze eksperymentów. Każdy z użytych algorytmów może na wejściu otrzymać taki sam opis obiektów, albo tylko częściowy – pozwalający na jak najbardziej efektywne wykorzystanie danego algorytmu. Podział danych wejściowym między różne algorytmy może się opierać na logice związanej z grupowanymi obiektami. Można na przykład wykonać grupowanie na wektorach cech obliczonych na podstawie bibliografii i liczby odwołań do niej, wyznaczonej dla każdego dokumentu znajdującego się w zadanym zbiorze. Dołączyć do tego grupowanie wykonane na podstawie abstraktów dokumentów i grupowanie przeprowadzone na podstawie całej treści. Tak powstałe 3 wyniki grupowania można opisać za pomocą wektora cech informującego o podobieństwie dokumentów w każdym z tych 3 rezultatów i przeprowadzić na tym kolejne grupowanie.
 Rozwiązanie takie może dać bardzo dokładne wyniki, odwzorowując faktyczne podobieństwo tematyczne badanych dokumentów, ale jednocześnie byłoby bardzo kosztowne czasowo. \todo{Wstawić odwołanie do rozdziału lub bibliografii, gdzie będą przeprowadzone podobne eksperymenty, uzasadnienie dlaczego to będzie kosztowne.}
 
-\subsection{Sposoby reprezentacji grup}
+\subsection{Sposoby reprezentacji grup} \label{group_rep_section}
 
 Rezultat działania programu grupującego dane, powinien pozwolić wnioskować o 
  \begin{itemize}
@@ -381,26 +428,26 @@ Rezultat działania programu grupującego dane, powinien pozwolić wnioskować o
  \end{itemize}
  Na przykład przy niskiej jakości wynikowego grupowania użytkownik mógłby ponowić procedurę zadając inne parametry wejściowe. 
  \\
- Dodatkowo taki program powinien pozwolić zapisać podział na grupy w taki sposób, żeby nie zajmował dużo pamięci i był łatwy do interpretacji przez inne programy. Pomimo istotnej wagi zagadnienia reprezentacji wyników grupowania, temat ten nie był \todo{Jain 5.6} przedmiotem wnikliwych badań. Spośród istniejących rozważań warto rozpatrzyć następujące:
+ Dodatkowo taki program powinien pozwolić zapisać podział na grupy w taki sposób, żeby nie zajmował dużo pamięci i był łatwy do interpretacji przez inne programy. Pomimo istotnej wagi zagadnienia reprezentacji wyników grupowania, temat ten nie był \cite[5.6]{jain_clustering} przedmiotem wnikliwych badań. Spośród istniejących rozważań warto rozpatrzyć następujące:
 
 \begin{itemize}
 	\item Reprezentowanie grupy punktów poprzez środek tej grupy (Rysunek \ref{fig:gruparepsrod}) lub przez zbiór najbardziej odległych od siebie punktów (Rysunek \ref{fig:gruparepodlegle}).
 	\item Reprezentacja grup poprzez węzły w drzewie klasyfikacji (Rysunek \ref{fig:klasdrzewo}).
 	\item Reprezentacja poprzez ciąg koniunkcji wyrażeń logicznych opisujących każdą grupę. Na przykład opisując podział z rysunku \ref{fig:klasdrzewo} uzyskalibyśmy następujący ciąg:
-	\[ niebieska:[X<4,5]; czerwona:[X>4,5]\vee[Y>1,5]; żółta:[X>4,5]\vee[Y<1,5] \]
+    niebieska: $[X<4,5]$; czerwona:$[X>4,5]\vee[Y>1,5]$; żółta:$[X>4,5]\vee[Y<1,5]$
 \end{itemize}
 
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}{.5\textwidth}
 		\centering
-		\includegraphics[scale=0.75]{gruparepodlegle.png}
+		\includegraphics[scale=1]{gruparepodlegle.png}
 		\caption{Okręgiem zostały zakreślone najbardziej odległe od siebie punkty - stanowiące reprezentację przedstawionej grupy.}
 		\label{fig:gruparepodlegle}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
-		\includegraphics[scale=0.75]{gruparepsrod.png}
+		\includegraphics[scale=1]{gruparepsrod.png}
 		\caption{Okręgiem został zaznaczony punkt będący środkiem grupy.}
 		\label{fig:gruparepsrod}
 	\end{subfigure}
@@ -408,7 +455,7 @@ Rezultat działania programu grupującego dane, powinien pozwolić wnioskować o
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.75]{klasdrzewo.png}
+	\includegraphics[scale=0.9]{klasdrzewo.png}
 	\caption{Przykładowy podział na grupy i drzewo klasyfikacji}
 	\label{fig:klasdrzewo}
 \end{figure}
@@ -427,7 +474,7 @@ Reprezentacja danych jest istotnym zagadnieniem związanym z użyteczności algo
 
 \begin{figure}
 	\centering
-	\includegraphics[]{kompresjagrup.png}
+	\includegraphics[scale=1.1]{kompresjagrup.png}
 	\caption{Lewy wykres przedstawia zgrupowane dane przed kompresją, prawy po kompresji.}
 	\label{fig:kompresjagrup}
 \end{figure}
@@ -437,7 +484,7 @@ Reprezentacja danych jest istotnym zagadnieniem związanym z użyteczności algo
 
 Dokumenty różnią się trochę od innych rodzajów obiektów, szczególnie z punktu widzenia grupowania \todo{4}. Bez wątpienia można powiedzieć, że dwa dokumenty zawierające prawie identyczną sekwencję słów, powinny się znaleźć w jednej grupie. Jednak proces porównywania dokumentów jest bardzo kosztowny. Każde słowo w dokumencie jest kolejnym wymiarem – kolejną cechą w wektorze cech. Dodatkowo konieczna jest obróbka wstępna takich danych. Wyłuskanie treści z plików o różnych formatach i odpowiednie jej zachowanie. 
 
-\subsection{Obróbka wstępna}
+\subsection{Obróbka wstępna} \label{initial_processing_section}
 
 Aby przygotować dokumenty do przetwarzania przez algorytm grupowania danych, należy wykonać kilka niezbędnych kroków.
 
@@ -445,7 +492,7 @@ Pierwszym jest sprowadzenie dokumentu do surowej formy tekstowej [2]. Wymaga to 
 
 Po powyższych operacjach można zliczyć liczby wystąpień poszczególnych unikalnych form (w praktyce można to robić jednocześnie z ujednolicaniem form słów – wpływa to na zwiększenie efektywności) i na tej podstawie utworzyć wektor słów dla dokumentu. Gdy już każdy dokument w przetwarzanym zbiorze ma swój wektor słów, to łączy się je w wektor opisujący cały zbiór – zawierający liczbę wystąpień unikalnych form słów w całym zbiorze. Dodatkowo na podstawie takich wektorów można zbudować histogramy dokumentów (lokalne – dla jednego dokumentu i globalne – dla całego zbioru). Na ich podstawie można przeprowadzić dodatkową filtrację, obcinając oba końce histogramu – jako słowa zbyt rzadko i zbyt często występujące, aby mogły stanowić o odpowiednim podziale zbioru dokumentów na mniejsze zbiory. Należy jednocześnie pamiętać, że taka operacja może zaszkodzić podziałowi. Być może w badanym zbiorze początkowym istnieje po prostu nadreprezentacja pewnej kategorii dokumentów, lub bardzo mała reprezentacja innej kategorii. Ucięcie końców histogramu może uniemożliwić identyfikację takich zjawisk.
 
-\subsection{Wektor cech}
+\subsection{Wektor cech} \label{feature_vec_section}
 
 Właściwy wektor cech do porównywania dokumentów buduje się na podstawie indeksu tf*idf (ang. \textit{Term frequency – inverse document frequency}). Indeks ten, wyraża się następującym wzorem \todo{1,3}:
 
@@ -472,9 +519,9 @@ Maksymalna wartość mianownika to $D$, co oznacza, że słowo występuje w każ
 
 Dodatkowym zabiegiem przy obliczaniu takiego wektora jest uwzględnienie semantyki słów. Przy pomocy słownika wyrazów bliskoznacznych automat jest w stanie zastąpić różne słowa o podobnym znaczeniu jednym i tym samym, modyfikując odpowiednio wagi w wektorze cech – poprzez dodanie nowych wartości podczas obliczania tf i idf, ewentualnie z wagami, żeby uwzględnić, że dane słowo może mieć trochę inne znaczenie \todo{2}.
 
-Innym \todo{Podać przykład, albo odniesienie do bibliogrrafi [jain] albo coś o dokumentach } często stosowanym zabiegiem jest wykorzystanie słowników terminologii, do pozostawienia w wektorze cech tylko żądanych słów, lub usunięcia niepożądanych. W przypadku zbioru wejściowego w postaci tekstów z dziedziny medycyny, traktujących o różnych nowotworach, pomogłoby to usunąć część treści, które nie dotyczy bezpośrednio nowotworów i umożliwiłoby grupowanie wyłącznie ze względu na rodzaje nowotworów.
+Innym często stosowanym zabiegiem jest wykorzystanie słowników terminologii \cite{clustering_book,jain_clustering}, do pozostawienia w wektorze cech tylko żądanych słów, lub usunięcia niepożądanych. W przypadku zbioru wejściowego w postaci tekstów z dziedziny medycyny, traktujących o różnych nowotworach, pomogłoby to usunąć część treści, które nie dotyczy bezpośrednio nowotworów i umożliwiłoby grupowanie wyłącznie ze względu na rodzaje nowotworów.
 
-\subsection{Porównanie dokumentów}
+\subsection{Porównanie dokumentów} \label{doc_comparsion_section}
 
 Zwykle wykonuje się porównanie wektorów cech dokumentów (obliczenie odległości pomiędzy nimi) \todo{[4]}. Jednak istnieją alternatywne metody. 
 
@@ -495,7 +542,7 @@ W celu zgrupowania takich dokumentów na podstawie jakiejś zadanej kategorii, t
 
 \subsubsection{Algorytm k-średnich}
 
-Algorytm k--średnich jest najczęściej wykorzystywanym algorytmem grupowania dokumentów \todo{Tutaj odwołanie do artykułu $itereative_icdm2$ - już w abstrakcie o tym wspominają}. Najczęściej wykorzystywany jest razem z funkcją określającą podobieństwo wektorów na podstawie podobieństwa cosinusowego. Dokładny opis działania takiego algorytmu można znaleźć w wielu źródłach \todo{Podać jakie źródła}. 
+Algorytm k--średnich jest najczęściej wykorzystywanym algorytmem grupowania dokumentów \cite{doc_clust_comp,iterative_clutering}. Najczęściej wykorzystywany jest razem z funkcją określającą podobieństwo wektorów na podstawie podobieństwa cosinusowego. Dokładny opis działania takiego algorytmu można znaleźć w wielu źródłach \cite{jain2010data,doc_clust_comp}.
 
 W podstawowej wersji algorytm ten posiada złożoność obliczeniową równą $O(n^{kd+1}log n)$ , gdzie:
 \begin{itemize}
@@ -505,9 +552,7 @@ W podstawowej wersji algorytm ten posiada złożoność obliczeniową równą $O
 \end{itemize}
 Każdy obiekt trzeba porównać ze wszystkimi środkami (w najgorszym wypadku), w każdej iteracji algorytmu. Na koniec każdej iteracji obliczane są nowe centra grup, które wektorami średnimi ze wszystkich wektorów w danej grupie. Dodatkowo samo porównanie dwóch wektorów to obliczenie ich podobieństwa, czyli w przypadku podobieństwa cosinusowego jest to $d^2$ operacji.
 
-\todo{podobieństwo cosinusowe nie zależy od długości wektorów – dlatego najwydajniej jest obliczać je na podstawie wektorów znormalizowanych mk-cos-euclidean,
-	podobieństwo cosinusowe nie spełnia nierówności trójkąta – źródło jak wyżej
-	takie wektory można próbować sprowadzać do wektorów skwantowanych – testy z wartością kwantyzacji, dobieranie heurystycznie na podstawie mediany wartości wszystkich współrzędnych, albo na podstawie średniej wszystkich współrzędnych, albo na podstawie średniej / mediany współrzędnych dla każdego wektora osobno.}
+
 
 \newpage
 \section{Implementacja rozwiązania}
@@ -701,12 +746,11 @@ Wszystkie algorytmy odcinały słowa, o wariancji liczności mniejszej niż jede
 \newpage
 \section{notatki robocze}
 W rozdziale 2 dodać teorię.
-	6.02 spotkanie o 17
 	1. Dodać bez wariancji
 	1.1 Jak ocenić grupowanie, podobieństwo
 	1.2 Rodział cały o ocenie grupowania
 	2. Uzasadnić wybór funkcji odległości – opisać działaniu ich obu, odniesienie do bibliografii. Prezentacja testów ich wydajności ze względu na liczbę wymiarów, gęstość wektorów, rodzaj implementacji. Można pokusić się o analizę pamięciową.
-	3. Porównanie wyników działania (wydajność i sposób dzielenia na zbiory) obu implementacji algorytmu.
+	3. Porównanie wyników działania (wydajność i sposób dzielenia na zbiory) o0bu implementacji algorytmu.
 	1. Błąd kwadratowy w każdej grupie. 
 	2. Średnia błędów kwadratowych.
 	3. Współczynnik Silhouette.
@@ -717,7 +761,11 @@ W rozdziale 2 dodać teorię.
 	1. Wykres obrazujący liczbę obiektów w poszczególnych grupach.
 	2. Rzutowanie grup na płaszczyznę 2D (konfigurowalny dobór współrzędnych użytych do rzutowania, oraz przydziału ich do rzędnych lub odciętych.
 	Wersja szybsza algorytmu wykorzystuje nierówność trójkąta w celu przyspieszenia obliczeń, dlatego nie jest właściwe zastosowanie w niej odległości cosinusowej.
+	11. podobieństwo cosinusowe nie zależy od długości wektorów – dlatego najwydajniej jest obliczać je na podstawie wektorów znormalizowanych mk-cos-euclidean,
+		podobieństwo cosinusowe nie spełnia nierówności trójkąta – źródło jak wyżej
+		takie wektory można próbować sprowadzać do wektorów skwantowanych – testy z wartością kwantyzacji, dobieranie heurystycznie na podstawie mediany wartości wszystkich współrzędnych, albo na podstawie średniej wszystkich współrzędnych, albo na podstawie średniej / mediany współrzędnych dla każdego wektora osobno.
 	\todo{w części 3 napisać o niedoskonałości odległości cosinusowej, dlaczego niespełnia; napisać że hamminga spełnia – binarna i nie}
 	
-
+\bibliographystyle{plain}
+\bibliography{references}
 \end{document}
