@@ -1,0 +1,10 @@
+Running tfidf to discover stop words.
+Running tfidf with stopwords as input.
+Done with tfidf...
+Starting clustering ... (10x25, random pickers, euclidean)
+Starting clustering ... (10x25, squential pickers, euclidean)
+Starting clustering ... (10x25, dimension-based pickers, euclidean)
+Starting clustering ... (10x25, random pickers, hamilton)
+Starting clustering ... (10x25, squential pickers, hamilton)
+Starting clustering ... (10x25, dimension-based pickers, hamilton)
+Done?

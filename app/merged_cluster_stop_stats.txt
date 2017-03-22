@@ -1,0 +1,1230 @@
+started
+MinDist initial: 535
+MinDist increased: 538
+Looped in while: 10
+Looped in for: 1138
+MinDist increased: 567
+Looped in while: 20
+Looped in for: 2228
+MinDist increased: 568
+Looped in while: 30
+Looped in for: 3318
+MinDist increased: 569
+Looped in while: 40
+Looped in for: 4408
+MinDist increased: 571
+Looped in while: 50
+Looped in for: 5498
+MinDist increased: 575
+Looped in while: 60
+Looped in for: 6588
+MinDist increased: 577
+Looped in while: 70
+Looped in for: 7668
+MinDist increased: 578
+Looped in while: 80
+Looped in for: 8745
+MinDist increased: 581
+Looped in while: 90
+Looped in for: 9815
+MinDist increased: 584
+Looped in while: 100
+Looped in for: 10885
+MinDist increased: 592
+Looped in while: 110
+Looped in for: 11955
+MinDist increased: 594
+Looped in while: 120
+Looped in for: 13025
+MinDist increased: 595
+Looped in while: 130
+Looped in for: 14095
+MinDist increased: 596
+Looped in while: 140
+Looped in for: 15162
+MinDist increased: 598
+Looped in while: 150
+Looped in for: 16222
+MinDist increased: 599
+Looped in while: 160
+Looped in for: 17282
+MinDist increased: 600
+Looped in while: 170
+Looped in for: 18342
+MinDist increased: 601
+Looped in while: 180
+Looped in for: 19402
+MinDist increased: 603
+Looped in while: 190
+Looped in for: 20452
+MinDist increased: 605
+Looped in while: 200
+Looped in for: 21502
+MinDist increased: 606
+Looped in while: 210
+Looped in for: 22552
+MinDist increased: 608
+Looped in while: 220
+Looped in for: 23592
+MinDist increased: 610
+Looped in while: 230
+Looped in for: 24632
+MinDist increased: 611
+Looped in while: 240
+Looped in for: 25672
+MinDist increased: 613
+Looped in while: 250
+Looped in for: 26712
+MinDist increased: 616
+Looped in while: 260
+Looped in for: 27752
+MinDist increased: 617
+Looped in while: 270
+Looped in for: 28792
+MinDist increased: 619
+Looped in while: 280
+Looped in for: 29832
+MinDist increased: 623
+Looped in while: 290
+Looped in for: 30862
+MinDist increased: 624
+Looped in while: 300
+Looped in for: 31892
+MinDist increased: 625
+Looped in while: 310
+Looped in for: 32922
+MinDist increased: 627
+Looped in while: 320
+Looped in for: 33952
+MinDist increased: 628
+Looped in while: 330
+Looped in for: 34982
+MinDist increased: 629
+Looped in while: 340
+Looped in for: 36012
+MinDist increased: 630
+Looped in while: 350
+Looped in for: 37042
+MinDist increased: 631
+Looped in while: 360
+Looped in for: 38072
+MinDist increased: 633
+Looped in while: 370
+Looped in for: 39102
+MinDist increased: 635
+Looped in while: 380
+Looped in for: 40113
+MinDist increased: 639
+Looped in while: 390
+Looped in for: 41123
+MinDist increased: 640
+Looped in while: 400
+Looped in for: 42133
+MinDist increased: 641
+Looped in while: 410
+Looped in for: 43143
+MinDist increased: 642
+Looped in while: 420
+Looped in for: 44153
+MinDist increased: 644
+Looped in while: 430
+Looped in for: 45163
+MinDist increased: 646
+Looped in while: 440
+Looped in for: 46173
+MinDist increased: 647
+Looped in while: 450
+Looped in for: 47183
+MinDist increased: 648
+Looped in while: 460
+Looped in for: 48193
+MinDist increased: 649
+Looped in while: 470
+Looped in for: 49203
+MinDist increased: 650
+Looped in while: 480
+Looped in for: 50194
+MinDist increased: 652
+Looped in while: 490
+Looped in for: 51184
+MinDist increased: 656
+Looped in while: 500
+Looped in for: 52165
+MinDist increased: 657
+Looped in while: 510
+Looped in for: 53145
+MinDist increased: 659
+Looped in while: 520
+Looped in for: 54118
+MinDist increased: 660
+Looped in while: 530
+Looped in for: 55088
+MinDist increased: 661
+Looped in while: 540
+Looped in for: 56058
+MinDist increased: 662
+Looped in while: 550
+Looped in for: 57028
+MinDist increased: 663
+Looped in while: 560
+Looped in for: 57998
+MinDist increased: 664
+Looped in while: 570
+Looped in for: 58952
+MinDist increased: 665
+Looped in while: 580
+Looped in for: 59902
+MinDist increased: 666
+Looped in while: 590
+Looped in for: 60852
+MinDist increased: 668
+Looped in while: 600
+Looped in for: 61792
+MinDist increased: 669
+Looped in while: 610
+Looped in for: 62732
+MinDist increased: 670
+Looped in while: 620
+Looped in for: 63672
+MinDist increased: 671
+Looped in while: 630
+Looped in for: 64612
+MinDist increased: 672
+Looped in while: 640
+Looped in for: 65552
+MinDist increased: 673
+Looped in while: 650
+Looped in for: 66492
+MinDist increased: 674
+Looped in while: 660
+Looped in for: 67432
+MinDist increased: 675
+Looped in while: 670
+Looped in for: 68372
+MinDist increased: 676
+Looped in while: 680
+Looped in for: 69303
+MinDist increased: 677
+Looped in while: 690
+Looped in for: 70233
+MinDist increased: 678
+Looped in while: 700
+Looped in for: 71163
+MinDist increased: 679
+Looped in while: 710
+Looped in for: 72093
+MinDist increased: 680
+Looped in while: 720
+Looped in for: 73023
+MinDist increased: 681
+Looped in while: 730
+Looped in for: 73953
+MinDist increased: 682
+Looped in while: 740
+Looped in for: 74883
+MinDist increased: 683
+Looped in while: 750
+Looped in for: 75804
+MinDist increased: 684
+Looped in while: 760
+Looped in for: 76724
+MinDist increased: 685
+Looped in while: 770
+Looped in for: 77644
+MinDist increased: 686
+Looped in while: 780
+Looped in for: 78561
+MinDist increased: 687
+Looped in while: 790
+Looped in for: 79471
+MinDist increased: 688
+Looped in while: 800
+Looped in for: 80362
+MinDist increased: 689
+Looped in while: 810
+Looped in for: 81252
+MinDist increased: 690
+Looped in while: 820
+Looped in for: 82135
+MinDist increased: 691
+Looped in while: 830
+Looped in for: 83015
+MinDist increased: 692
+Looped in while: 840
+Looped in for: 83895
+MinDist increased: 693
+Looped in while: 850
+Looped in for: 84775
+MinDist increased: 694
+Looped in while: 860
+Looped in for: 85646
+MinDist increased: 695
+Looped in while: 870
+Looped in for: 86516
+MinDist increased: 696
+Looped in while: 880
+Looped in for: 87386
+MinDist increased: 697
+Looped in while: 890
+Looped in for: 88256
+MinDist increased: 698
+Looped in while: 900
+Looped in for: 89120
+MinDist increased: 699
+Looped in while: 910
+Looped in for: 89980
+MinDist increased: 700
+Looped in while: 920
+Looped in for: 90840
+MinDist increased: 701
+Looped in while: 930
+Looped in for: 91692
+MinDist increased: 702
+Looped in while: 940
+Looped in for: 92538
+MinDist increased: 703
+Looped in while: 950
+Looped in for: 93378
+MinDist increased: 704
+Looped in while: 960
+Looped in for: 94218
+MinDist increased: 705
+Looped in while: 970
+Looped in for: 95058
+MinDist increased: 706
+Looped in while: 980
+Looped in for: 95898
+MinDist increased: 707
+Looped in while: 990
+Looped in for: 96738
+MinDist increased: 708
+Looped in while: 1000
+Looped in for: 97562
+MinDist increased: 709
+Looped in while: 1010
+Looped in for: 98382
+MinDist increased: 710
+Looped in while: 1020
+Looped in for: 99201
+MinDist increased: 711
+Looped in while: 1030
+Looped in for: 99992
+MinDist increased: 712
+Looped in while: 1040
+Looped in for: 100782
+MinDist increased: 713
+Looped in while: 1050
+Looped in for: 101572
+MinDist increased: 714
+Looped in while: 1060
+Looped in for: 102362
+MinDist increased: 715
+Looped in while: 1070
+Looped in for: 103152
+MinDist increased: 716
+Looped in while: 1080
+Looped in for: 103942
+MinDist increased: 717
+Looped in while: 1090
+Looped in for: 104722
+MinDist increased: 718
+Looped in while: 1100
+Looped in for: 105502
+MinDist increased: 719
+Looped in while: 1110
+Looped in for: 106282
+MinDist increased: 720
+Looped in while: 1120
+Looped in for: 107062
+MinDist increased: 721
+Looped in while: 1130
+Looped in for: 107842
+MinDist increased: 722
+Looped in while: 1140
+Looped in for: 108616
+MinDist increased: 723
+Looped in while: 1150
+Looped in for: 109376
+MinDist increased: 724
+Looped in while: 1160
+Looped in for: 110136
+MinDist increased: 725
+Looped in while: 1170
+Looped in for: 110896
+MinDist increased: 726
+Looped in while: 1180
+Looped in for: 111656
+MinDist increased: 727
+Looped in while: 1190
+Looped in for: 112409
+MinDist increased: 728
+Looped in while: 1200
+Looped in for: 113154
+MinDist increased: 729
+Looped in while: 1210
+Looped in for: 113894
+MinDist increased: 730
+Looped in while: 1220
+Looped in for: 114634
+MinDist increased: 731
+Looped in while: 1230
+Looped in for: 115363
+MinDist increased: 732
+Looped in while: 1240
+Looped in for: 116083
+MinDist increased: 733
+Looped in while: 1250
+Looped in for: 116803
+MinDist increased: 734
+Looped in while: 1260
+Looped in for: 117523
+MinDist increased: 735
+Looped in while: 1270
+Looped in for: 118243
+MinDist increased: 736
+Looped in while: 1280
+Looped in for: 118963
+MinDist increased: 737
+Looped in while: 1290
+Looped in for: 119683
+MinDist increased: 738
+Looped in while: 1300
+Looped in for: 120393
+MinDist increased: 739
+Looped in while: 1310
+Looped in for: 121103
+MinDist increased: 740
+Looped in while: 1320
+Looped in for: 121808
+MinDist increased: 741
+Looped in while: 1330
+Looped in for: 122508
+MinDist increased: 742
+Looped in while: 1340
+Looped in for: 123208
+MinDist increased: 743
+Looped in while: 1350
+Looped in for: 123908
+MinDist increased: 744
+Looped in while: 1360
+Looped in for: 124602
+MinDist increased: 745
+Looped in while: 1370
+Looped in for: 125292
+MinDist increased: 746
+Looped in while: 1380
+Looped in for: 125982
+MinDist increased: 747
+Looped in while: 1390
+Looped in for: 126667
+MinDist increased: 748
+Looped in while: 1400
+Looped in for: 127347
+MinDist increased: 749
+Looped in while: 1410
+Looped in for: 128025
+MinDist increased: 750
+Looped in while: 1420
+Looped in for: 128695
+MinDist increased: 751
+Looped in while: 1430
+Looped in for: 129359
+MinDist increased: 752
+Looped in while: 1440
+Looped in for: 130019
+MinDist increased: 753
+Looped in while: 1450
+Looped in for: 130679
+MinDist increased: 754
+Looped in while: 1460
+Looped in for: 131339
+MinDist increased: 755
+Looped in while: 1470
+Looped in for: 131999
+MinDist increased: 756
+Looped in while: 1480
+Looped in for: 132659
+MinDist increased: 757
+Looped in while: 1490
+Looped in for: 133319
+MinDist increased: 758
+Looped in while: 1500
+Looped in for: 133964
+MinDist increased: 759
+Looped in while: 1510
+Looped in for: 134596
+MinDist increased: 760
+Looped in while: 1520
+Looped in for: 135226
+MinDist increased: 761
+Looped in while: 1530
+Looped in for: 135856
+MinDist increased: 762
+Looped in while: 1540
+Looped in for: 136486
+MinDist increased: 763
+Looped in while: 1550
+Looped in for: 137110
+MinDist increased: 764
+Looped in while: 1560
+Looped in for: 137730
+MinDist increased: 765
+Looped in while: 1570
+Looped in for: 138339
+MinDist increased: 766
+Looped in while: 1580
+Looped in for: 138932
+MinDist increased: 767
+Looped in while: 1590
+Looped in for: 139514
+MinDist increased: 768
+Looped in while: 1600
+Looped in for: 140094
+MinDist increased: 769
+Looped in while: 1610
+Looped in for: 140664
+MinDist increased: 770
+Looped in while: 1620
+Looped in for: 141226
+MinDist increased: 771
+Looped in while: 1630
+Looped in for: 141786
+MinDist increased: 772
+Looped in while: 1640
+Looped in for: 142346
+MinDist increased: 773
+Looped in while: 1650
+Looped in for: 142906
+MinDist increased: 774
+Looped in while: 1660
+Looped in for: 143466
+MinDist increased: 775
+Looped in while: 1670
+Looped in for: 144026
+MinDist increased: 776
+Looped in while: 1680
+Looped in for: 144586
+MinDist increased: 777
+Looped in while: 1690
+Looped in for: 145136
+MinDist increased: 778
+Looped in while: 1700
+Looped in for: 145676
+MinDist increased: 779
+Looped in while: 1710
+Looped in for: 146216
+MinDist increased: 780
+Looped in while: 1720
+Looped in for: 146756
+MinDist increased: 781
+Looped in while: 1730
+Looped in for: 147295
+MinDist increased: 782
+Looped in while: 1740
+Looped in for: 147815
+MinDist increased: 783
+Looped in while: 1750
+Looped in for: 148335
+MinDist increased: 784
+Looped in while: 1760
+Looped in for: 148855
+MinDist increased: 785
+Looped in while: 1770
+Looped in for: 149375
+MinDist increased: 786
+Looped in while: 1780
+Looped in for: 149889
+MinDist increased: 787
+Looped in while: 1790
+Looped in for: 150380
+MinDist increased: 788
+Looped in while: 1800
+Looped in for: 150870
+MinDist increased: 789
+Looped in while: 1810
+Looped in for: 151360
+MinDist increased: 790
+Looped in while: 1820
+Looped in for: 151850
+MinDist increased: 791
+Looped in while: 1830
+Looped in for: 152336
+MinDist increased: 792
+Looped in while: 1840
+Looped in for: 152816
+MinDist increased: 793
+Looped in while: 1850
+Looped in for: 153284
+MinDist increased: 794
+Looped in while: 1860
+Looped in for: 153736
+MinDist increased: 795
+Looped in while: 1870
+Looped in for: 154186
+MinDist increased: 796
+Looped in while: 1880
+Looped in for: 154636
+MinDist increased: 797
+Looped in while: 1890
+Looped in for: 155086
+MinDist increased: 798
+Looped in while: 1900
+Looped in for: 155530
+MinDist increased: 799
+Looped in while: 1910
+Looped in for: 155952
+MinDist increased: 800
+Looped in while: 1920
+Looped in for: 156372
+MinDist increased: 801
+Looped in while: 1930
+Looped in for: 156792
+MinDist increased: 802
+Looped in while: 1940
+Looped in for: 157212
+MinDist increased: 803
+Looped in while: 1950
+Looped in for: 157632
+MinDist increased: 804
+Looped in while: 1960
+Looped in for: 158048
+MinDist increased: 805
+Looped in while: 1970
+Looped in for: 158458
+MinDist increased: 806
+Looped in while: 1980
+Looped in for: 158863
+MinDist increased: 807
+Looped in while: 1990
+Looped in for: 159263
+MinDist increased: 808
+Looped in while: 2000
+Looped in for: 159663
+MinDist increased: 809
+Looped in while: 2010
+Looped in for: 160063
+MinDist increased: 810
+Looped in while: 2020
+Looped in for: 160463
+MinDist increased: 811
+Looped in while: 2030
+Looped in for: 160859
+MinDist increased: 812
+Looped in while: 2040
+Looped in for: 161241
+MinDist increased: 813
+Looped in while: 2050
+Looped in for: 161621
+MinDist increased: 814
+Looped in while: 2060
+Looped in for: 161999
+MinDist increased: 815
+Looped in while: 2070
+Looped in for: 162369
+MinDist increased: 816
+Looped in while: 2080
+Looped in for: 162739
+MinDist increased: 817
+Looped in while: 2090
+Looped in for: 163109
+MinDist increased: 818
+Looped in while: 2100
+Looped in for: 163479
+MinDist increased: 819
+Looped in while: 2110
+Looped in for: 163849
+MinDist increased: 820
+Looped in while: 2120
+Looped in for: 164219
+MinDist increased: 821
+Looped in while: 2130
+Looped in for: 164581
+MinDist increased: 822
+Looped in while: 2140
+Looped in for: 164933
+MinDist increased: 823
+Looped in while: 2150
+Looped in for: 165283
+MinDist increased: 824
+Looped in while: 2160
+Looped in for: 165633
+MinDist increased: 825
+Looped in while: 2170
+Looped in for: 165983
+MinDist increased: 826
+Looped in while: 2180
+Looped in for: 166331
+MinDist increased: 827
+Looped in while: 2190
+Looped in for: 166671
+MinDist increased: 828
+Looped in while: 2200
+Looped in for: 167011
+MinDist increased: 829
+Looped in while: 2210
+Looped in for: 167351
+MinDist increased: 830
+Looped in while: 2220
+Looped in for: 167691
+MinDist increased: 831
+Looped in while: 2230
+Looped in for: 168031
+MinDist increased: 832
+Looped in while: 2240
+Looped in for: 168371
+MinDist increased: 833
+Looped in while: 2250
+Looped in for: 168711
+MinDist increased: 834
+Looped in while: 2260
+Looped in for: 169051
+MinDist increased: 835
+Looped in while: 2270
+Looped in for: 169379
+MinDist increased: 836
+Looped in while: 2280
+Looped in for: 169699
+MinDist increased: 837
+Looped in while: 2290
+Looped in for: 170014
+MinDist increased: 838
+Looped in while: 2300
+Looped in for: 170324
+MinDist increased: 839
+Looped in while: 2310
+Looped in for: 170626
+MinDist increased: 840
+Looped in while: 2320
+Looped in for: 170926
+MinDist increased: 841
+Looped in while: 2330
+Looped in for: 171226
+MinDist increased: 842
+Looped in while: 2340
+Looped in for: 171526
+MinDist increased: 843
+Looped in while: 2350
+Looped in for: 171826
+MinDist increased: 844
+Looped in while: 2360
+Looped in for: 172126
+MinDist increased: 845
+Looped in while: 2370
+Looped in for: 172426
+MinDist increased: 846
+Looped in while: 2380
+Looped in for: 172726
+MinDist increased: 847
+Looped in while: 2390
+Looped in for: 173022
+MinDist increased: 848
+Looped in while: 2400
+Looped in for: 173312
+MinDist increased: 849
+Looped in while: 2410
+Looped in for: 173602
+MinDist increased: 850
+Looped in while: 2420
+Looped in for: 173892
+MinDist increased: 851
+Looped in while: 2430
+Looped in for: 174176
+MinDist increased: 852
+Looped in while: 2440
+Looped in for: 174448
+MinDist increased: 853
+Looped in while: 2450
+Looped in for: 174718
+MinDist increased: 854
+Looped in while: 2460
+Looped in for: 174988
+MinDist increased: 855
+Looped in while: 2470
+Looped in for: 175258
+MinDist increased: 856
+Looped in while: 2480
+Looped in for: 175522
+MinDist increased: 857
+Looped in while: 2490
+Looped in for: 175782
+MinDist increased: 858
+Looped in while: 2500
+Looped in for: 176042
+MinDist increased: 859
+Looped in while: 2510
+Looped in for: 176302
+MinDist increased: 860
+Looped in while: 2520
+Looped in for: 176562
+MinDist increased: 861
+Looped in while: 2530
+Looped in for: 176822
+MinDist increased: 862
+Looped in while: 2540
+Looped in for: 177082
+MinDist increased: 863
+Looped in while: 2550
+Looped in for: 177342
+MinDist increased: 864
+Looped in while: 2560
+Looped in for: 177602
+MinDist increased: 865
+Looped in while: 2570
+Looped in for: 177862
+MinDist increased: 866
+Looped in while: 2580
+Looped in for: 178116
+MinDist increased: 867
+Looped in while: 2590
+Looped in for: 178356
+MinDist increased: 868
+Looped in while: 2600
+Looped in for: 178591
+MinDist increased: 869
+Looped in while: 2610
+Looped in for: 178821
+MinDist increased: 870
+Looped in while: 2620
+Looped in for: 179051
+MinDist increased: 871
+Looped in while: 2630
+Looped in for: 179277
+MinDist increased: 872
+Looped in while: 2640
+Looped in for: 179497
+MinDist increased: 873
+Looped in while: 2650
+Looped in for: 179717
+MinDist increased: 874
+Looped in while: 2660
+Looped in for: 179937
+MinDist increased: 875
+Looped in while: 2670
+Looped in for: 180157
+MinDist increased: 876
+Looped in while: 2680
+Looped in for: 180373
+MinDist increased: 877
+Looped in while: 2690
+Looped in for: 180583
+MinDist increased: 878
+Looped in while: 2700
+Looped in for: 180793
+MinDist increased: 879
+Looped in while: 2710
+Looped in for: 181003
+MinDist increased: 880
+Looped in while: 2720
+Looped in for: 181213
+MinDist increased: 881
+Looped in while: 2730
+Looped in for: 181423
+MinDist increased: 882
+Looped in while: 2740
+Looped in for: 181633
+MinDist increased: 883
+Looped in while: 2750
+Looped in for: 181835
+MinDist increased: 884
+Looped in while: 2760
+Looped in for: 182035
+MinDist increased: 885
+Looped in while: 2770
+Looped in for: 182235
+MinDist increased: 886
+Looped in while: 2780
+Looped in for: 182435
+MinDist increased: 887
+Looped in while: 2790
+Looped in for: 182635
+MinDist increased: 888
+Looped in while: 2800
+Looped in for: 182830
+MinDist increased: 889
+Looped in while: 2810
+Looped in for: 183012
+MinDist increased: 890
+Looped in while: 2820
+Looped in for: 183192
+MinDist increased: 891
+Looped in while: 2830
+Looped in for: 183372
+MinDist increased: 892
+Looped in while: 2840
+Looped in for: 183552
+MinDist increased: 893
+Looped in while: 2850
+Looped in for: 183732
+MinDist increased: 894
+Looped in while: 2860
+Looped in for: 183912
+MinDist increased: 895
+Looped in while: 2870
+Looped in for: 184092
+MinDist increased: 896
+Looped in while: 2880
+Looped in for: 184272
+MinDist increased: 897
+Looped in while: 2890
+Looped in for: 184452
+MinDist increased: 898
+Looped in while: 2900
+Looped in for: 184632
+MinDist increased: 899
+Looped in while: 2910
+Looped in for: 184812
+MinDist increased: 900
+Looped in while: 2920
+Looped in for: 184984
+MinDist increased: 901
+Looped in while: 2930
+Looped in for: 185154
+MinDist increased: 902
+Looped in while: 2940
+Looped in for: 185324
+MinDist increased: 903
+Looped in while: 2950
+Looped in for: 185494
+MinDist increased: 904
+Looped in while: 2960
+Looped in for: 185664
+MinDist increased: 905
+Looped in while: 2970
+Looped in for: 185834
+MinDist increased: 906
+Looped in while: 2980
+Looped in for: 185999
+MinDist increased: 907
+Looped in while: 2990
+Looped in for: 186159
+MinDist increased: 908
+Looped in while: 3000
+Looped in for: 186319
+MinDist increased: 909
+Looped in while: 3010
+Looped in for: 186479
+MinDist increased: 910
+Looped in while: 3020
+Looped in for: 186639
+MinDist increased: 911
+Looped in while: 3030
+Looped in for: 186791
+MinDist increased: 912
+Looped in while: 3040
+Looped in for: 186941
+MinDist increased: 913
+Looped in while: 3050
+Looped in for: 187091
+MinDist increased: 914
+Looped in while: 3060
+Looped in for: 187241
+MinDist increased: 915
+Looped in while: 3070
+Looped in for: 187391
+MinDist increased: 916
+Looped in while: 3080
+Looped in for: 187541
+MinDist increased: 917
+Looped in while: 3090
+Looped in for: 187691
+MinDist increased: 918
+Looped in while: 3100
+Looped in for: 187841
+MinDist increased: 919
+Looped in while: 3110
+Looped in for: 187991
+MinDist increased: 920
+Looped in while: 3120
+Looped in for: 188140
+MinDist increased: 921
+Looped in while: 3130
+Looped in for: 188280
+MinDist increased: 922
+Looped in while: 3140
+Looped in for: 188420
+MinDist increased: 923
+Looped in while: 3150
+Looped in for: 188560
+MinDist increased: 924
+Looped in while: 3160
+Looped in for: 188700
+MinDist increased: 925
+Looped in while: 3170
+Looped in for: 188840
+MinDist increased: 926
+Looped in while: 3180
+Looped in for: 188976
+MinDist increased: 927
+Looped in while: 3190
+Looped in for: 189106
+MinDist increased: 928
+Looped in while: 3200
+Looped in for: 189228
+MinDist increased: 929
+Looped in while: 3210
+Looped in for: 189348
+MinDist increased: 930
+Looped in while: 3220
+Looped in for: 189463
+MinDist increased: 931
+Looped in while: 3230
+Looped in for: 189573
+MinDist increased: 932
+Looped in while: 3240
+Looped in for: 189682
+MinDist increased: 933
+Looped in while: 3250
+Looped in for: 189782
+MinDist increased: 934
+Looped in while: 3260
+Looped in for: 189878
+MinDist increased: 935
+Looped in while: 3270
+Looped in for: 189968
+MinDist increased: 936
+Looped in while: 3280
+Looped in for: 190058
+MinDist increased: 937
+Looped in while: 3290
+Looped in for: 190148
+MinDist increased: 938
+Looped in while: 3300
+Looped in for: 190238
+MinDist increased: 939
+Looped in while: 3310
+Looped in for: 190328
+MinDist increased: 940
+Looped in while: 3320
+Looped in for: 190418
+MinDist increased: 941
+Looped in while: 3330
+Looped in for: 190508
+MinDist increased: 942
+Looped in while: 3340
+Looped in for: 190594
+MinDist increased: 943
+Looped in while: 3350
+Looped in for: 190666
+MinDist increased: 944
+Looped in while: 3360
+Looped in for: 190736
+MinDist increased: 945
+Looped in while: 3370
+Looped in for: 190806
+MinDist increased: 946
+Looped in while: 3380
+Looped in for: 190876
+MinDist increased: 947
+Looped in while: 3390
+Looped in for: 190946
+MinDist increased: 948
+Looped in while: 3400
+Looped in for: 191016
+MinDist increased: 949
+Looped in while: 3410
+Looped in for: 191082
+MinDist increased: 950
+Looped in while: 3420
+Looped in for: 191142
+MinDist increased: 951
+Looped in while: 3430
+Looped in for: 191202
+MinDist increased: 952
+Looped in while: 3440
+Looped in for: 191262
+MinDist increased: 953
+Looped in while: 3450
+Looped in for: 191322
+MinDist increased: 954
+Looped in while: 3460
+Looped in for: 191382
+MinDist increased: 955
+Looped in while: 3470
+Looped in for: 191442
+MinDist increased: 956
+Looped in while: 3480
+Looped in for: 191502
+MinDist increased: 957
+Looped in while: 3490
+Looped in for: 191562
+MinDist increased: 958
+Looped in while: 3500
+Looped in for: 191622
+MinDist increased: 959
+Looped in while: 3510
+Looped in for: 191682
+MinDist increased: 960
+Looped in while: 3520
+Looped in for: 191742
+MinDist increased: 961
+Looped in while: 3530
+Looped in for: 191802
+MinDist increased: 962
+Looped in while: 3540
+Looped in for: 191862
+MinDist increased: 963
+Looped in while: 3550
+Looped in for: 191922
+MinDist increased: 964
+Looped in while: 3560
+Looped in for: 191982
+MinDist increased: 965
+Looped in while: 3570
+Looped in for: 192042
+MinDist increased: 966
+Looped in while: 3580
+Looped in for: 192102
+MinDist increased: 967
+Looped in while: 3590
+Looped in for: 192158
+MinDist increased: 968
+Looped in while: 3600
+Looped in for: 192208
+MinDist increased: 969
+Looped in while: 3610
+Looped in for: 192258
+MinDist increased: 970
+Looped in while: 3620
+Looped in for: 192308
+MinDist increased: 971
+Looped in while: 3630
+Looped in for: 192354
+MinDist increased: 972
+Looped in while: 3640
+Looped in for: 192394
+MinDist increased: 973
+Looped in while: 3650
+Looped in for: 192434
+MinDist increased: 974
+Looped in while: 3660
+Looped in for: 192474
+MinDist increased: 975
+Looped in while: 3670
+Looped in for: 192514
+MinDist increased: 976
+Looped in while: 3680
+Looped in for: 192554
+MinDist increased: 977
+Looped in while: 3690
+Looped in for: 192594
+MinDist increased: 978
+Looped in while: 3700
+Looped in for: 192634
+MinDist increased: 979
+Looped in while: 3710
+Looped in for: 192674
+MinDist increased: 980
+Looped in while: 3720
+Looped in for: 192714
+MinDist increased: 981
+Looped in while: 3730
+Looped in for: 192754
+MinDist increased: 982
+Looped in while: 3740
+Looped in for: 192794
+MinDist increased: 983
+Looped in while: 3750
+Looped in for: 192834
+MinDist increased: 984
+Looped in while: 3760
+Looped in for: 192874
+MinDist increased: 985
+Looped in while: 3770
+Looped in for: 192914
+MinDist increased: 986
+Looped in while: 3780
+Looped in for: 192954
+MinDist increased: 987
+Looped in while: 3790
+Looped in for: 192994
+MinDist increased: 988
+Looped in while: 3800
+Looped in for: 193034
+MinDist increased: 989
+Looped in while: 3810
+Looped in for: 193074
+MinDist increased: 990
+Looped in while: 3820
+Looped in for: 193114
+MinDist increased: 991
+Looped in while: 3830
+Looped in for: 193150
+MinDist increased: 992
+Looped in while: 3840
+Looped in for: 193180
+MinDist increased: 993
+Looped in while: 3850
+Looped in for: 193210
+MinDist increased: 994
+Looped in while: 3860
+Looped in for: 193240
+MinDist increased: 995
+Looped in while: 3870
+Looped in for: 193270
+MinDist increased: 996
+Looped in while: 3880
+Looped in for: 193300
+MinDist increased: 997
+Looped in while: 3890
+Looped in for: 193330
+MinDist increased: 998
+Looped in while: 3900
+Looped in for: 193360
+MinDist increased: 999
+Looped in while: 3910
+Looped in for: 193390
+MinDist increased: 1000
+Looped in while: 3920
+Looped in for: 193420
+MinDist increased: 1001
+Looped in while: 3930
+Looped in for: 193450
+MinDist increased: 1002
+Looped in while: 3940
+Looped in for: 193480
+MinDist increased: 1003
+Looped in while: 3950
+Looped in for: 193510
+MinDist increased: 1004
+Looped in while: 3960
+Looped in for: 193540
+MinDist increased: 1005
+Looped in while: 3970
+Looped in for: 193570
+MinDist increased: 1006
+Looped in while: 3980
+Looped in for: 193596
+MinDist increased: 1007
+Looped in while: 3990
+Looped in for: 193616
+MinDist increased: 1008
+Looped in while: 4000
+Looped in for: 193636
+MinDist increased: 1009
+Looped in while: 4010
+Looped in for: 193656
+MinDist increased: 1010
+Looped in while: 4020
+Looped in for: 193676
+MinDist increased: 1011
+Looped in while: 4030
+Looped in for: 193696
+MinDist increased: 1012
+Looped in while: 4040
+Looped in for: 193716
+MinDist increased: 1013
+Looped in while: 4050
+Looped in for: 193736
+MinDist increased: 1014
+Looped in while: 4060
+Looped in for: 193756
+MinDist increased: 1015
+Looped in while: 4070
+Looped in for: 193775
+MinDist increased: 1016
+Looped in while: 4080
+Looped in for: 193785
+2017-1-23T21.20.58.956	Rand index is 0.658263
+Rand index: 0.658263
+KMeansCorrectDataRandomPickerCosineDist 25
+done

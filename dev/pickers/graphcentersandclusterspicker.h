@@ -22,9 +22,9 @@ public:
 
     virtual ~GraphCentersAndClustersPicker() {}
 
-    virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType>* ps);
+    virtual PartitionData *performInitialPartition(unsigned clusters, AbstractPointsSpace* ps);
 
-    std::pair<unsigned, PartitionData*> generateClustersNumberAndPartition(AbstractPointsSpace<PointType> *ps);
+    std::pair<unsigned, PartitionData*> generateClustersNumberAndPartition(AbstractPointsSpace *ps);
 
 private:
 
@@ -34,7 +34,7 @@ private:
 };
 
 template <class PointType>
-PartitionData *GraphCentersAndClustersPicker<PointType>::performInitialPartition(unsigned clusters, AbstractPointsSpace<PointType> *ps)
+PartitionData *GraphCentersAndClustersPicker<PointType>::performInitialPartition(unsigned clusters, AbstractPointsSpace *ps)
 {
     PartitionData* data = new PartitionData(clusters, ps->getDeclaredNumPoints());
     this->initialData = new CentersData(clusters);

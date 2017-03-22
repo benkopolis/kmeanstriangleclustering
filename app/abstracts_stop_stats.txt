@@ -1,0 +1,13 @@
+started
+2017-1-23T20.56.26.781	Created parser
+2017-1-23T20.56.26.781	Assigned names - going to load data
+2017-1-23T20.56.26.781	Loading data
+2017-1-23T20.56.26.781	Reading stop words dict
+2017-1-23T20.56.26.785	Before big loop
+2017-1-23T20.56.26.799	Counting tfidf
+2017-1-23T20.56.26.800	Storing data
+2017-1-23T20.56.26.802	At line '215' in file 'tfidf/stemmedfileinmemoryparser.cpp'	 There is '14' terms
+2017-1-23T20.56.26.802	At line '70' in file 'main.cpp'	 Getting terms
+2017-1-23T20.56.26.802	
+13 : tax;	12 : liabil;	11 : injur;	10 : care;	0 : law;	1 : econom;	2 : legal;	3 : good;	4 : rule;	5 : system;	6 : regul;	7 : theori;	8 : properti;	9 : contract;	
+done

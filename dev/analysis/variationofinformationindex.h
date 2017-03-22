@@ -9,7 +9,7 @@ public:
     VariationOfInformationIndex();
     virtual ~VariationOfInformationIndex();
 
-    virtual double count(PartitionData *one, PartitionData *two);
+    virtual double count(const PartitionData *one, const PartitionData *two);
 };
 
 #endif // VARIATIONOFINFORMATIONINDEX_H

@@ -1,8 +1,9 @@
 #ifndef RANDOMCENTERPICKER_H
 #define RANDOMCENTERPICKER_H
 
-#include <random>
+#include <chrono>
 #include <functional>
+#include <random>
 
 #include "abstractcenterspicker.h"
 #include "commons/centersdata.h"
@@ -26,8 +27,10 @@ public:
     {
         PartitionData* data = new PartitionData(clusters, ps->getDeclaredNumPoints());
         this->initialData = new CentersData(clusters);
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         this->_clustersDistribution = new std::uniform_int_distribution<unsigned>(0, clusters - 1);
-        this->_clusterId = std::bind(*(this->_clustersDistribution), this->_generator);
+        this->_generator = new std::default_random_engine(seed);
+        this->_clusterId = std::bind(*(this->_clustersDistribution), *(this->_generator));
         unsigned cid;
         for (unsigned pid = 0; pid < ps->getDeclaredNumPoints(); pid++)
         {
@@ -45,7 +48,7 @@ private:
 
     std::function<unsigned()> _clusterId;
     std::uniform_int_distribution<unsigned>* _clustersDistribution;
-    std::default_random_engine _generator;
+    std::default_random_engine* _generator;
 };
 
 #endif // RANDOMCENTERPICKER_H

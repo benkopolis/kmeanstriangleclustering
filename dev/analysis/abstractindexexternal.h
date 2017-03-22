@@ -13,7 +13,7 @@ public:
     AbstractIndexExternal(AbstractIndexExternal&&);
     virtual ~AbstractIndexExternal();
 
-    virtual double count(PartitionData* one, PartitionData* two) = 0;
+    virtual double count(const PartitionData* one, const PartitionData* two) = 0;
 };
 
 

@@ -7,7 +7,11 @@ SilhouetteIndex::SilhouetteIndex(AbstractDistance *dist)
     this->_dist = dist;
 }
 
-double SilhouetteIndex::count(PartitionData *partition, AbstractPointsSpace *space)
+SilhouetteIndex::~SilhouetteIndex()
+{
+}
+
+double SilhouetteIndex::count(const PartitionData *partition, const AbstractPointsSpace *space)
 {
     double total = 0;
     for(unsigned i = 0; i < space->getNumOfInsertedPoints(); ++i)
@@ -23,13 +27,13 @@ double SilhouetteIndex::count(PartitionData *partition, AbstractPointsSpace *spa
     return total / double(space->getNumOfInsertedPoints());
 }
 
-double SilhouetteIndex::home_avg_dissimilarity(PartitionData *partition, AbstractPointsSpace *space, unsigned pointId)
+double SilhouetteIndex::home_avg_dissimilarity(const PartitionData *partition, const AbstractPointsSpace *space, unsigned pointId)
 {
     unsigned homeCluster = partition->getCluster(pointId);
     return this->get_avg_dist(partition->getPoints(homeCluster), space, pointId);
 }
 
-double SilhouetteIndex::neighbour_avg_dissimilarity(PartitionData *partition, AbstractPointsSpace *space, unsigned pointId)
+double SilhouetteIndex::neighbour_avg_dissimilarity(const PartitionData *partition, const AbstractPointsSpace *space, unsigned pointId)
 {
     unsigned homeCluster = partition->getCluster(pointId);
     double total = std::numeric_limits<double>::max(), tmp = 0;
@@ -45,7 +49,7 @@ double SilhouetteIndex::neighbour_avg_dissimilarity(PartitionData *partition, Ab
     return total;
 }
 
-double SilhouetteIndex::get_avg_dist(const std::unordered_set<unsigned> &points, AbstractPointsSpace *space, unsigned pointId)
+double SilhouetteIndex::get_avg_dist(const std::unordered_set<unsigned> &points, const AbstractPointsSpace *space, unsigned pointId)
 {
     double total = 0, iters = 0;
     for(unsigned point : points)

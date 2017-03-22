@@ -1,0 +1,5 @@
+started
+2017-1-25T0.22.7.400	Rand index is 0.625350
+Rand index: 0.62535
+KMeansCorrectDataRandomPickerCosineDist 25
+done

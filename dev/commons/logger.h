@@ -16,6 +16,7 @@ protected:
     ~logger();
 
     static logger* _logger;
+    static bool _enabled;
 
     std::ostream& _log;
 
@@ -30,6 +31,7 @@ public:
     static void log(const char* message, int line, const char* file, std::ofstream& out) throw(IOException);
 
     static void init_logger(std::ostream& output);
+    static void disable_logger();
     static void close_logger();
 };
 

@@ -8,7 +8,7 @@ RandIndex::RandIndex()
 
 }
 
-double RandIndex::process(const PartitionData *one, const PartitionData *two)
+double RandIndex::count(const PartitionData *one, const PartitionData *two)
 {
     if (one->assigned_points() != two->assigned_points()
             || one->getNumberOfClusters() != two->getNumberOfClusters())

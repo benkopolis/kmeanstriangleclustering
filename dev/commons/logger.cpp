@@ -7,6 +7,7 @@
 #include <fstream>
 
 logger* logger::_logger = NULL;
+bool logger::_enabled = true;
 
 logger::logger(std::ostream &log_stream):
     _log(log_stream)
@@ -55,6 +56,7 @@ void logger::log_timestamp()
 
 void logger::log(const char *message) throw(IOException)
 {
+    if(!_enabled) return;
     if(_logger == NULL)
         throw IOException("Log not opened", __FILE__, __LINE__);
     _logger->log_timestamp();
@@ -63,6 +65,7 @@ void logger::log(const char *message) throw(IOException)
 
 void logger::log(const char *message, int line, const char *file) throw(IOException)
 {
+    if(!_enabled) return;
     if(_logger == NULL)
         throw IOException("Log not opened", __FILE__, __LINE__);
     _logger->log_timestamp();
@@ -71,6 +74,7 @@ void logger::log(const char *message, int line, const char *file) throw(IOExcept
 
 void logger::log(const char *message, std::ofstream &out) throw(IOException)
 {
+    if(!_enabled) return;
     if(_logger == NULL)
         throw IOException("Log not opened", __FILE__, __LINE__);
     _logger->log_timestamp(out);
@@ -79,6 +83,7 @@ void logger::log(const char *message, std::ofstream &out) throw(IOException)
 
 void logger::log(const char *message, int line, const char *file, std::ofstream &out) throw(IOException)
 {
+    if(!_enabled) return;
     if(_logger == NULL)
         throw IOException("Log not opened", __FILE__, __LINE__);
     _logger->log_timestamp(out);
@@ -88,6 +93,11 @@ void logger::log(const char *message, int line, const char *file, std::ofstream 
 void logger::init_logger(std::ostream &output)
 {
     _logger = new logger(output);
+}
+
+void logger::disable_logger()
+{
+    _enabled = false;
 }
 
 void logger::close_logger()

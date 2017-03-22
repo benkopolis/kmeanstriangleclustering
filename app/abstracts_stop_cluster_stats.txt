@@ -1,0 +1,24 @@
+started
+MinDist initial: 0
+MinDist increased: 1
+Looped in while: 10
+Looped in for: 1026
+MinDist increased: 2
+Looped in while: 20
+Looped in for: 1836
+MinDist increased: 3
+Looped in while: 30
+Looped in for: 2322
+MinDist increased: 4
+Looped in while: 40
+Looped in for: 2558
+MinDist increased: 5
+Looped in while: 50
+Looped in for: 2666
+MinDist increased: 6
+Looped in while: 60
+Looped in for: 2699
+2017-1-23T21.18.36.307	Rand index is 0.714426
+Rand index: 0.714426
+KMeansCorrectDataRandomPickerCosineDist 25
+done

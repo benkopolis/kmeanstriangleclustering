@@ -8,7 +8,7 @@ class RandIndex : public AbstractIndexExternal
 public:
     RandIndex();
 
-    double process(const PartitionData* one, const PartitionData* two);
+    virtual double count(const PartitionData* one, const PartitionData *two);
 };
 
 #endif // RANDINDEXPROCESSOR_H
